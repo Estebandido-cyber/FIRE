@@ -2500,7 +2500,7 @@ function dbxAuth(callback) {
   const dbx = new Dropbox.Dropbox({ clientId: DBX_APP_KEY });
 
   // Use token (implicit) flow — simplest for local HTML files
-  const redirectUri = 'file:///C:/Users/polop/Desktop/FIRE/XPENSE_TRACKER/XPENSE_TRACKER.html';
+  const redirectUri = 'https://estebandido-cyber.github.io/FIRE/XPENSE_TRACKER.html';
   const authUrl = 'https://www.dropbox.com/oauth2/authorize' +
     '?client_id=' + DBX_APP_KEY +
     '&response_type=token' +
