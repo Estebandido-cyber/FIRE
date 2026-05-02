@@ -2627,3 +2627,25 @@ function dbxLoad() {
       dbxStatus('✓ Loaded from Dropbox — ' + new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}), 'ok');
       dbxSetBusy(false);
     })
+    .catch(err => {
+      console.error('Dropbox load error:', err);
+      if (String(err.message).includes('409') || String(err.message).includes('not_found')) {
+        dbxStatus('No file found in Dropbox — save first', 'err');
+      } else if (String(err.message).includes('401')) {
+        dbxToken = null;
+        dbxStatus('Session expired — click Load again', 'err');
+      } else {
+        dbxStatus('Load failed — try again', 'err');
+      }
+      dbxSetBusy(false);
+    });
+  });
+}
+
+setupDragDrop();
+cfLoad();
+init();
+dbxCheckReturn();
+</script>
+</body>
+</html>
