@@ -3,678 +3,495 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FIRE Sim — Retirement Financial Planner</title>
+<title>FIRE Sim</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-/* ── LIGHT MODE TOKENS ── */
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS — LIGHT MODE
+═══════════════════════════════════════════════ */
 :root {
-  --color-text-primary: #1a1a18;
-  --color-text-secondary: #6b6b67;
-  --color-text-tertiary: #9b9b97;
-  --color-text-info: #185FA5;
-  --color-text-warning: #854F0B;
-  --color-text-success: #0F6E56;
-  --color-text-danger: #c0392b;
-  --color-background-primary: #ffffff;
-  --color-background-secondary: #f2f2f0;
-  --color-background-tertiary: #eaeae8;
-  --color-background-info: rgba(0,85,164,0.07);
-  --color-background-warning: rgba(186,117,23,0.09);
-  --color-background-success: rgba(29,158,117,0.09);
-  --color-border-primary: rgba(0,0,0,0.40);
-  --color-border-secondary: rgba(0,0,0,0.20);
+  --color-text-primary:    #1a1a18;
+  --color-text-secondary:  #6b6b67;
+  --color-text-tertiary:   #9b9b97;
+  --color-text-info:       #185FA5;
+  --color-text-warning:    #854F0B;
+  --color-text-success:    #0F6E56;
+  --color-text-danger:     #c0392b;
+  --color-bg-primary:      #ffffff;
+  --color-bg-secondary:    #f2f2f0;
+  --color-bg-tertiary:     #eaeae8;
+  --color-bg-info:         rgba(0,85,164,0.07);
+  --color-bg-warning:      rgba(186,117,23,0.09);
+  --color-bg-success:      rgba(29,158,117,0.09);
+  --color-border-primary:  rgba(0,0,0,0.40);
+  --color-border-secondary:rgba(0,0,0,0.20);
   --color-border-tertiary: rgba(0,0,0,0.10);
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
-  --ph1-bg: rgba(212,83,126,0.12);
-  --ph1-fg: #993556;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  /* phase 1 accent */
+  --ph1-bg:     rgba(212,83,126,0.12);
+  --ph1-fg:     #993556;
   --ph1-border: rgba(212,83,126,0.35);
+  /* named borders */
   --blue-border: rgba(24,95,165,0.35);
   --teal-border: rgba(15,110,86,0.35);
-  --amb-border: rgba(133,79,11,0.35);
-  --sticky-bg: #ffffff;
+  --amb-border:  rgba(133,79,11,0.35);
+  /* sticky header */
+  --sticky-bg:     #ffffff;
   --sticky-border: rgba(0,0,0,0.12);
   --sticky-shadow: 0 2px 12px rgba(0,0,0,0.10);
-  --stat-bg: rgba(0,0,0,0.04);
-  --btn-export-bg: rgba(24,95,165,0.12);
-  --btn-export-fg: #185FA5;
+  --stat-bg:       rgba(0,0,0,0.04);
+  /* header buttons */
+  --btn-export-bg:     rgba(24,95,165,0.12);
+  --btn-export-fg:     #185FA5;
   --btn-export-border: rgba(24,95,165,0.30);
-  --btn-import-bg: rgba(133,79,11,0.10);
-  --btn-import-fg: #854F0B;
+  --btn-import-bg:     rgba(133,79,11,0.10);
+  --btn-import-fg:     #854F0B;
   --btn-import-border: rgba(133,79,11,0.30);
-  --scen-empty-bg: rgba(0,0,0,0.03);
+  /* scenario cards */
+  --scen-empty-bg:     rgba(0,0,0,0.03);
   --scen-empty-border: rgba(0,0,0,0.12);
-  --scen-filled-bg: rgba(0,0,0,0.05);
-  --scen-filled-border: rgba(0,0,0,0.18);
-  --scen-active-bg: rgba(24,95,165,0.10);
-  --scen-active-border: rgba(24,95,165,0.40);
-  --scen-active-glow: rgba(24,95,165,0.15);
+  --scen-filled-bg:    rgba(0,0,0,0.05);
+  --scen-filled-border:rgba(0,0,0,0.18);
+  --scen-active-bg:    rgba(24,95,165,0.10);
+  --scen-active-border:rgba(24,95,165,0.40);
+  --scen-active-glow:  rgba(24,95,165,0.15);
 }
 
-/* ── DARK MODE TOKENS ── */
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS — DARK MODE
+═══════════════════════════════════════════════ */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-text-primary: #e8e8e4;
-    --color-text-secondary: #a8a8a2;
-    --color-text-tertiary: #6e6e68;
-    --color-text-info: #6aabf7;
-    --color-text-warning: #f0a830;
-    --color-text-success: #4dc99a;
-    --color-text-danger: #f07070;
-    --color-background-primary: #1e1e1c;
-    --color-background-secondary: #2a2a28;
-    --color-background-tertiary: #242422;
-    --color-background-info: rgba(55,138,221,0.12);
-    --color-background-warning: rgba(186,117,23,0.15);
-    --color-background-success: rgba(29,158,117,0.13);
-    --color-border-primary: rgba(255,255,255,0.35);
-    --color-border-secondary: rgba(255,255,255,0.18);
+    --color-text-primary:    #e8e8e4;
+    --color-text-secondary:  #a8a8a2;
+    --color-text-tertiary:   #6e6e68;
+    --color-text-info:       #6aabf7;
+    --color-text-warning:    #f0a830;
+    --color-text-success:    #4dc99a;
+    --color-text-danger:     #f07070;
+    --color-bg-primary:      #1e1e1c;
+    --color-bg-secondary:    #2a2a28;
+    --color-bg-tertiary:     #242422;
+    --color-bg-info:         rgba(55,138,221,0.12);
+    --color-bg-warning:      rgba(186,117,23,0.15);
+    --color-bg-success:      rgba(29,158,117,0.13);
+    --color-border-primary:  rgba(255,255,255,0.35);
+    --color-border-secondary:rgba(255,255,255,0.18);
     --color-border-tertiary: rgba(255,255,255,0.09);
-    --ph1-bg: rgba(212,83,126,0.15);
-    --ph1-fg: #e07aaa;
+    --ph1-bg:     rgba(212,83,126,0.15);
+    --ph1-fg:     #e07aaa;
     --ph1-border: rgba(212,83,126,0.35);
     --blue-border: rgba(106,171,247,0.30);
     --teal-border: rgba(77,201,154,0.30);
-    --amb-border: rgba(240,168,48,0.30);
-    --sticky-bg: #1a1a18;
+    --amb-border:  rgba(240,168,48,0.30);
+    --sticky-bg:     #1a1a18;
     --sticky-border: rgba(255,255,255,0.10);
     --sticky-shadow: 0 2px 16px rgba(0,0,0,0.40);
-    --stat-bg: rgba(255,255,255,0.06);
-    --btn-export-bg: rgba(106,171,247,0.14);
-    --btn-export-fg: #6aabf7;
+    --stat-bg:       rgba(255,255,255,0.06);
+    --btn-export-bg:     rgba(106,171,247,0.14);
+    --btn-export-fg:     #6aabf7;
     --btn-export-border: rgba(106,171,247,0.30);
-    --btn-import-bg: rgba(240,168,48,0.13);
-    --btn-import-fg: #f0a830;
+    --btn-import-bg:     rgba(240,168,48,0.13);
+    --btn-import-fg:     #f0a830;
     --btn-import-border: rgba(240,168,48,0.30);
-    --scen-empty-bg: rgba(255,255,255,0.04);
+    --scen-empty-bg:     rgba(255,255,255,0.04);
     --scen-empty-border: rgba(255,255,255,0.10);
-    --scen-filled-bg: rgba(255,255,255,0.07);
-    --scen-filled-border: rgba(255,255,255,0.18);
-    --scen-active-bg: rgba(106,171,247,0.13);
-    --scen-active-border: rgba(106,171,247,0.45);
-    --scen-active-glow: rgba(106,171,247,0.10);
+    --scen-filled-bg:    rgba(255,255,255,0.07);
+    --scen-filled-border:rgba(255,255,255,0.18);
+    --scen-active-bg:    rgba(106,171,247,0.13);
+    --scen-active-border:rgba(106,171,247,0.45);
+    --scen-active-glow:  rgba(106,171,247,0.10);
   }
 }
 
+/* ═══════════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════════ */
 * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-body { margin: 0; padding: 0; background: var(--color-background-tertiary); color: var(--color-text-primary); }
+body { margin: 0; padding: 0; background: var(--color-bg-tertiary); color: var(--color-text-primary); }
+#main-content { padding-top: 100px; }
 
-/* ── STICKY HEADER ── */
+/* ═══════════════════════════════════════════════
+   STICKY HEADER
+═══════════════════════════════════════════════ */
 #sticky-header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 1000;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
   background: var(--sticky-bg);
   border-bottom: 1px solid var(--sticky-border);
   box-shadow: var(--sticky-shadow);
 }
 #sticky-row1 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 0 16px;
-  height: 50px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 0 16px; height: 50px;
 }
 #sticky-row2 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 16px 8px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 16px 8px;
   border-top: 0.5px solid var(--sticky-border);
-  padding-top: 7px;
 }
-#sticky-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-#sticky-logo {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-}
+#sticky-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+#sticky-logo { font-size: 15px; font-weight: 700; color: var(--color-text-primary); letter-spacing: -0.02em; white-space: nowrap; }
 #sticky-logo span { color: var(--color-text-info); }
-#sticky-stats {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex: 1;
-  overflow: hidden;
-}
-.sstat {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  background: var(--stat-bg);
-  border-radius: 6px;
-  padding: 3px 9px;
-  min-width: 86px;
-  flex-shrink: 0;
-}
-.sstat-label {
-  font-size: 9px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  color: var(--color-text-tertiary);
-  white-space: nowrap;
-  margin-bottom: 1px;
-}
-.sstat-value {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  white-space: nowrap;
-}
-.sstat-sep {
-  width: 1px;
-  height: 26px;
-  background: var(--color-border-secondary);
-  flex-shrink: 0;
-}
-#sticky-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-.hdr-btn {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  border: 1px solid;
-  white-space: nowrap;
-  transition: opacity .15s;
-}
+#sticky-stats { display: flex; align-items: center; gap: 6px; flex: 1; overflow: hidden; }
+#sticky-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+.sstat { display: flex; flex-direction: column; background: var(--stat-bg); border-radius: 6px; padding: 3px 9px; min-width: 86px; flex-shrink: 0; }
+.sstat-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; color: var(--color-text-tertiary); white-space: nowrap; margin-bottom: 1px; }
+.sstat-value { font-size: 12px; font-weight: 600; color: var(--color-text-primary); white-space: nowrap; }
+.sstat-sep { width: 1px; height: 26px; background: var(--color-border-secondary); flex-shrink: 0; }
+
+.hdr-btn { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px; cursor: pointer; border: 1px solid; white-space: nowrap; transition: opacity .15s; }
 .hdr-btn:hover { opacity: .75; }
-.hdr-btn-export {
-  background: var(--btn-export-bg);
-  color: var(--btn-export-fg);
-  border-color: var(--btn-export-border);
-}
-.hdr-btn-import {
-  background: var(--btn-import-bg);
-  color: var(--btn-import-fg);
-  border-color: var(--btn-import-border);
-}
+.hdr-btn-export { background: var(--btn-export-bg); color: var(--btn-export-fg); border-color: var(--btn-export-border); }
+.hdr-btn-import { background: var(--btn-import-bg); color: var(--btn-import-fg); border-color: var(--btn-import-border); }
 
-/* ── SCENARIO STRIP (row 2) ── */
-#scen-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--color-text-tertiary);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
+/* ═══════════════════════════════════════════════
+   SCENARIO STRIP
+═══════════════════════════════════════════════ */
+#scen-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--color-text-tertiary); white-space: nowrap; flex-shrink: 0; }
 .scen-card {
-  flex: 1;
-  min-width: 0;
-  border-radius: 7px;
-  border: 1px solid var(--scen-empty-border);
-  background: var(--scen-empty-bg);
-  padding: 5px 9px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
+  flex: 1; min-width: 0; border-radius: 7px; min-height: 34px;
+  border: 1px solid var(--scen-empty-border); background: var(--scen-empty-bg);
+  padding: 5px 9px; display: flex; align-items: center; justify-content: space-between; gap: 6px;
   transition: border-color .15s, background .15s, box-shadow .15s;
-  min-height: 34px;
 }
-.scen-card.filled {
-  border-color: var(--scen-filled-border);
-  background: var(--scen-filled-bg);
-}
-.scen-card.active {
-  border-color: var(--scen-active-border);
-  background: var(--scen-active-bg);
-  box-shadow: 0 0 0 2px var(--scen-active-glow);
-}
-.scen-info {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-}
-.scen-name-wrap {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
+.scen-card.filled  { border-color: var(--scen-filled-border);  background: var(--scen-filled-bg); }
+.scen-card.active  { border-color: var(--scen-active-border);  background: var(--scen-active-bg); box-shadow: 0 0 0 2px var(--scen-active-glow); }
+.scen-info { flex: 1; min-width: 0; overflow: hidden; }
+.scen-name-wrap { display: flex; align-items: center; gap: 4px; }
 .scen-name {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 90px;
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: text;
-  outline: none;
+  font-size: 11px; font-weight: 600; color: var(--color-text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px;
+  border: none; background: transparent; padding: 0; cursor: text; outline: none;
 }
-.scen-name:focus {
-  background: var(--color-background-secondary);
-  border-radius: 3px;
-  padding: 0 3px;
-}
-.scen-badge-active {
-  font-size: 9px;
-  font-weight: 700;
-  background: var(--color-text-info);
-  color: #fff;
-  border-radius: 3px;
-  padding: 1px 4px;
-  flex-shrink: 0;
-  display: none;
-}
+.scen-name:focus { background: var(--color-bg-secondary); border-radius: 3px; padding: 0 3px; }
+.scen-badge-active { font-size: 9px; font-weight: 700; background: var(--color-text-info); color: #fff; border-radius: 3px; padding: 1px 4px; flex-shrink: 0; display: none; }
 .scen-card.active .scen-badge-active { display: inline-block; }
-.scen-meta {
-  font-size: 9px;
-  color: var(--color-text-tertiary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 1px;
-}
+.scen-meta { font-size: 9px; color: var(--color-text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
 .scen-card.filled .scen-meta { color: var(--color-text-secondary); }
-.scen-actions {
-  display: flex;
-  gap: 3px;
-  flex-shrink: 0;
-}
-.scen-btn {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 4px;
-  cursor: pointer;
-  border: 1px solid var(--color-border-secondary);
-  background: transparent;
-  color: var(--color-text-secondary);
-  white-space: nowrap;
-  transition: opacity .12s;
-}
+.scen-actions { display: flex; gap: 3px; flex-shrink: 0; }
+.scen-btn { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; cursor: pointer; border: 1px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); white-space: nowrap; transition: opacity .12s; }
 .scen-btn:hover { opacity: .7; }
-.scen-btn-save {
-  border-color: var(--teal-border);
-  color: var(--color-text-success);
-}
-.scen-btn-load {
-  border-color: var(--blue-border);
-  color: var(--color-text-info);
-}
-.scen-btn-clear {
-  border-color: var(--color-border-secondary);
-  color: var(--color-text-tertiary);
-}
+.scen-btn-save  { border-color: var(--teal-border); color: var(--color-text-success); }
+.scen-btn-load  { border-color: var(--blue-border); color: var(--color-text-info); }
+.scen-btn-clear { border-color: var(--color-border-secondary); color: var(--color-text-tertiary); }
 
-/* ── SAVE TOAST ── */
+/* ═══════════════════════════════════════════════
+   SAVE TOAST
+═══════════════════════════════════════════════ */
 #save-toast {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: var(--color-text-success);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 7px 14px;
-  border-radius: 20px;
-  z-index: 2000;
-  opacity: 0;
-  transform: translateY(6px);
+  position: fixed; bottom: 20px; right: 20px; z-index: 2000;
+  background: var(--color-text-success); color: #fff;
+  font-size: 12px; font-weight: 500; padding: 7px 14px; border-radius: 20px;
+  opacity: 0; transform: translateY(6px); pointer-events: none;
   transition: opacity .25s, transform .25s;
-  pointer-events: none;
 }
-#save-toast.show {
-  opacity: 1;
-  transform: translateY(0);
+#save-toast.show { opacity: 1; transform: translateY(0); }
+
+/* ═══════════════════════════════════════════════
+   IMPORT MODAL
+═══════════════════════════════════════════════ */
+#import-modal {
+  display: none; position: fixed; inset: 0; z-index: 3000;
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(3px);
+  align-items: center; justify-content: center;
 }
+#import-modal.open { display: flex; }
+#import-modal-box {
+  background: var(--color-bg-primary); border: 1px solid var(--color-border-secondary);
+  border-radius: 14px; padding: 28px 28px 22px;
+  width: 100%; max-width: 400px; margin: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.30);
+}
+#import-modal-title { font-size: 15px; font-weight: 600; color: var(--color-text-primary); margin: 0 0 6px; }
+#import-modal-sub   { font-size: 12px; color: var(--color-text-secondary); margin: 0 0 18px; }
+#import-drop-zone {
+  border: 2px dashed var(--color-border-secondary); border-radius: 10px;
+  padding: 32px 20px; text-align: center; cursor: pointer; margin-bottom: 14px;
+  background: var(--color-bg-secondary); transition: border-color .15s, background .15s;
+}
+#import-drop-zone.drag-over { border-color: var(--color-text-info); background: var(--color-bg-info); }
+#import-drop-icon { font-size: 32px; margin-bottom: 8px; }
+#import-drop-text { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 4px; }
+#import-drop-hint { font-size: 11px; color: var(--color-text-tertiary); margin: 0; }
+#import-modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
+.modal-btn { font-size: 12px; font-weight: 600; padding: 7px 16px; border-radius: 7px; cursor: pointer; border: 1px solid var(--color-border-secondary); background: transparent; transition: opacity .15s; }
+.modal-btn:hover { opacity: .75; }
+.modal-btn-browse { background: var(--btn-import-bg); color: var(--btn-import-fg); border-color: var(--btn-import-border); }
+.modal-btn-cancel { color: var(--color-text-tertiary); }
 
-/* main content pushed below sticky header */
-#main-content { padding-top: 100px; }
-
-/* ── ALL EXISTING STYLES ── */
+/* ═══════════════════════════════════════════════
+   LAYOUT PRIMITIVES
+═══════════════════════════════════════════════ */
 .row { display: flex; align-items: center; gap: 8px; margin: 7px 0; font-size: 13px; color: var(--color-text-secondary); }
 .row label { min-width: 172px; flex-shrink: 0; }
-.stepper { display: flex; align-items: center; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); overflow: hidden; flex-shrink: 0; }
+.stepper { display: flex; align-items: center; border: 0.5px solid var(--color-border-secondary); border-radius: var(--radius-md); overflow: hidden; flex-shrink: 0; }
 .stepper button { width: 30px; height: 30px; border: none; background: transparent; color: var(--color-text-primary); font-size: 16px; cursor: pointer; line-height: 1; }
-.stepper button:hover { background: var(--color-background-secondary); }
-.stepper .sval { min-width: 70px; text-align: center; font-size: 13px; font-weight: 500; color: var(--color-text-primary); padding: 0 4px; border-left: 0.5px solid var(--color-border-tertiary); border-right: 0.5px solid var(--color-border-tertiary); height: 30px; line-height: 30px; background: var(--color-background-primary); }
+.stepper button:hover { background: var(--color-bg-secondary); }
+.stepper .sval { min-width: 70px; text-align: center; font-size: 13px; font-weight: 500; color: var(--color-text-primary); height: 30px; line-height: 30px; padding: 0 4px; border-left: 0.5px solid var(--color-border-tertiary); border-right: 0.5px solid var(--color-border-tertiary); background: var(--color-bg-primary); }
 .section-title { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: .05em; margin: 16px 0 6px; }
-.ph { font-size: 13px; font-weight: 500; margin: 12px 0 8px; padding: 6px 10px; border-radius: var(--border-radius-md); }
-.ph1 { background: var(--ph1-bg); color: var(--ph1-fg); }
-.ph3 { background: var(--color-background-warning); color: var(--color-text-warning); }
-.ph4 { background: var(--color-background-success); color: var(--color-text-success); }
-.panel { border-radius: var(--border-radius-lg); padding: 12px 14px; margin-bottom: 12px; }
-.panel-chomage { background: var(--ph1-bg); border: 0.5px solid var(--ph1-border); }
-.panel-lock { background: var(--color-background-warning); border: 0.5px solid var(--amb-border); }
-.panel-infl { background: var(--color-background-success); border: 0.5px solid var(--teal-border); }
-.panel-age { background: var(--color-background-info); border: 0.5px solid var(--blue-border); }
-.panel-title { font-size: 12px; font-weight: 500; margin: 0 0 10px; }
-.panel-chomage .panel-title { color: var(--ph1-fg); }
-.panel-lock .panel-title { color: var(--color-text-warning); }
-.panel-infl .panel-title { color: var(--color-text-success); }
-.panel-age .panel-title { color: var(--color-text-info); }
-.coll-block { border-radius: var(--border-radius-lg); margin-bottom: 12px; overflow: hidden; border: 1.5px solid var(--color-border-secondary); }
-.coll-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; cursor: pointer; user-select: none; background: var(--color-background-secondary); }
-.coll-toggle { font-size: 12px; color: var(--color-text-tertiary); transition: transform .2s; display: inline-block; }
-.coll-toggle.open { transform: rotate(180deg); }
-.coll-body { padding: 0 14px 12px; background: var(--color-background-primary); }
-.coll-body.hidden { display: none; }
-.fr-block { border-color: var(--blue-border) !important; }
-.fr-header { background: var(--color-background-info) !important; }
-.col-block { border-color: var(--amb-border) !important; border-style: dashed !important; }
-.col-header { background: var(--color-background-warning) !important; }
-.sub-card { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 12px; margin-bottom: 10px; }
-.sub-card.col-active { border-color: var(--teal-border); background: var(--color-background-success); }
-.total-box { background: var(--color-background-info); border: 0.5px solid var(--blue-border); border-radius: var(--border-radius-md); padding: 10px 14px; margin-top: 4px; }
-.total-label { font-size: 11px; color: var(--color-text-info); font-weight: 500; margin: 0 0 3px; }
-.total-val { font-size: 24px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 2px; }
-.total-sub { font-size: 12px; color: var(--color-text-secondary); margin: 0 0 2px; }
-.total-cop { font-size: 12px; color: var(--color-text-info); margin: 4px 0 0; font-weight: 500; }
-.fr-metrics-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-.fr-met { background: var(--color-background-secondary); border-radius: 6px; padding: 6px 10px; }
-.fr-met .fml { font-size: 10px; color: var(--color-text-info); margin: 0 0 2px; font-weight: 500; }
-.fr-met .fmv { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0; }
-.col-total-box { background: var(--color-background-warning); border: 0.5px solid var(--amb-border); border-radius: var(--border-radius-md); padding: 10px 14px; margin-top: 10px; }
-.col-total-label { font-size: 11px; color: var(--color-text-warning); font-weight: 500; margin: 0 0 6px; }
-.col-total-now { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 2px; }
-.col-total-eur { font-size: 13px; color: var(--color-text-secondary); margin: 0 0 10px; }
-.proj-grid, .total-proj-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 6px; }
-.proj-cell, .total-proj-cell { background: var(--color-background-primary); border: 1px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 7px 10px; }
-.proj-cell .py, .total-proj-cell .tpy { font-size: 10px; font-weight: 600; color: var(--color-text-warning); margin: 0 0 4px; }
-.proj-cell .pcop, .total-proj-cell .tpcop { font-size: 12px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
-.proj-cell .peur, .total-proj-cell .tpeur { font-size: 11px; color: var(--color-text-secondary); margin: 0; }
-.col-badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: var(--border-radius-md); background: var(--color-background-warning); color: var(--color-text-warning); border: 0.5px solid var(--amb-border); margin-left: 6px; vertical-align: middle; }
-.col-section-label { font-size: 11px; font-weight: 600; color: var(--color-text-warning); text-transform: uppercase; letter-spacing: .04em; margin: 12px 0 6px; padding: 4px 0; border-bottom: 0.5px solid var(--amb-border); }
-.col-switch-row { display: flex; align-items: center; justify-content: space-between; margin: 8px 0 4px; padding: 6px 8px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); }
-.col-switch-row .csl { font-size: 12px; color: var(--color-text-secondary); }
-.col-switch-row .csl.on { color: var(--color-text-success); font-weight: 500; }
-.switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
-.switch input { opacity: 0; width: 0; height: 0; position: absolute; }
-.slider-sw { position: absolute; inset: 0; background: var(--color-border-secondary); border-radius: 11px; cursor: pointer; transition: background .2s; }
-.slider-sw:before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform .2s; }
-.switch input:checked + .slider-sw { background: var(--color-text-success); }
-.switch input:checked + .slider-sw:before { transform: translateX(18px); }
-.grand-total-bar { border-radius: var(--border-radius-lg); border: 2px solid var(--color-border-primary); background: var(--color-background-primary); padding: 14px 18px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.grand-total-flags { font-size: 18px; line-height: 1; }
-.grand-total-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--color-text-tertiary); margin: 0 0 2px; }
-.grand-total-value { font-size: 26px; font-weight: 500; color: var(--color-text-primary); margin: 0; line-height: 1.1; }
-.grand-total-breakdown { font-size: 11px; color: var(--color-text-secondary); margin: 3px 0 0; }
-.ph2-block { border-radius: var(--border-radius-lg); margin-top: 14px; margin-bottom: 4px; border: 1px solid var(--blue-border); overflow: hidden; }
-.ph2-always { padding: 14px 14px 0 14px; background: var(--color-background-info); }
-.ph2-partner { padding: 10px 14px 12px 14px; background: var(--color-background-info); }
-.ph2-toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; cursor: pointer; user-select: none; background: var(--color-background-secondary); border-top: 0.5px solid var(--blue-border); }
-.ph2-body { padding: 0 14px 12px; background: var(--color-background-primary); }
-.ph2-body.hidden { display: none; }
-.ph2-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 12px; }
-.ph2-stat { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 12px; }
-.ph2-stat .psl { font-size: 11px; color: var(--color-text-info); font-weight: 500; margin: 0 0 4px; }
-.ph2-stat .psv { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin: 0; }
-.ph2-stat .pss { font-size: 11px; color: var(--color-text-secondary); margin: 3px 0 0; }
-.yr-row { border-bottom: 0.5px solid var(--color-border-tertiary); padding: 8px 0; }
-.yr-row:last-child { border-bottom: none; }
-.yr-label { font-size: 12px; font-weight: 500; color: var(--color-text-info); margin: 0 0 4px; }
-.tax-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); margin: 4px 0 2px; font-weight: 500; }
-.tax-pea { background: var(--color-background-info); color: var(--color-text-info); }
-.tax-av { background: var(--color-background-success); color: var(--color-text-success); }
-.tax-cto { background: var(--color-background-warning); color: var(--color-text-warning); }
-.tax-free { background: var(--color-background-secondary); color: var(--color-text-secondary); }
+.divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 14px 0; }
+.info-box { font-size: 12px; color: var(--color-text-secondary); background: var(--color-bg-secondary); border-radius: var(--radius-md); padding: 8px 12px; margin: 8px 0; line-height: 1.6; }
 .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 14px 0; }
-.met { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; }
+.met { background: var(--color-bg-secondary); border-radius: var(--radius-md); padding: 10px 12px; }
 .met .ml { font-size: 11px; color: var(--color-text-secondary); margin: 0 0 3px; }
 .met .mv { font-size: 18px; font-weight: 500; margin: 0; color: var(--color-text-primary); }
-.divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 14px 0; }
-.info-box { font-size: 12px; color: var(--color-text-secondary); background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 8px 12px; margin: 8px 0; line-height: 1.6; }
-.partner-block { background: var(--ph1-bg); border: 0.5px solid var(--ph1-border); border-radius: var(--border-radius-md); padding: 10px 14px; margin: 10px 0; }
+
+/* ═══════════════════════════════════════════════
+   PHASE LABELS & PANELS
+═══════════════════════════════════════════════ */
+.ph { font-size: 13px; font-weight: 500; margin: 12px 0 8px; padding: 6px 10px; border-radius: var(--radius-md); }
+.ph1 { background: var(--ph1-bg); color: var(--ph1-fg); }
+.ph3 { background: var(--color-bg-warning); color: var(--color-text-warning); }
+.ph4 { background: var(--color-bg-success);  color: var(--color-text-success); }
+.panel { border-radius: var(--radius-lg); padding: 12px 14px; margin-bottom: 12px; }
+.panel-chomage { background: var(--ph1-bg);          border: 0.5px solid var(--ph1-border); }
+.panel-lock    { background: var(--color-bg-warning); border: 0.5px solid var(--amb-border); }
+.panel-infl    { background: var(--color-bg-success);  border: 0.5px solid var(--teal-border); }
+.panel-age     { background: var(--color-bg-info);    border: 0.5px solid var(--blue-border); }
+.panel-title { font-size: 12px; font-weight: 500; margin: 0 0 10px; }
+.panel-chomage .panel-title { color: var(--ph1-fg); }
+.panel-lock    .panel-title { color: var(--color-text-warning); }
+.panel-infl    .panel-title { color: var(--color-text-success); }
+.panel-age     .panel-title { color: var(--color-text-info); }
+.partner-block { background: var(--ph1-bg); border: 0.5px solid var(--ph1-border); border-radius: var(--radius-md); padding: 10px 14px; margin: 10px 0; }
 .partner-title { font-size: 12px; font-weight: 500; color: var(--ph1-fg); margin: 0 0 8px; }
+
+/* ═══════════════════════════════════════════════
+   COLLAPSIBLE BLOCKS
+═══════════════════════════════════════════════ */
+.coll-block  { border-radius: var(--radius-lg); margin-bottom: 12px; overflow: hidden; border: 1.5px solid var(--color-border-secondary); }
+.coll-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; cursor: pointer; user-select: none; background: var(--color-bg-secondary); }
+.coll-toggle { font-size: 12px; color: var(--color-text-tertiary); transition: transform .2s; display: inline-block; }
+.coll-toggle.open { transform: rotate(180deg); }
+.coll-body { padding: 0 14px 12px; background: var(--color-bg-primary); }
+.coll-body.hidden { display: none; }
+.fr-block  { border-color: var(--blue-border) !important; }
+.fr-header { background: var(--color-bg-info) !important; }
+.col-block  { border-color: var(--amb-border) !important; border-style: dashed !important; }
+.col-header { background: var(--color-bg-warning) !important; }
+
+/* ═══════════════════════════════════════════════
+   ASSET CARDS
+═══════════════════════════════════════════════ */
+.sub-card { background: var(--color-bg-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 10px; }
+.sub-card.col-active { border-color: var(--teal-border); background: var(--color-bg-success); }
+.tax-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--radius-md); margin: 4px 0 2px; font-weight: 500; }
+.tax-pea  { background: var(--color-bg-info);    color: var(--color-text-info); }
+.tax-av   { background: var(--color-bg-success);  color: var(--color-text-success); }
+.tax-cto  { background: var(--color-bg-warning); color: var(--color-text-warning); }
+.tax-free { background: var(--color-bg-secondary); color: var(--color-text-secondary); }
+
+/* French totals box */
+.total-box    { background: var(--color-bg-info); border: 0.5px solid var(--blue-border); border-radius: var(--radius-md); padding: 10px 14px; margin-top: 4px; }
+.total-label  { font-size: 11px; color: var(--color-text-info); font-weight: 500; margin: 0 0 3px; }
+.total-val    { font-size: 24px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 2px; }
+.total-sub    { font-size: 12px; color: var(--color-text-secondary); margin: 0 0 2px; }
+.total-cop    { font-size: 12px; color: var(--color-text-info); margin: 4px 0 0; font-weight: 500; }
+.fr-metrics-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.fr-met      { background: var(--color-bg-secondary); border-radius: 6px; padding: 6px 10px; }
+.fr-met .fml { font-size: 10px; color: var(--color-text-info); margin: 0 0 2px; font-weight: 500; }
+.fr-met .fmv { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0; }
+
+/* Colombian section */
+.col-badge        { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-md); background: var(--color-bg-warning); color: var(--color-text-warning); border: 0.5px solid var(--amb-border); margin-left: 6px; vertical-align: middle; }
+.col-section-label{ font-size: 11px; font-weight: 600; color: var(--color-text-warning); text-transform: uppercase; letter-spacing: .04em; margin: 12px 0 6px; padding: 4px 0; border-bottom: 0.5px solid var(--amb-border); }
+.col-switch-row   { display: flex; align-items: center; justify-content: space-between; margin: 8px 0 4px; padding: 6px 8px; background: var(--color-bg-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--radius-md); }
+.col-switch-row .csl    { font-size: 12px; color: var(--color-text-secondary); }
+.col-switch-row .csl.on { color: var(--color-text-success); font-weight: 500; }
+.col-total-box  { background: var(--color-bg-warning); border: 0.5px solid var(--amb-border); border-radius: var(--radius-md); padding: 10px 14px; margin-top: 10px; }
+.col-total-label{ font-size: 11px; color: var(--color-text-warning); font-weight: 500; margin: 0 0 6px; }
+.col-total-now  { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 2px; }
+.col-total-eur  { font-size: 13px; color: var(--color-text-secondary); margin: 0 0 10px; }
+
+/* Projection grids */
+.proj-grid, .total-proj-grid  { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 6px; }
+.proj-cell, .total-proj-cell  { background: var(--color-bg-primary); border: 1px solid var(--color-border-secondary); border-radius: var(--radius-md); padding: 7px 10px; }
+.proj-cell .py,      .total-proj-cell .tpy  { font-size: 10px; font-weight: 600; color: var(--color-text-warning); margin: 0 0 4px; }
+.proj-cell .pcop,    .total-proj-cell .tpcop{ font-size: 12px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+.proj-cell .peur,    .total-proj-cell .tpeur{ font-size: 11px; color: var(--color-text-secondary); margin: 0; }
+
+/* Toggle switch */
+.switch       { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.slider-sw    { position: absolute; inset: 0; background: var(--color-border-secondary); border-radius: 11px; cursor: pointer; transition: background .2s; }
+.slider-sw:before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform .2s; }
+.switch input:checked + .slider-sw              { background: var(--color-text-success); }
+.switch input:checked + .slider-sw:before       { transform: translateX(18px); }
+
+/* Grand total bar */
+.grand-total-bar       { border-radius: var(--radius-lg); border: 2px solid var(--color-border-primary); background: var(--color-bg-primary); padding: 14px 18px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.grand-total-flags     { font-size: 18px; line-height: 1; }
+.grand-total-label     { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--color-text-tertiary); margin: 0 0 2px; }
+.grand-total-value     { font-size: 26px; font-weight: 500; color: var(--color-text-primary); margin: 0; line-height: 1.1; }
+.grand-total-breakdown { font-size: 11px; color: var(--color-text-secondary); margin: 3px 0 0; }
+
+/* ═══════════════════════════════════════════════
+   PHASE 2 BLOCK
+═══════════════════════════════════════════════ */
+.ph2-block       { border-radius: var(--radius-lg); margin-top: 14px; margin-bottom: 4px; border: 1px solid var(--blue-border); overflow: hidden; }
+.ph2-always      { padding: 14px 14px 0; background: var(--color-bg-info); }
+.ph2-partner     { padding: 10px 14px 12px; background: var(--color-bg-info); }
+.ph2-toggle-row  { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; cursor: pointer; user-select: none; background: var(--color-bg-secondary); border-top: 0.5px solid var(--blue-border); }
+.ph2-body        { padding: 0 14px 12px; background: var(--color-bg-primary); }
+.ph2-body.hidden { display: none; }
+.ph2-summary-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 12px; }
+.ph2-stat        { background: var(--color-bg-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--radius-md); padding: 10px 12px; }
+.ph2-stat .psl   { font-size: 11px; color: var(--color-text-info); font-weight: 500; margin: 0 0 4px; }
+.ph2-stat .psv   { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin: 0; }
+.ph2-stat .pss   { font-size: 11px; color: var(--color-text-secondary); margin: 3px 0 0; }
+.yr-row          { border-bottom: 0.5px solid var(--color-border-tertiary); padding: 8px 0; }
+.yr-row:last-child { border-bottom: none; }
+.yr-label        { font-size: 12px; font-weight: 500; color: var(--color-text-info); margin: 0 0 4px; }
+
+/* ═══════════════════════════════════════════════
+   BREAK-EVEN PANEL
+═══════════════════════════════════════════════ */
+.be-panel { border-radius: var(--radius-lg); border: 1px solid var(--blue-border); background: var(--color-bg-info); padding: 12px 14px; margin: 0 0 14px; }
+.be-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--color-text-info); margin: 0 0 10px; }
+.be-results { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
+.be-result-card      { background: var(--color-bg-primary); border: 1px solid var(--color-border-secondary); border-radius: var(--radius-md); padding: 8px 10px; }
+.be-result-card.be-ok  { border-color: var(--teal-border); background: var(--color-bg-success); }
+.be-result-card.be-near{ border-color: var(--amb-border);  background: var(--color-bg-warning); }
+.be-result-card.be-low { border-color: rgba(192,57,43,0.35); background: rgba(192,57,43,0.07); }
+.be-result-age    { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--color-text-tertiary); margin: 0 0 3px; }
+.be-result-amount { font-size: 17px; font-weight: 600; color: var(--color-text-primary); margin: 0 0 2px; white-space: nowrap; }
+.be-result-amount.be-impossible { font-size: 12px; color: var(--color-text-danger); }
+.be-result-sub    { font-size: 10px; color: var(--color-text-secondary); margin: 0; }
+.be-result-delta  { font-size: 10px; font-weight: 600; margin: 4px 0 0; }
+.be-result-delta.ok   { color: var(--color-text-success); }
+.be-result-delta.near { color: var(--color-text-warning); }
+.be-result-delta.low  { color: var(--color-text-danger); }
+
+/* ═══════════════════════════════════════════════
+   CHART & TABLE
+═══════════════════════════════════════════════ */
+.legend-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 4px; font-size: 12px; color: var(--color-text-secondary); }
+.legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+.tab-bar  { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.tab-btn  { font-size: 12px; padding: 4px 12px; border-radius: var(--radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+.tab-btn.active { background: var(--color-text-info); color: #fff; border-color: transparent; font-weight: 500; }
+.lbadge { display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 4px; margin-left: 3px; color: #fff; }
 table.bd { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
-table.bd th { text-align: right; padding: 5px 7px; font-weight: 500; color: var(--color-text-secondary); border-bottom: 0.5px solid var(--color-border-secondary); font-size: 11px; white-space: nowrap; background: var(--color-background-secondary); }
+table.bd th { text-align: right; padding: 5px 7px; font-weight: 500; color: var(--color-text-secondary); border-bottom: 0.5px solid var(--color-border-secondary); font-size: 11px; white-space: nowrap; background: var(--color-bg-secondary); }
 table.bd th:first-child, table.bd th:nth-child(2) { text-align: left; }
 table.bd td { text-align: right; padding: 4px 7px; border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; color: var(--color-text-primary); }
 table.bd td:first-child, table.bd td:nth-child(2) { text-align: left; color: var(--color-text-secondary); }
 table.bd tr:last-child td { border-bottom: none; }
 table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-border); }
-.unlock-marker { display: block; font-size: 10px; font-weight: 600; color: var(--color-text-success); background: var(--color-background-success); border-radius: 4px; padding: 2px 6px; margin-bottom: 3px; white-space: nowrap; }
-.bk { display: inline-block; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; margin: 1px 2px; white-space: nowrap; }
-.bk-cash { background: var(--color-background-secondary); color: var(--color-text-secondary); }
-.bk-liv { background: var(--color-background-success); color: var(--color-text-success); }
-.bk-cto { background: var(--color-background-warning); color: var(--color-text-warning); }
-.bk-pea { background: var(--color-background-info); color: var(--color-text-info); }
-.bk-av { background: var(--color-background-success); color: var(--color-text-success); }
+.unlock-marker { display: block; font-size: 10px; font-weight: 600; color: var(--color-text-success); background: var(--color-bg-success); border-radius: 4px; padding: 2px 6px; margin-bottom: 3px; white-space: nowrap; }
+.bk      { display: inline-block; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; margin: 1px 2px; white-space: nowrap; }
+.bk-cash { background: var(--color-bg-secondary);  color: var(--color-text-secondary); }
+.bk-liv  { background: var(--color-bg-success);    color: var(--color-text-success); }
+.bk-cto  { background: var(--color-bg-warning);   color: var(--color-text-warning); }
+.bk-pea  { background: var(--color-bg-info);      color: var(--color-text-info); }
+.bk-av   { background: var(--color-bg-success);    color: var(--color-text-success); }
 .bk-col1 { background: rgba(245,208,32,0.25); color: var(--color-text-warning); }
 .bk-col2 { background: rgba(245,160,32,0.22); color: var(--color-text-warning); }
 .bk-col3 { background: rgba(245,100,32,0.22); color: var(--color-text-danger); }
 .bk-col4 { background: rgba(160,200,48,0.22); color: var(--color-text-success); }
-.tab-bar { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-.tab-btn { font-size: 12px; padding: 4px 12px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
-.tab-btn.active { background: var(--color-text-info); color: #fff; border-color: transparent; font-weight: 500; }
-.lbadge { display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 4px; margin-left: 3px; color: #fff; }
-.legend-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 4px; font-size: 12px; color: var(--color-text-secondary); }
-.legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
-/* ── BREAK-EVEN PANEL ── */
-.be-panel {
-  border-radius: var(--border-radius-lg);
-  border: 1px solid var(--blue-border);
-  background: var(--color-background-info);
-  padding: 12px 14px;
-  margin: 0 0 14px;
+
+/* ── EMOJI FLAG FIX (GitHub / some desktop environments) ── */
+/* Force system emoji font for flag characters so they render on all platforms */
+.sstat-label, .col-badge, .grand-total-flags,
+#col-header-cop, #col-badge-header, #order-note,
+.coll-header span:first-child {
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji',
+               'Twemoji Mozilla', 'EmojiOne Color', sans-serif;
 }
-.be-title {
+/* Targeted emoji spans in headers */
+[id^="sh-"] { font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; }
+
+/* ── SUMMARY METRICS PANEL ── */
+.metrics-panel {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-bg-secondary);
+  padding: 12px 14px 14px;
+  margin: 16px 0 14px;
+}
+.metrics-panel-title {
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .05em;
-  color: var(--color-text-info);
+  color: var(--color-text-tertiary);
   margin: 0 0 10px;
 }
-.be-target-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
+/* Override the default .metrics margin when nested inside the panel */
+.metrics-panel .metrics { margin-bottom: 0; }
+
+/* ── MOBILE: sticky header row 1 — stats + buttons stack ── */
+@media (max-width: 640px) {
+  #main-content { padding-top: 140px; }
+
+  #sticky-row1 {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 8px 12px 6px;
+    gap: 6px;
+  }
+  #sticky-left { order: 1; }
+  #sticky-right {
+    order: 2;
+    margin-left: auto;
+  }
+  #sticky-stats {
+    order: 3;
+    flex-basis: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    gap: 4px;
+  }
+  .sstat { min-width: 72px; padding: 3px 7px; }
+  .sstat-value { font-size: 11px; }
+  .sstat-sep { height: 22px; }
+  .hdr-btn { font-size: 10px; padding: 4px 8px; }
 }
-.be-target-label {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  flex-shrink: 0;
-}
-.be-target-btn {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 11px;
-  border-radius: 6px;
-  border: 1px solid var(--blue-border);
-  background: transparent;
-  color: var(--color-text-info);
-  cursor: pointer;
-  transition: background .12s, color .12s;
-}
-.be-target-btn.active {
-  background: var(--color-text-info);
-  color: #fff;
-  border-color: transparent;
-}
-.be-results {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 8px;
-}
-.be-result-card {
-  background: var(--color-background-primary);
-  border: 1px solid var(--color-border-secondary);
-  border-radius: var(--border-radius-md);
-  padding: 8px 10px;
-  position: relative;
-  overflow: hidden;
-}
-.be-result-card.be-ok   { border-color: var(--teal-border); background: var(--color-background-success); }
-.be-result-card.be-near { border-color: var(--amb-border);  background: var(--color-background-warning); }
-.be-result-card.be-low  { border-color: rgba(192,57,43,0.35); background: rgba(192,57,43,0.07); }
-.be-result-age {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  color: var(--color-text-tertiary);
-  margin: 0 0 3px;
-}
-.be-result-amount {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin: 0 0 2px;
-  white-space: nowrap;
-}
-.be-result-amount.be-impossible {
-  font-size: 12px;
-  color: var(--color-text-danger);
-}
-.be-result-sub {
-  font-size: 10px;
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-.be-result-delta {
-  font-size: 10px;
-  font-weight: 600;
-  margin: 4px 0 0;
-}
-.be-result-delta.ok   { color: var(--color-text-success); }
-.be-result-delta.near { color: var(--color-text-warning); }
-.be-result-delta.low  { color: var(--color-text-danger); }
-/* ── IMPORT MODAL ── */
-#import-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 3000;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(3px);
-  align-items: center;
-  justify-content: center;
-}
-#import-modal.open {
-  display: flex;
-}
-#import-modal-box {
-  background: var(--color-background-primary);
-  border: 1px solid var(--color-border-secondary);
-  border-radius: 14px;
-  padding: 28px 28px 22px;
-  width: 100%;
-  max-width: 400px;
-  margin: 16px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.30);
-}
-#import-modal-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin: 0 0 6px;
-}
-#import-modal-sub {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  margin: 0 0 18px;
-}
-#import-drop-zone {
-  border: 2px dashed var(--color-border-secondary);
-  border-radius: 10px;
-  padding: 32px 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color .15s, background .15s;
-  background: var(--color-background-secondary);
-  margin-bottom: 14px;
-}
-#import-drop-zone.drag-over {
-  border-color: var(--color-text-info);
-  background: var(--color-background-info);
-}
-#import-drop-icon {
-  font-size: 32px;
-  margin-bottom: 8px;
-}
-#import-drop-text {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-text-primary);
-  margin: 0 0 4px;
-}
-#import-drop-hint {
-  font-size: 11px;
-  color: var(--color-text-tertiary);
-  margin: 0;
-}
-#import-modal-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  margin-top: 6px;
-}
-.import-modal-btn {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 7px 16px;
-  border-radius: 7px;
-  cursor: pointer;
-  border: 1px solid var(--color-border-secondary);
-  background: transparent;
-  color: var(--color-text-secondary);
-  transition: opacity .15s;
-}
-.import-modal-btn:hover { opacity: .75; }
-.import-modal-btn-browse {
-  background: var(--btn-import-bg);
-  color: var(--btn-import-fg);
-  border-color: var(--btn-import-border);
-}
-.import-modal-btn-cancel {
-  color: var(--color-text-tertiary);
+
+/* ── MOBILE: scenario strip — label on own line, cards fill width ── */
+@media (max-width: 640px) {
+  #sticky-row2 {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 12px 8px;
+  }
+  #scen-label {
+    flex-basis: 100%;
+    font-size: 9px;
+    margin-bottom: 0;
+  }
+  .scen-card {
+    flex: 1 1 calc(33% - 4px);
+    min-width: 0;
+    padding: 5px 7px;
+  }
+  .scen-btn { font-size: 9px; padding: 2px 5px; }
+  .scen-name { max-width: 60px; font-size: 10px; }
+  .scen-meta { font-size: 8px; }
 }
 </style>
 </head>
 <body>
 
-<!-- ── STICKY HEADER ── -->
+<!-- ═══════════════════════════════════════════
+     STICKY HEADER
+═══════════════════════════════════════════ -->
 <div id="sticky-header">
-  <!-- Row 1: logo · stats · export/import -->
   <div id="sticky-row1">
     <div id="sticky-left">
       <div id="sticky-logo">🔥 <span>FIRE</span> Sim</div>
       <div class="sstat-sep"></div>
     </div>
     <div id="sticky-stats">
-      <div class="sstat">
-        <span class="sstat-label">🇫🇷 French</span>
-        <span class="sstat-value" id="sh-fr">—</span>
-      </div>
+      <div class="sstat"><span class="sstat-label">🇫🇷 French</span><span class="sstat-value" id="sh-fr">—</span></div>
       <div class="sstat-sep"></div>
-      <div class="sstat">
-        <span class="sstat-label">🇨🇴 Colombian</span>
-        <span class="sstat-value" id="sh-col">—</span>
-      </div>
+      <div class="sstat"><span class="sstat-label">🇨🇴 Colombian</span><span class="sstat-value" id="sh-col">—</span></div>
       <div class="sstat-sep"></div>
-      <div class="sstat">
-        <span class="sstat-label">🇫🇷🇨🇴 Total</span>
-        <span class="sstat-value" id="sh-total">—</span>
-      </div>
+      <div class="sstat"><span class="sstat-label">🇫🇷🇨🇴 Total</span><span class="sstat-value" id="sh-total">—</span></div>
       <div class="sstat-sep"></div>
-      <div class="sstat">
-        <span class="sstat-label">Capital lasts</span>
-        <span class="sstat-value" id="sh-age">—</span>
-      </div>
+      <div class="sstat"><span class="sstat-label">Capital lasts</span><span class="sstat-value" id="sh-age">—</span></div>
     </div>
     <div id="sticky-right">
       <button class="hdr-btn hdr-btn-export" onclick="exportData()">⬇ Export</button>
@@ -682,83 +499,71 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
       <input type="file" id="import-file" accept=".json,application/json,text/plain" style="display:none" onchange="importData(event)">
     </div>
   </div>
-  <!-- Row 2: scenario strip -->
   <div id="sticky-row2">
     <span id="scen-label">Scenarios</span>
     <div class="scen-card" id="scen-0">
       <div class="scen-info">
-        <div class="scen-name-wrap">
-          <input class="scen-name" id="scen-name-0" value="Base" onchange="renameScenario(0,this.value)" title="Click to rename">
-          <span class="scen-badge-active">ACTIVE</span>
-        </div>
+        <div class="scen-name-wrap"><input class="scen-name" id="scen-name-0" value="Base" onchange="renameScenario(0,this.value)"><span class="scen-badge-active">ACTIVE</span></div>
         <div class="scen-meta" id="scen-meta-0">Empty</div>
       </div>
       <div class="scen-actions">
-        <button class="scen-btn scen-btn-save" onclick="saveScenario(0)">Save</button>
-        <button class="scen-btn scen-btn-load" onclick="loadScenario(0)" id="scen-load-0" style="display:none">Load</button>
+        <button class="scen-btn scen-btn-save"  onclick="saveScenario(0)">Save</button>
+        <button class="scen-btn scen-btn-load"  onclick="loadScenario(0)"  id="scen-load-0"  style="display:none">Load</button>
         <button class="scen-btn scen-btn-clear" onclick="clearScenario(0)" id="scen-clear-0" style="display:none">✕</button>
       </div>
     </div>
     <div class="scen-card" id="scen-1">
       <div class="scen-info">
-        <div class="scen-name-wrap">
-          <input class="scen-name" id="scen-name-1" value="Optimistic" onchange="renameScenario(1,this.value)" title="Click to rename">
-          <span class="scen-badge-active">ACTIVE</span>
-        </div>
+        <div class="scen-name-wrap"><input class="scen-name" id="scen-name-1" value="Optimistic" onchange="renameScenario(1,this.value)"><span class="scen-badge-active">ACTIVE</span></div>
         <div class="scen-meta" id="scen-meta-1">Empty</div>
       </div>
       <div class="scen-actions">
-        <button class="scen-btn scen-btn-save" onclick="saveScenario(1)">Save</button>
-        <button class="scen-btn scen-btn-load" onclick="loadScenario(1)" id="scen-load-1" style="display:none">Load</button>
+        <button class="scen-btn scen-btn-save"  onclick="saveScenario(1)">Save</button>
+        <button class="scen-btn scen-btn-load"  onclick="loadScenario(1)"  id="scen-load-1"  style="display:none">Load</button>
         <button class="scen-btn scen-btn-clear" onclick="clearScenario(1)" id="scen-clear-1" style="display:none">✕</button>
       </div>
     </div>
     <div class="scen-card" id="scen-2">
       <div class="scen-info">
-        <div class="scen-name-wrap">
-          <input class="scen-name" id="scen-name-2" value="Pessimistic" onchange="renameScenario(2,this.value)" title="Click to rename">
-          <span class="scen-badge-active">ACTIVE</span>
-        </div>
+        <div class="scen-name-wrap"><input class="scen-name" id="scen-name-2" value="Pessimistic" onchange="renameScenario(2,this.value)"><span class="scen-badge-active">ACTIVE</span></div>
         <div class="scen-meta" id="scen-meta-2">Empty</div>
       </div>
       <div class="scen-actions">
-        <button class="scen-btn scen-btn-save" onclick="saveScenario(2)">Save</button>
-        <button class="scen-btn scen-btn-load" onclick="loadScenario(2)" id="scen-load-2" style="display:none">Load</button>
+        <button class="scen-btn scen-btn-save"  onclick="saveScenario(2)">Save</button>
+        <button class="scen-btn scen-btn-load"  onclick="loadScenario(2)"  id="scen-load-2"  style="display:none">Load</button>
         <button class="scen-btn scen-btn-clear" onclick="clearScenario(2)" id="scen-clear-2" style="display:none">✕</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ── SAVE TOAST ── -->
+<!-- Toast + Import modal -->
 <div id="save-toast">Saved ✓</div>
 
-<!-- ── IMPORT MODAL ── -->
 <div id="import-modal" onclick="handleModalBackdropClick(event)">
   <div id="import-modal-box">
     <p id="import-modal-title">⬆ Import FIRE Sim data</p>
     <p id="import-modal-sub">Drag &amp; drop your exported JSON file, or browse to find it.</p>
-    <div id="import-drop-zone"
-         onclick="document.getElementById('import-file').click()"
-         ondragover="handleDragOver(event)"
-         ondragleave="handleDragLeave(event)"
-         ondrop="handleDrop(event)">
+    <div id="import-drop-zone" onclick="document.getElementById('import-file').click()"
+         ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
       <div id="import-drop-icon">📂</div>
       <p id="import-drop-text">Drop your fire-sim-*.json here</p>
       <p id="import-drop-hint">or click to browse</p>
     </div>
     <div id="import-modal-actions">
-      <button class="import-modal-btn import-modal-btn-cancel" onclick="closeImportModal()">Cancel</button>
-      <button class="import-modal-btn import-modal-btn-browse" onclick="document.getElementById('import-file').click()">Browse files…</button>
+      <button class="modal-btn modal-btn-cancel" onclick="closeImportModal()">Cancel</button>
+      <button class="modal-btn modal-btn-browse" onclick="document.getElementById('import-file').click()">Browse files…</button>
     </div>
   </div>
 </div>
 
-<!-- ── MAIN CONTENT ── -->
+<!-- ═══════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════ -->
 <div id="main-content">
 <div style="max-width:820px;margin:0 auto;padding-bottom:60px">
 
-  <div style="background:var(--color-background-secondary);border-bottom:1px solid var(--color-border-tertiary);padding:18px 16px 16px;text-align:center">
+  <div style="background:var(--color-bg-secondary);border-bottom:1px solid var(--color-border-tertiary);padding:18px 16px 16px;text-align:center">
     <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--color-text-tertiary);margin-bottom:4px">Planning tool</div>
     <h2 style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin:0 0 4px">Retirement Financial Planner</h2>
     <div style="font-size:12px;color:var(--color-text-secondary)">French &amp; Colombian assets · Phase-by-phase cashflow · Die-with-zero projection</div>
@@ -767,7 +572,7 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
   <div style="padding:0 16px">
   <p class="section-title">Assets</p>
 
-  <!-- FRENCH -->
+  <!-- FRENCH INVESTMENTS -->
   <div class="coll-block fr-block">
     <div class="coll-header fr-header" onclick="toggleSection('fr')">
       <div style="display:flex;align-items:center;gap:8px">
@@ -837,7 +642,7 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
     </div>
   </div>
 
-  <!-- COLOMBIAN -->
+  <!-- COLOMBIAN INVESTMENTS -->
   <div class="coll-block col-block">
     <div class="coll-header col-header" onclick="toggleSection('col')">
       <div style="display:flex;align-items:center;gap:8px">
@@ -855,10 +660,7 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
     <div class="coll-body hidden" id="col-body">
       <p class="col-section-label">Fondo de Inversión</p>
       <div class="sub-card" id="card-cop1">
-        <div class="col-switch-row">
-          <span class="csl" id="lbl-cop1">Excluded from projection</span>
-          <label class="switch"><input type="checkbox" id="cb-cop1" onchange="draw()"><span class="slider-sw"></span></label>
-        </div>
+        <div class="col-switch-row"><span class="csl" id="lbl-cop1">Excluded from projection</span><label class="switch"><input type="checkbox" id="cb-cop1" onchange="draw()"><span class="slider-sw"></span></label></div>
         <div class="row"><label>Amount (COP millions)</label><div class="stepper"><button onclick="step('cop1',-5)">−</button><span class="sval" id="cop1-v">130M</span><button onclick="step('cop1',5)">+</button></div></div>
         <div class="row"><label>Annual return (%)</label><div class="stepper"><button onclick="step('cop1-r',-0.5)">−</button><span class="sval" id="cop1-r-v">5%</span><button onclick="step('cop1-r',0.5)">+</button></div></div>
         <p style="font-size:11px;color:var(--color-text-tertiary);margin:6px 0 4px">Current: <span id="cop1-eur" style="font-weight:500;color:var(--color-text-primary)">—</span></p>
@@ -866,10 +668,7 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
       </div>
       <p class="col-section-label">Apartment</p>
       <div class="sub-card" id="card-cop3">
-        <div class="col-switch-row">
-          <span class="csl" id="lbl-cop3">Excluded from projection</span>
-          <label class="switch"><input type="checkbox" id="cb-cop3" onchange="draw()"><span class="slider-sw"></span></label>
-        </div>
+        <div class="col-switch-row"><span class="csl" id="lbl-cop3">Excluded from projection</span><label class="switch"><input type="checkbox" id="cb-cop3" onchange="draw()"><span class="slider-sw"></span></label></div>
         <div class="row"><label>Amount (COP millions)</label><div class="stepper"><button onclick="step('cop3',-5)">−</button><span class="sval" id="cop3-v">150M</span><button onclick="step('cop3',5)">+</button></div></div>
         <div class="row"><label>Annual return (%)</label><div class="stepper"><button onclick="step('cop3-r',-0.25)">−</button><span class="sval" id="cop3-r-v">2%</span><button onclick="step('cop3-r',0.25)">+</button></div></div>
         <p style="font-size:11px;color:var(--color-text-tertiary);margin:6px 0 4px">Current: <span id="cop3-eur" style="font-weight:500;color:var(--color-text-primary)">—</span></p>
@@ -877,10 +676,7 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
       </div>
       <p class="col-section-label">Edo</p>
       <div class="sub-card" id="card-cop4">
-        <div class="col-switch-row">
-          <span class="csl" id="lbl-cop4">Excluded from projection</span>
-          <label class="switch"><input type="checkbox" id="cb-cop4" onchange="draw()"><span class="slider-sw"></span></label>
-        </div>
+        <div class="col-switch-row"><span class="csl" id="lbl-cop4">Excluded from projection</span><label class="switch"><input type="checkbox" id="cb-cop4" onchange="draw()"><span class="slider-sw"></span></label></div>
         <div class="row"><label>Amount (COP millions)</label><div class="stepper"><button onclick="step('cop4',-5)">−</button><span class="sval" id="cop4-v">30M</span><button onclick="step('cop4',5)">+</button></div></div>
         <div class="row"><label>Annual return (%)</label><div class="stepper"><button onclick="step('cop4-r',-0.25)">−</button><span class="sval" id="cop4-r-v">2%</span><button onclick="step('cop4-r',0.25)">+</button></div></div>
         <p style="font-size:11px;color:var(--color-text-tertiary);margin:6px 0 4px">Current: <span id="cop4-eur" style="font-weight:500;color:var(--color-text-primary)">—</span></p>
@@ -888,10 +684,7 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
       </div>
       <p class="col-section-label">Herencia</p>
       <div class="sub-card" id="card-cop2">
-        <div class="col-switch-row">
-          <span class="csl" id="lbl-cop2">Excluded from projection</span>
-          <label class="switch"><input type="checkbox" id="cb-cop2" onchange="draw()"><span class="slider-sw"></span></label>
-        </div>
+        <div class="col-switch-row"><span class="csl" id="lbl-cop2">Excluded from projection</span><label class="switch"><input type="checkbox" id="cb-cop2" onchange="draw()"><span class="slider-sw"></span></label></div>
         <div class="row"><label>Amount (COP millions)</label><div class="stepper"><button onclick="step('cop2',-10)">−</button><span class="sval" id="cop2-v">300M</span><button onclick="step('cop2',10)">+</button></div></div>
         <div class="row"><label>Annual return (%)</label><div class="stepper"><button onclick="step('cop2-r',-0.5)">−</button><span class="sval" id="cop2-r-v">3%</span><button onclick="step('cop2-r',0.5)">+</button></div></div>
         <p style="font-size:11px;color:var(--color-text-tertiary);margin:6px 0 4px">Current: <span id="cop2-eur" style="font-weight:500;color:var(--color-text-primary)">—</span></p>
@@ -924,13 +717,13 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
 
   <hr class="divider">
 
+  <!-- LOCK & INFLATION -->
   <div class="panel panel-lock">
     <p class="panel-title">🔒 Investment lock period — PEA, AV, CTO only</p>
     <div class="row" style="margin:0 0 8px"><label>Lock for (years)</label><div class="stepper"><button onclick="step('lock',-1)">−</button><span class="sval" id="lock-v">3 yrs</span><button onclick="step('lock',1)">+</button></div></div>
     <p class="info-box" id="lock-info" style="margin:0"></p>
     <p style="font-size:11px;color:var(--color-text-warning);margin:8px 0 0" id="order-note">Withdrawal order: <strong>Cash → Livrets → CTO → PEA → AV</strong></p>
   </div>
-
   <div class="panel panel-infl">
     <p class="panel-title">Inflation rate</p>
     <div class="row" style="margin:0"><label>Annual inflation (%)</label><div class="stepper"><button onclick="step('infl',-0.25)">−</button><span class="sval" id="infl-v">2%</span><button onclick="step('infl',0.25)">+</button></div></div>
@@ -946,14 +739,17 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
     <p style="font-size:12px;color:var(--color-text-info);margin:0" id="phase-summary">—</p>
   </div>
 
+  <!-- PHASE 1 -->
   <div class="ph ph1" id="ph1-label">Phase 1 — Chômage: age 46</div>
   <div class="panel panel-chomage" style="margin-top:8px">
     <div class="row" style="margin:0"><label>Monthly salary (€)</label><div class="stepper"><button onclick="step('salary',-100)">−</button><span class="sval" id="salary-v">3 500</span><button onclick="step('salary',100)">+</button></div></div>
     <p style="font-size:11px;color:var(--ph1-fg);margin:6px 0 0" id="chomage-desc"></p>
   </div>
 
+  <!-- PHASE 2 (dynamic) -->
   <div id="ph2-container"></div>
 
+  <!-- PHASE 3 -->
   <div class="ph ph3" style="margin-top:14px">Phase 3 — Winding down: age 60–64</div>
   <div class="row"><label>Monthly spend (€)</label><div class="stepper"><button onclick="step('spend2',-50)">−</button><span class="sval" id="spend2-v">1 800</span><button onclick="step('spend2',50)">+</button></div></div>
   <div class="row"><label>Monthly side income (€)</label><div class="stepper"><button onclick="step('side2',-50)">−</button><span class="sval" id="side2-v">200</span><button onclick="step('side2',50)">+</button></div></div>
@@ -962,6 +758,7 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
     <div class="row" style="margin:0"><label>Phase 3 contribution</label><div class="stepper"><button onclick="step('partner2',-50)">−</button><span class="sval" id="partner2-v">0</span><button onclick="step('partner2',50)">+</button></div></div>
   </div>
 
+  <!-- PHASE 4 -->
   <div class="ph ph4" style="margin-top:14px">Phase 4 — Retirement: age 65+</div>
   <div class="row"><label>Monthly spend (€)</label><div class="stepper"><button onclick="step('spend3',-50)">−</button><span class="sval" id="spend3-v">1 800</span><button onclick="step('spend3',50)">+</button></div></div>
   <div class="row"><label>Monthly side income (€)</label><div class="stepper"><button onclick="step('side3',-50)">−</button><span class="sval" id="side3-v">200</span><button onclick="step('side3',50)">+</button></div></div>
@@ -972,28 +769,29 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
     <div class="row" style="margin:0"><label>Phase 4 contribution</label><div class="stepper"><button onclick="step('partner3',-50)">−</button><span class="sval" id="partner3-v">0</span><button onclick="step('partner3',50)">+</button></div></div>
   </div>
 
-  <div class="metrics" style="margin-top:16px">
-    <div class="met"><p class="ml">Capital lasts until age</p><p class="mv" id="m-age">—</p></div>
-    <div class="met"><p class="ml">PEA+AV+CTO at lock-lift</p><p class="mv" id="m-atlock">—</p></div>
-    <div class="met"><p class="ml">&nbsp;</p><p class="mv">&nbsp;</p></div>
-  </div>
-  <div class="metrics" style="margin-top:-6px">
-    <div class="met"><p class="ml">Net burn phase 2 (avg/mo)</p><p class="mv" id="m-burn1">—</p></div>
-    <div class="met"><p class="ml">Net burn phase 3</p><p class="mv" id="m-burn2">—</p></div>
-    <div class="met"><p class="ml">Net burn phase 4 (pension)</p><p class="mv" id="m-burn3">—</p></div>
+  <!-- SUMMARY METRICS -->
+  <div class="metrics-panel">
+    <p class="metrics-panel-title">📊 Summary</p>
+    <div class="metrics" style="margin-top:0">
+      <div class="met"><p class="ml">Capital lasts until age</p><p class="mv" id="m-age">—</p></div>
+      <div class="met"><p class="ml">PEA+AV+CTO at lock-lift</p><p class="mv" id="m-atlock">—</p></div>
+      <div class="met"><p class="ml">&nbsp;</p><p class="mv">&nbsp;</p></div>
+    </div>
+    <div class="metrics" style="margin-top:8px;margin-bottom:0">
+      <div class="met"><p class="ml">Net burn phase 2 (avg/mo)</p><p class="mv" id="m-burn1">—</p></div>
+      <div class="met"><p class="ml">Net burn phase 3</p><p class="mv" id="m-burn2">—</p></div>
+      <div class="met"><p class="ml">Net burn phase 4 (pension)</p><p class="mv" id="m-burn3">—</p></div>
+    </div>
   </div>
 
-  <!-- BREAK-EVEN SIDE INCOME PANEL -->
+  <!-- BREAK-EVEN PANEL -->
   <div class="be-panel">
     <p class="be-title">⚖️ Break-even side income — Phase 2</p>
-    <div class="be-results" id="be-results">
-      <!-- filled by JS -->
-    </div>
-    <p style="font-size:10px;color:var(--color-text-tertiary);margin:8px 0 0">
-      Uniform monthly side income needed in Phase 2 to reach each target age, all else equal. Delta = difference vs your current Phase 2 avg side income.
-    </p>
+    <div class="be-results" id="be-results"></div>
+    <p style="font-size:10px;color:var(--color-text-tertiary);margin:8px 0 0">Uniform monthly side income needed in Phase 2 to reach each target age, all else equal. Delta = difference vs your current Phase 2 avg side income.</p>
   </div>
 
+  <!-- CHART -->
   <div class="legend-row" id="chart-legend"></div>
   <div style="position:relative;width:100%;height:300px;margin-top:4px"><canvas id="chart"></canvas></div>
 
@@ -1016,92 +814,100 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
     </table>
   </div>
 
-  </div><!-- /padding wrapper -->
+  </div><!-- /padding -->
 </div><!-- /max-width -->
 </div><!-- /main-content -->
 
 <script>
+'use strict';
 /* ═══════════════════════════════════════════════
-   CORE STATE & CONSTANTS
+   CONSTANTS & STATE
 ═══════════════════════════════════════════════ */
-let chart, allRows = [], currentTab = 'all';
 const COP_EUR = 4500;
-const TAX = { pea: 0.172, av: 0.18, cto: 0.30 };
-const p2Init = new Set();
-const LS_KEY = 'fire-sim-v1';
+const TAX     = { pea: 0.172, av: 0.18, cto: 0.30 };
+const LS_KEY  = 'fire-sim-v1';
 
 const COL_ENTRIES = [
-  { id: 'cop1', label: 'Fondo',     bkCls: 'bk-col1', chartColor: '#F5D020', chartBg: 'rgba(245,208,32,0.12)' },
-  { id: 'cop3', label: 'Apartment', bkCls: 'bk-col2', chartColor: '#F5A020', chartBg: 'rgba(245,160,32,0.12)' },
-  { id: 'cop4', label: 'Edo',       bkCls: 'bk-col3', chartColor: '#E06030', chartBg: 'rgba(224,96,48,0.12)'  },
-  { id: 'cop2', label: 'Herencia',  bkCls: 'bk-col4', chartColor: '#A0C830', chartBg: 'rgba(160,200,48,0.12)' },
+  { id:'cop1', label:'Fondo',     bkCls:'bk-col1', chartColor:'#F5D020', chartBg:'rgba(245,208,32,0.12)' },
+  { id:'cop3', label:'Apartment', bkCls:'bk-col2', chartColor:'#F5A020', chartBg:'rgba(245,160,32,0.12)' },
+  { id:'cop4', label:'Edo',       bkCls:'bk-col3', chartColor:'#E06030', chartBg:'rgba(224,96,48,0.12)'  },
+  { id:'cop2', label:'Herencia',  bkCls:'bk-col4', chartColor:'#A0C830', chartBg:'rgba(160,200,48,0.12)' },
 ];
 
+// Default simulation state — overwritten by localStorage on load
 const S = {
-  pea: 100, 'pea-r': 5, av: 20, 'av-r': 4, cto: 45, 'cto-r': 5,
-  liv: 37, 'liv-r': 1.75, cash: 30,
-  cop1: 130, 'cop1-r': 5, cop2: 300, 'cop2-r': 3,
-  cop3: 150, 'cop3-r': 2, cop4: 30,  'cop4-r': 2,
-  salary: 3500, lock: 3, infl: 2, startAge: 46,
-  partner1: 0, spend2: 1800, side2: 200, partner2: 0,
-  spend3: 1800, side3: 200, partner3: 0, retraite: 400,
+  pea:100, 'pea-r':5, av:20, 'av-r':4, cto:45, 'cto-r':5,
+  liv:37, 'liv-r':1.75, cash:30,
+  cop1:130, 'cop1-r':5, cop2:300, 'cop2-r':3, cop3:150, 'cop3-r':2, cop4:30, 'cop4-r':2,
+  salary:3500, lock:3, infl:2, startAge:46,
+  partner1:0, spend2:1800, side2:200, partner2:0,
+  spend3:1800, side3:200, partner3:0, retraite:400,
 };
 const LIM = {
-  pea:[0,200],'pea-r':[0,10],av:[0,200],'av-r':[0,10],
-  cto:[0,200],'cto-r':[0,10],liv:[0,40],'liv-r':[0,5],cash:[0,100],
-  cop1:[10,500],'cop1-r':[0,15],cop2:[10,1000],'cop2-r':[0,15],
-  cop3:[10,500],'cop3-r':[1,5],cop4:[10,200],'cop4-r':[1,5],
-  salary:[1000,8000],lock:[0,10],infl:[0,6],startAge:[46,52],
-  partner1:[0,2000],spend2:[500,3000],side2:[0,3000],partner2:[0,2000],
-  spend3:[500,3000],side3:[0,1000],partner3:[0,2000],retraite:[0,1500],
+  pea:[0,200], 'pea-r':[0,10], av:[0,200], 'av-r':[0,10],
+  cto:[0,200], 'cto-r':[0,10], liv:[0,40], 'liv-r':[0,5], cash:[0,100],
+  cop1:[10,500], 'cop1-r':[0,15], cop2:[10,1000], 'cop2-r':[0,15],
+  cop3:[10,500], 'cop3-r':[1,5],  cop4:[10,200],  'cop4-r':[1,5],
+  salary:[1000,8000], lock:[0,10], infl:[0,6], startAge:[46,52],
+  partner1:[0,2000], spend2:[500,3000], side2:[0,3000], partner2:[0,2000],
+  spend3:[500,3000], side3:[0,1000], partner3:[0,2000], retraite:[0,1500],
 };
 
+// Runtime state
+let chart        = null;
+let allRows      = [];
+let currentTab   = 'all';
+let toastTimer   = null;
+const p2Init     = new Set();
+const scenarios  = [null, null, null];
+let activeScenario = null;
+
 /* ═══════════════════════════════════════════════
-   LOCALSTORAGE — SAVE / LOAD
+   PERSISTENCE — localStorage
 ═══════════════════════════════════════════════ */
-let toastTimer = null;
+function getColChecks() {
+  const cc = {};
+  COL_ENTRIES.forEach(e => {
+    const el = document.getElementById('cb-' + e.id);
+    if (el) cc[e.id] = el.checked;
+  });
+  return cc;
+}
+
+function applyColChecks(cc) {
+  if (!cc) return;
+  COL_ENTRIES.forEach(e => {
+    const el = document.getElementById('cb-' + e.id);
+    if (el && cc[e.id] !== undefined) el.checked = cc[e.id];
+  });
+}
+
 function saveState() {
   try {
-    const colChecks = {};
-    COL_ENTRIES.forEach(e => {
-      const el = document.getElementById('cb-' + e.id);
-      if (el) colChecks[e.id] = el.checked;
-    });
-    const payload = {
-      S: { ...S },
-      colChecks,
-      scenarios,
-      activeScenario,
-      savedAt: new Date().toISOString()
-    };
-    localStorage.setItem(LS_KEY, JSON.stringify(payload));
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      S: { ...S }, colChecks: getColChecks(),
+      scenarios, activeScenario, savedAt: new Date().toISOString()
+    }));
     showToast('Saved ✓');
-  } catch(err) { console.warn('Save failed', err); }
+  } catch(e) { console.warn('Save failed', e); }
 }
 
 function loadState() {
   try {
     const raw = localStorage.getItem(LS_KEY);
     if (!raw) return false;
-    const payload = JSON.parse(raw);
-    if (payload.S) {
-      Object.keys(payload.S).forEach(k => {
-        if (k in S) S[k] = payload.S[k];
-        else { S[k] = payload.S[k]; LIM[k] = LIM[k] || [0,1e9]; }
+    const p = JSON.parse(raw);
+    if (p.S) {
+      Object.keys(p.S).forEach(k => {
+        S[k] = p.S[k];
+        if (!(k in LIM)) LIM[k] = [0, 1e9];
       });
     }
-    if (payload.colChecks) {
-      COL_ENTRIES.forEach(e => {
-        const el = document.getElementById('cb-' + e.id);
-        if (el && payload.colChecks[e.id] !== undefined) el.checked = payload.colChecks[e.id];
-      });
-    }
-    if (payload.scenarios) {
-      payload.scenarios.forEach((s, i) => { scenarios[i] = s || null; });
-    }
-    if (payload.activeScenario !== undefined) activeScenario = payload.activeScenario;
+    applyColChecks(p.colChecks);
+    if (p.scenarios)      p.scenarios.forEach((s, i) => { scenarios[i] = s || null; });
+    if (p.activeScenario !== undefined) activeScenario = p.activeScenario;
     return true;
-  } catch(err) { console.warn('Load failed', err); return false; }
+  } catch(e) { console.warn('Load failed', e); return false; }
 }
 
 function showToast(msg) {
@@ -1117,189 +923,42 @@ function showToast(msg) {
 ═══════════════════════════════════════════════ */
 function exportData() {
   try {
-    const colChecks = {};
-    COL_ENTRIES.forEach(e => {
-      const el = document.getElementById('cb-' + e.id);
-      if (el) colChecks[e.id] = el.checked;
-    });
-    const payload = {
-      version: 1,
-      appName: 'FIRE Sim',
-      savedAt: new Date().toISOString(),
-      S: { ...S },
-      colChecks,
-      scenarios,
-      activeScenario
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+    const blob = new Blob([JSON.stringify({
+      version:1, appName:'FIRE Sim', savedAt: new Date().toISOString(),
+      S: { ...S }, colChecks: getColChecks(), scenarios, activeScenario
+    }, null, 2)], { type:'application/json' });
     const a = document.createElement('a');
-    const date = new Date().toISOString().slice(0,10);
-    a.href = url; a.download = `fire-sim-${date}.json`;
-    a.click(); URL.revokeObjectURL(url);
+    a.href = URL.createObjectURL(blob);
+    a.download = `fire-sim-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
     showToast('Exported ✓');
-  } catch(err) { alert('Export failed: ' + err.message); }
+  } catch(e) { alert('Export failed: ' + e.message); }
 }
 
 function importData(event) {
   const file = event.target.files[0];
-  if (!file) return;
-  processImportFile(file);
+  if (file) processImportFile(file);
   event.target.value = '';
 }
 
 function processImportFile(file) {
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = e => {
     try {
-      const payload = JSON.parse(e.target.result);
-      if (!payload.S) throw new Error('Invalid file — no S object found');
+      const p = JSON.parse(e.target.result);
+      if (!p.S) throw new Error('Invalid file — no S object found');
       p2Init.clear();
-      Object.keys(payload.S).forEach(k => {
-        S[k] = payload.S[k];
-        if (!(k in LIM)) LIM[k] = [0,1e9];
-      });
-      if (payload.colChecks) {
-        COL_ENTRIES.forEach(e => {
-          const el = document.getElementById('cb-' + e.id);
-          if (el && payload.colChecks[e.id] !== undefined) el.checked = payload.colChecks[e.id];
-        });
-      }
-      if (payload.scenarios) {
-        payload.scenarios.forEach((s, i) => { scenarios[i] = s || null; });
-      }
-      if (payload.activeScenario !== undefined) activeScenario = payload.activeScenario;
-      localStorage.setItem(LS_KEY, JSON.stringify({
-        S: { ...S },
-        colChecks: payload.colChecks || {},
-        scenarios,
-        activeScenario,
-        savedAt: new Date().toISOString()
-      }));
+      Object.keys(p.S).forEach(k => { S[k] = p.S[k]; if (!(k in LIM)) LIM[k] = [0,1e9]; });
+      applyColChecks(p.colChecks);
+      if (p.scenarios)      p.scenarios.forEach((s, i) => { scenarios[i] = s || null; });
+      if (p.activeScenario !== undefined) activeScenario = p.activeScenario;
       closeImportModal();
       draw();
       showToast('Imported ✓');
-    } catch(err) {
-      closeImportModal();
-      alert('Import failed: ' + err.message);
-    }
+    } catch(err) { closeImportModal(); alert('Import failed: ' + err.message); }
   };
   reader.readAsText(file);
-}
-
-/* ═══════════════════════════════════════════════
-   SCENARIOS
-═══════════════════════════════════════════════ */
-// In-memory scenario slots: array of 3, each null or { name, S, colChecks, meta }
-const scenarios = [null, null, null];
-let activeScenario = null; // index of currently-loaded scenario, or null
-
-function captureSnapshot() {
-  const colChecks = {};
-  COL_ENTRIES.forEach(e => {
-    const el = document.getElementById('cb-' + e.id);
-    if (el) colChecks[e.id] = el.checked;
-  });
-  return { S: { ...S }, colChecks };
-}
-
-function applySnapshot(snap) {
-  p2Init.clear();
-  Object.keys(snap.S).forEach(k => {
-    S[k] = snap.S[k];
-    if (!(k in LIM)) LIM[k] = [0, 1e9];
-  });
-  COL_ENTRIES.forEach(e => {
-    const el = document.getElementById('cb-' + e.id);
-    if (el && snap.colChecks[e.id] !== undefined) el.checked = snap.colChecks[e.id];
-  });
-}
-
-function buildScenMeta(snap) {
-  // Quick summary: french total + capital age
-  const pea = snap.S.pea * 1000, av = snap.S.av * 1000, cto = snap.S.cto * 1000;
-  const liv = snap.S.liv * 1000, cash = snap.S.cash * 1000;
-  const frTotal = pea + av + cto + liv + cash;
-  return '🇫🇷 €' + Math.round(frTotal / 1000) + 'K  ·  depart ' + snap.S.startAge;
-}
-
-function saveScenario(idx) {
-  const snap = captureSnapshot();
-  const nameEl = document.getElementById('scen-name-' + idx);
-  scenarios[idx] = {
-    name: nameEl ? nameEl.value : ('Scenario ' + (idx + 1)),
-    snap,
-    meta: buildScenMeta(snap)
-  };
-  activeScenario = idx;
-  persistScenarios();
-  renderScenarioCards();
-  showToast('Scenario saved ✓');
-}
-
-function loadScenario(idx) {
-  if (!scenarios[idx]) return;
-  applySnapshot(scenarios[idx].snap);
-  activeScenario = idx;
-  persistScenarios();
-  draw(); // triggers saveState + renderScenarioCards
-  showToast('Scenario loaded ✓');
-}
-
-function clearScenario(idx) {
-  scenarios[idx] = null;
-  if (activeScenario === idx) activeScenario = null;
-  persistScenarios();
-  renderScenarioCards();
-  showToast('Scenario cleared');
-}
-
-function renameScenario(idx, newName) {
-  if (scenarios[idx]) {
-    scenarios[idx].name = newName;
-    persistScenarios();
-  }
-}
-
-function renderScenarioCards() {
-  for (let i = 0; i < 3; i++) {
-    const card = document.getElementById('scen-' + i);
-    const metaEl = document.getElementById('scen-meta-' + i);
-    const loadBtn = document.getElementById('scen-load-' + i);
-    const clearBtn = document.getElementById('scen-clear-' + i);
-    const nameEl = document.getElementById('scen-name-' + i);
-    if (!card) continue;
-    const filled = !!scenarios[i];
-    const active = activeScenario === i;
-    card.classList.toggle('filled', filled);
-    card.classList.toggle('active', active);
-    if (metaEl) metaEl.textContent = filled ? scenarios[i].meta : 'Empty — click Save to capture current state';
-    if (nameEl && filled) nameEl.value = scenarios[i].name;
-    if (loadBtn) loadBtn.style.display = filled && !active ? 'inline-block' : 'none';
-    if (clearBtn) clearBtn.style.display = filled ? 'inline-block' : 'none';
-  }
-}
-
-function persistScenarios() {
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    const payload = raw ? JSON.parse(raw) : {};
-    payload.scenarios = scenarios;
-    payload.activeScenario = activeScenario;
-    localStorage.setItem(LS_KEY, JSON.stringify(payload));
-  } catch(e) { console.warn('Scenario persist failed', e); }
-}
-
-function loadPersistedScenarios() {
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    if (!raw) return;
-    const payload = JSON.parse(raw);
-    if (payload.scenarios) {
-      payload.scenarios.forEach((s, i) => { scenarios[i] = s || null; });
-    }
-    if (payload.activeScenario !== undefined) activeScenario = payload.activeScenario;
-  } catch(e) { console.warn('Scenario load failed', e); }
 }
 
 /* ═══════════════════════════════════════════════
@@ -1307,118 +966,292 @@ function loadPersistedScenarios() {
 ═══════════════════════════════════════════════ */
 function openImportModal() {
   document.getElementById('import-modal').classList.add('open');
-  // Reset drop zone appearance
-  const dz = document.getElementById('import-drop-zone');
-  dz.classList.remove('drag-over');
+  document.getElementById('import-drop-zone').classList.remove('drag-over');
   document.getElementById('import-drop-icon').textContent = '📂';
   document.getElementById('import-drop-text').textContent = 'Drop your fire-sim-*.json here';
   document.getElementById('import-drop-hint').textContent = 'or click to browse';
 }
-
 function closeImportModal() {
   document.getElementById('import-modal').classList.remove('open');
 }
-
 function handleModalBackdropClick(e) {
   if (e.target === document.getElementById('import-modal')) closeImportModal();
 }
-
 function handleDragOver(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  const dz = document.getElementById('import-drop-zone');
-  dz.classList.add('drag-over');
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('import-drop-zone').classList.add('drag-over');
   document.getElementById('import-drop-icon').textContent = '📥';
   document.getElementById('import-drop-text').textContent = 'Release to import';
 }
-
 function handleDragLeave(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  const dz = document.getElementById('import-drop-zone');
-  dz.classList.remove('drag-over');
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('import-drop-zone').classList.remove('drag-over');
   document.getElementById('import-drop-icon').textContent = '📂';
   document.getElementById('import-drop-text').textContent = 'Drop your fire-sim-*.json here';
-  document.getElementById('import-drop-hint').textContent = 'or click to browse';
 }
-
 function handleDrop(e) {
-  e.preventDefault();
-  e.stopPropagation();
+  e.preventDefault(); e.stopPropagation();
   handleDragLeave(e);
-  const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-  if (!file) return;
-  processImportFile(file);
+  const file = e.dataTransfer?.files?.[0];
+  if (file) processImportFile(file);
 }
 
 /* ═══════════════════════════════════════════════
-   HELPERS
+   SCENARIOS
 ═══════════════════════════════════════════════ */
-function colOn(id) { return document.getElementById('cb-'+id) && document.getElementById('cb-'+id).checked; }
-function countColOn() { return COL_ENTRIES.filter(e => colOn(e.id)).length; }
-function ensureP2Year(age) {
-  if (!p2Init.has(age)) {
-    const ex = [...p2Init].sort((a,b)=>a-b), from = ex.length>0?ex[0]:null;
-    S[`p2s_${age}`] = from ? S[`p2s_${from}`] : 1800;
-    S[`p2i_${age}`] = from ? S[`p2i_${from}`] : 200;
-    LIM[`p2s_${age}`] = [500,3000]; LIM[`p2i_${age}`] = [0,3000];
-    p2Init.add(age);
+function captureSnapshot() {
+  return { S: { ...S }, colChecks: getColChecks() };
+}
+function applySnapshot(snap) {
+  p2Init.clear();
+  Object.keys(snap.S).forEach(k => { S[k] = snap.S[k]; if (!(k in LIM)) LIM[k] = [0,1e9]; });
+  applyColChecks(snap.colChecks);
+}
+function buildScenMeta(snap) {
+  const fr = (snap.S.pea + snap.S.av + snap.S.cto + snap.S.liv + snap.S.cash) * 1000;
+  return '🇫🇷 €' + Math.round(fr / 1000) + 'K  ·  depart ' + snap.S.startAge;
+}
+function saveScenario(idx) {
+  const snap = captureSnapshot();
+  const nameEl = document.getElementById('scen-name-' + idx);
+  scenarios[idx] = { name: nameEl?.value || ('Scenario ' + (idx+1)), snap, meta: buildScenMeta(snap) };
+  activeScenario = idx;
+  saveState();
+  renderScenarioCards();
+  showToast('Scenario saved ✓');
+}
+function loadScenario(idx) {
+  if (!scenarios[idx]) return;
+  applySnapshot(scenarios[idx].snap);
+  activeScenario = idx;
+  draw(); // calls saveState inside
+  showToast('Scenario loaded ✓');
+}
+function clearScenario(idx) {
+  scenarios[idx] = null;
+  if (activeScenario === idx) activeScenario = null;
+  saveState();
+  renderScenarioCards();
+  showToast('Scenario cleared');
+}
+function renameScenario(idx, name) {
+  if (scenarios[idx]) { scenarios[idx].name = name; saveState(); }
+}
+function renderScenarioCards() {
+  for (let i = 0; i < 3; i++) {
+    const card     = document.getElementById('scen-' + i);
+    const metaEl   = document.getElementById('scen-meta-' + i);
+    const loadBtn  = document.getElementById('scen-load-' + i);
+    const clearBtn = document.getElementById('scen-clear-' + i);
+    const nameEl   = document.getElementById('scen-name-' + i);
+    if (!card) continue;
+    const filled = !!scenarios[i], active = activeScenario === i;
+    card.classList.toggle('filled', filled);
+    card.classList.toggle('active', active);
+    if (metaEl)  metaEl.textContent = filled ? scenarios[i].meta : 'Empty — click Save to capture current state';
+    if (nameEl && filled) nameEl.value = scenarios[i].name;
+    if (loadBtn)  loadBtn.style.display  = filled && !active ? 'inline-block' : 'none';
+    if (clearBtn) clearBtn.style.display = filled ? 'inline-block' : 'none';
   }
 }
-function getP2Ages() { const sa=S.startAge,a=[]; for(let i=sa+1;i<=59;i++) a.push(i); return a; }
-function ensureAllP2() { getP2Ages().forEach(a=>ensureP2Year(a)); }
-function step(k,d) {
-  const l = LIM[k]||[0,1e9];
-  S[k] = Math.round((Math.min(l[1],Math.max(l[0],S[k]+d)))*1000)/1000;
-  draw();
+
+/* ═══════════════════════════════════════════════
+   BREAK-EVEN CALCULATOR
+═══════════════════════════════════════════════ */
+// Shadow drawdown run with a given uniform Phase 2 side income.
+// Returns depletion age, or null if capital lasts all 44 years.
+function shadowRun(p2Side) {
+  const sa   = S.startAge;
+  const peaR = S['pea-r']/100, avR = S['av-r']/100, ctoR = S['cto-r']/100, livR = S['liv-r']/100;
+  const infl = S.infl/100, lockYrs = S.lock;
+  const chomageY1 = S.salary * 9; // 6 × full + 6 × half
+
+  const col = {};
+  COL_ENTRIES.forEach(e => {
+    const on = colOn(e.id);
+    col[e.id] = { bal: on ? (S[e.id]*1e6)/COP_EUR : 0, basis: on ? (S[e.id]*1e6)/COP_EUR : 0, rD: S[e.id+'-r']/100, active: on };
+  });
+
+  let bPea=S.pea*1000, bAv=S.av*1000, bCto=S.cto*1000, bLiv=S.liv*1000, bCash=S.cash*1000;
+  let basePea=bPea, baseAv=bAv, baseCto=bCto;
+
+  for (let y = 0; y <= 43; y++) {
+    const age = sa+y, locked = y < lockYrs, phase = getPhase(age);
+    let spend, side, partner, ret;
+    if      (phase===1) { spend=S[`p2s_${sa+1}`]||1800; side=0;      partner=S.partner1; ret=0; }
+    else if (phase===2) { spend=S[`p2s_${age}`];         side=p2Side; partner=S.partner1; ret=0; }
+    else if (phase===3) { spend=S.spend2;                 side=S.side2; partner=S.partner2; ret=0; }
+    else                { spend=S.spend3;                 side=S.side3; partner=S.partner3; ret=S.retraite; }
+
+    const inflSpend = spend * Math.pow(1+infl, y);
+    bPea*=(1+peaR); bAv*=(1+avR); bCto*=(1+ctoR); bLiv*=(1+livR);
+    COL_ENTRIES.forEach(e => { if (col[e.id].active) col[e.id].bal *= (1+col[e.id].rD); });
+
+    const inflow = (phase===1 ? chomageY1 : 0) + side*12 + partner*12 + ret*12;
+    bCash += inflow - inflSpend*12;
+
+    if (bCash < 0) {
+      let need = -bCash; bCash = 0;
+      if (bLiv > 0 && need > 0) { const d=Math.min(bLiv,need); bLiv-=d; need-=d; }
+      if (!locked && need > 0) {
+        if (bCto > 0 && need > 0) { const r=drawFrom(need,bCto,baseCto,TAX.cto); bCto=r.newBal; baseCto=r.newBasis; need-=r.netReceived; }
+        if (bPea > 0 && need > 0) { const r=drawFrom(need,bPea,basePea,TAX.pea); bPea=r.newBal; basePea=r.newBasis; need-=r.netReceived; }
+        if (bAv  > 0 && need > 0) { const r=drawFrom(need,bAv,baseAv,TAX.av);   bAv=r.newBal;  baseAv=r.newBasis;  need-=r.netReceived; }
+        for (const e of COL_ENTRIES) {
+          const c = col[e.id];
+          if (c.active && c.bal > 0 && need > 0) { const r=drawFrom(need,c.bal,c.basis,0); c.bal=r.newBal; c.basis=r.newBasis; need-=r.netReceived; }
+        }
+      }
+    }
+    bPea=Math.max(0,bPea); bAv=Math.max(0,bAv); bCto=Math.max(0,bCto); bLiv=Math.max(0,bLiv); bCash=Math.max(0,bCash);
+    COL_ENTRIES.forEach(e => { col[e.id].bal = Math.max(0, col[e.id].bal); });
+
+    const total = bPea+bAv+bCto+bLiv+bCash + COL_ENTRIES.reduce((s,e)=>s+(col[e.id].active?col[e.id].bal:0),0);
+    if (total <= 0) return age;
+  }
+  return null;
 }
-function toggleSection(id) {
-  const b=document.getElementById(id+'-body'),t=document.getElementById(id+'-toggle');
-  b.classList.toggle('hidden'); t.classList.toggle('open',!b.classList.contains('hidden'));
+
+// Binary search for minimum uniform Phase 2 side income to reach targetAge.
+// Returns €amount (rounded to nearest €10), 0 if already achieved, null if impossible.
+function findBreakEven(targetAge) {
+  const atZero = shadowRun(0);
+  if (atZero === null || atZero > targetAge) return 0; // already fine
+  if (shadowRun(10000) !== null && shadowRun(10000) <= targetAge) return null; // impossible
+  let lo = 0, hi = 10000;
+  for (let i = 0; i < 25; i++) {
+    const mid = (lo + hi) / 2;
+    const res = shadowRun(mid);
+    if (res === null || res > targetAge) hi = mid; else lo = mid;
+  }
+  return Math.ceil(hi / 10) * 10;
 }
-function togglePh2() {
-  const b=document.getElementById('ph2-body'),t=document.getElementById('ph2-toggle');
-  if(!b||!t) return;
-  b.classList.toggle('hidden'); t.classList.toggle('open',!b.classList.contains('hidden'));
+
+function updateBreakEven() {
+  const ages = getP2Ages();
+  const currentAvg = ages.length > 0 ? ages.reduce((s,a) => s+S[`p2i_${a}`], 0) / ages.length : S.side2;
+  let html = '';
+  [75, 80, 85, 90].forEach(target => {
+    const needed = findBreakEven(target);
+    let cardCls, amountHtml, deltaTxt, deltaCls;
+    if (needed === null) {
+      cardCls='be-low'; deltaCls='low'; deltaTxt='Even €10K/mo is insufficient';
+      amountHtml='<p class="be-result-amount be-impossible">Not achievable</p>';
+    } else if (needed === 0) {
+      cardCls='be-ok'; deltaCls='ok'; deltaTxt='✓ Covered with no side income';
+      amountHtml='<p class="be-result-amount">€0 <span style="font-size:12px;font-weight:400">/mo</span></p>';
+    } else {
+      const diff = Math.round(needed - currentAvg);
+      if      (diff <= 0)   { cardCls='be-ok';   deltaCls='ok';   deltaTxt='✓ Already covered (+€'+fmt(Math.abs(diff))+' surplus)'; }
+      else if (diff <= 300) { cardCls='be-near';  deltaCls='near'; deltaTxt='↑ €'+fmt(diff)+'/mo more needed'; }
+      else                  { cardCls='be-low';   deltaCls='low';  deltaTxt='↑ €'+fmt(diff)+'/mo more needed'; }
+      amountHtml='<p class="be-result-amount">€'+fmt(needed)+' <span style="font-size:12px;font-weight:400">/mo</span></p>';
+    }
+    html += `<div class="be-result-card ${cardCls}">
+      <p class="be-result-age">Age ${target}</p>${amountHtml}
+      <p class="be-result-sub">avg side income needed</p>
+      <p class="be-result-delta ${deltaCls}">${deltaTxt}</p>
+    </div>`;
+  });
+  document.getElementById('be-results').innerHTML = html;
 }
-function showTab(t) {
-  currentTab=t;
-  ['all','p1','p2','p3','p4'].forEach(x=>document.getElementById('tab-'+x).classList.toggle('active',x===t));
-  renderTable();
-}
-function fmt(n) { return new Intl.NumberFormat('fr-FR').format(Math.round(Math.abs(n))); }
-function fmtK(n) { return '€'+fmt(n/1000)+'K'; }
-function fmtBurn(n) { return n<=0?'Surplus':'€'+fmt(n)+'/mo'; }
-function burnColor(n) { return n<=0?'var(--color-text-success)':'var(--color-text-primary)'; }
-function fmtLabel(k,v) {
-  const pct=['pea-r','av-r','cto-r','liv-r','cop1-r','cop2-r','cop3-r','cop4-r','infl'];
-  const cop=['cop1','cop2','cop3','cop4'];
-  if(k==='lock') return v+' yr'+(v!==1?'s':'');
-  if(k==='startAge') return 'Age '+v;
-  if(pct.includes(k)) return v+'%';
-  if(cop.includes(k)) return fmt(v)+'M';
-  if(k==='salary') return fmt(v);
+
+/* ═══════════════════════════════════════════════
+   UTILITY FUNCTIONS
+═══════════════════════════════════════════════ */
+const fmt      = n => new Intl.NumberFormat('fr-FR').format(Math.round(Math.abs(n)));
+const fmtK     = n => '€' + fmt(n/1000) + 'K';
+const fmtBurn  = n => n <= 0 ? 'Surplus' : '€' + fmt(n) + '/mo';
+const burnColor= n => n <= 0 ? 'var(--color-text-success)' : 'var(--color-text-primary)';
+const getCSS   = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const colOn    = id => document.getElementById('cb-'+id)?.checked ?? false;
+const getPhase = age => {
+  const sa = S.startAge;
+  if (age === sa)           return 1;
+  if (age > sa && age <= 59) return 2;
+  if (age >= 60 && age <= 64) return 3;
+  return 4;
+};
+const getP2Ages = () => { const a=[],sa=S.startAge; for(let i=sa+1;i<=59;i++) a.push(i); return a; };
+
+function fmtLabel(k, v) {
+  if (k === 'lock')    return v + ' yr' + (v !== 1 ? 's' : '');
+  if (k === 'startAge') return 'Age ' + v;
+  if (/-(r)$/.test(k) || k === 'infl') return v + '%';
+  if (['cop1','cop2','cop3','cop4'].includes(k)) return fmt(v) + 'M';
   return fmt(v);
 }
+
+function ensureP2Year(age) {
+  if (p2Init.has(age)) return;
+  const from = [...p2Init].sort((a,b)=>a-b)[0] ?? null;
+  S[`p2s_${age}`] = from ? S[`p2s_${from}`] : 1800;
+  S[`p2i_${age}`] = from ? S[`p2i_${from}`] : 200;
+  LIM[`p2s_${age}`] = [500,3000]; LIM[`p2i_${age}`] = [0,3000];
+  p2Init.add(age);
+}
+function ensureAllP2() { getP2Ages().forEach(ensureP2Year); }
+
+function drawFrom(need, bal, basis, taxRate) {
+  if (bal <= 0 || need <= 0) return { drawn:0, taxPaid:0, netReceived:0, newBal:bal, newBasis:basis };
+  const gr = bal > basis ? (bal-basis)/bal : 0;
+  const gd = Math.min(bal, gr > 0 ? need/(1-taxRate*gr) : need);
+  const tax = gd * gr * taxRate;
+  return { drawn:gd, taxPaid:tax, netReceived:gd-tax, newBal:bal-gd, newBasis:Math.max(0,basis-(gd*(1-gr))) };
+}
+
+function step(k, d) {
+  const [lo, hi] = LIM[k] || [0, 1e9];
+  S[k] = Math.round(Math.min(hi, Math.max(lo, S[k]+d)) * 1000) / 1000;
+  draw();
+}
+
+function toggleSection(id) {
+  const b = document.getElementById(id+'-body'), t = document.getElementById(id+'-toggle');
+  b.classList.toggle('hidden');
+  t.classList.toggle('open', !b.classList.contains('hidden'));
+}
+
+function togglePh2() {
+  const b = document.getElementById('ph2-body'), t = document.getElementById('ph2-toggle');
+  if (!b || !t) return;
+  b.classList.toggle('hidden');
+  t.classList.toggle('open', !b.classList.contains('hidden'));
+}
+
+function showTab(t) {
+  currentTab = t;
+  ['all','p1','p2','p3','p4'].forEach(x => document.getElementById('tab-'+x).classList.toggle('active', x===t));
+  renderTable();
+}
+
+/* ═══════════════════════════════════════════════
+   UI BUILDERS
+═══════════════════════════════════════════════ */
 function updateLabels() {
-  Object.keys(S).forEach(k=>{ const el=document.getElementById(k+'-v'); if(el) el.textContent=fmtLabel(k,S[k]); });
-  getP2Ages().forEach(a=>{
-    const sv=document.getElementById(`p2s_${a}-v`),iv=document.getElementById(`p2i_${a}-v`);
+  Object.keys(S).forEach(k => { const el=document.getElementById(k+'-v'); if(el) el.textContent=fmtLabel(k,S[k]); });
+  getP2Ages().forEach(a => {
+    const sv=document.getElementById(`p2s_${a}-v`), iv=document.getElementById(`p2i_${a}-v`);
     if(sv) sv.textContent=fmt(S[`p2s_${a}`]);
     if(iv) iv.textContent=fmt(S[`p2i_${a}`]);
   });
 }
+
 function buildPh2UI() {
   ensureAllP2();
-  const ages=getP2Ages(),sa=S.startAge,n=ages.length;
-  const wasOpen=document.getElementById('ph2-body')&&!document.getElementById('ph2-body').classList.contains('hidden');
-  const avgSpend=n>0?ages.reduce((s,a)=>s+S[`p2s_${a}`],0)/n:0;
-  const avgSide=n>0?ages.reduce((s,a)=>s+S[`p2i_${a}`],0)/n:0;
-  const totalSpend=ages.reduce((s,a)=>s+S[`p2s_${a}`]*12,0);
-  const totalInc=ages.reduce((s,a)=>s+S[`p2i_${a}`]*12+S.partner1*12,0);
-  let html=`<div class="ph2-block">
+  const ages=getP2Ages(), sa=S.startAge, n=ages.length;
+  const wasOpen = document.getElementById('ph2-body') && !document.getElementById('ph2-body').classList.contains('hidden');
+  const avgSpend = n > 0 ? ages.reduce((s,a)=>s+S[`p2s_${a}`],0)/n : 0;
+  const avgSide  = n > 0 ? ages.reduce((s,a)=>s+S[`p2i_${a}`],0)/n : 0;
+  const totalSpend = ages.reduce((s,a)=>s+S[`p2s_${a}`]*12,0);
+  const totalInc   = ages.reduce((s,a)=>s+S[`p2i_${a}`]*12+S.partner1*12,0);
+
+  let html = `<div class="ph2-block">
     <div class="ph2-always">
-      <div style="font-size:13px;font-weight:500;color:var(--color-text-info);margin-bottom:10px">Phase 2 — Active years: age ${sa+1}–59 <span style="font-size:11px;color:var(--color-text-secondary);font-weight:400">· ${n} yrs · total spend €${fmt(totalSpend)} · total income €${fmt(totalInc)}</span></div>
+      <div style="font-size:13px;font-weight:500;color:var(--color-text-info);margin-bottom:10px">
+        Phase 2 — Active years: age ${sa+1}–59
+        <span style="font-size:11px;color:var(--color-text-secondary);font-weight:400">· ${n} yrs · total spend €${fmt(totalSpend)} · total income €${fmt(totalInc)}</span>
+      </div>
       <div class="ph2-summary-grid">
         <div class="ph2-stat"><p class="psl">Avg monthly spend</p><p class="psv">€${fmt(avgSpend)}</p></div>
         <div class="ph2-stat"><p class="psl">Avg side income</p><p class="psv">€${fmt(avgSide)}</p><p class="pss">/mo across all Phase 2 years</p></div>
@@ -1436,423 +1269,315 @@ function buildPh2UI() {
     </div>
     <div class="ph2-body hidden" id="ph2-body">
       <p style="font-size:11px;color:var(--color-text-tertiary);margin:8px 0 4px">Adjust spend and side income per year:</p>`;
-  ages.forEach(age=>{
-    const sk=`p2s_${age}`,ik=`p2i_${age}`;
-    html+=`<div class="yr-row"><p class="yr-label">Age ${age}</p>
-      <div class="row" style="margin:4px 0"><label>Monthly spend (€)</label><div class="stepper"><button onclick="step('${sk}',-50)">−</button><span class="sval" id="${sk}-v">${fmt(S[sk])}</span><button onclick="step('${sk}',50)">+</button></div></div>
-      <div class="row" style="margin:4px 0"><label>Monthly side income (€)</label><div class="stepper"><button onclick="step('${ik}',-50)">−</button><span class="sval" id="${ik}-v">${fmt(S[ik])}</span><button onclick="step('${ik}',50)">+</button></div></div></div>`;
+
+  ages.forEach(age => {
+    html += `<div class="yr-row"><p class="yr-label">Age ${age}</p>
+      <div class="row" style="margin:4px 0"><label>Monthly spend (€)</label><div class="stepper"><button onclick="step('p2s_${age}',-50)">−</button><span class="sval" id="p2s_${age}-v">${fmt(S[`p2s_${age}`])}</span><button onclick="step('p2s_${age}',50)">+</button></div></div>
+      <div class="row" style="margin:4px 0"><label>Monthly side income (€)</label><div class="stepper"><button onclick="step('p2i_${age}',-50)">−</button><span class="sval" id="p2i_${age}-v">${fmt(S[`p2i_${age}`])}</span><button onclick="step('p2i_${age}',50)">+</button></div></div>
+    </div>`;
   });
-  html+=`</div></div>`;
-  document.getElementById('ph2-container').innerHTML=html;
-  if(wasOpen){
-    const b=document.getElementById('ph2-body'),t=document.getElementById('ph2-toggle');
-    if(b) b.classList.remove('hidden'); if(t) t.classList.add('open');
+  html += `</div></div>`;
+
+  document.getElementById('ph2-container').innerHTML = html;
+  if (wasOpen) {
+    document.getElementById('ph2-body')?.classList.remove('hidden');
+    document.getElementById('ph2-toggle')?.classList.add('open');
   }
 }
-function buildProjGrid(elId,amtM,rD) {
-  const el=document.getElementById(elId); if(!el) return;
-  el.innerHTML=[10,20,30].map(y=>{const f=amtM*Math.pow(1+rD,y);return`<div class="proj-cell"><p class="py">In ${y} yrs</p><p class="pcop">~${fmt(f)}M COP</p><p class="peur">≈ €${fmt((f*1e6)/COP_EUR)}</p></div>`;}).join('');
+
+function buildProjGrid(elId, amtM, rD) {
+  const el = document.getElementById(elId); if (!el) return;
+  el.innerHTML = [10,20,30].map(y => {
+    const f = amtM * Math.pow(1+rD, y);
+    return `<div class="proj-cell"><p class="py">In ${y} yrs</p><p class="pcop">~${fmt(f)}M COP</p><p class="peur">≈ €${fmt((f*1e6)/COP_EUR)}</p></div>`;
+  }).join('');
 }
-function buildTotalProjGrid(elId,entries) {
-  const el=document.getElementById(elId); if(!el) return;
-  el.innerHTML=[10,20,30].map(y=>{const t=entries.reduce((s,e)=>s+e.amtM*Math.pow(1+e.rD,y),0);return`<div class="total-proj-cell"><p class="tpy">In ${y} yrs</p><p class="tpcop">~${fmt(t)}M COP</p><p class="tpeur">≈ €${fmt((t*1e6)/COP_EUR)}</p></div>`;}).join('');
+
+function buildTotalProjGrid(elId, entries) {
+  const el = document.getElementById(elId); if (!el) return;
+  el.innerHTML = [10,20,30].map(y => {
+    const t = entries.reduce((s,e) => s + e.amtM * Math.pow(1+e.rD, y), 0);
+    return `<div class="total-proj-cell"><p class="tpy">In ${y} yrs</p><p class="tpcop">~${fmt(t)}M COP</p><p class="tpeur">≈ €${fmt((t*1e6)/COP_EUR)}</p></div>`;
+  }).join('');
 }
-function getPhase(age) { const sa=S.startAge; if(age===sa)return 1; if(age>sa&&age<=59)return 2; if(age>=60&&age<=64)return 3; return 4; }
+
+function buildLegend(activeColEntries) {
+  const items = [
+    {color:'#5B9BD5',label:'PEA'}, {color:'#4DC79A',label:'AV'}, {color:'#E8A040',label:'CTO'},
+    {color:'#7DC94E',label:'Livrets'}, {color:'#9E9D97',label:'Cash'},
+  ];
+  activeColEntries.forEach(e => items.push({color:e.chartColor, label:'🇨🇴 '+e.label}));
+  document.getElementById('chart-legend').innerHTML =
+    items.map(c => `<span><span class="legend-dot" style="background:${c.color}"></span>${c.label}</span>`).join('');
+}
+
+function buildSourceCell(sources) {
+  if (!sources?.length) return '<span style="color:var(--color-text-tertiary);font-size:11px">— surplus</span>';
+  return sources.map(s => `<span class="bk ${s.cls}">${s.label} €${fmt(s.amount)}</span>`).join('');
+}
+
 function badgeFor(r) {
-  const bg={1:'#993556',2:'#185FA5',3:'#BA7517',4:'#0F6E56'};
-  const lbl={1:'P1',2:'P2',3:'P3',4:'P4'};
+  const bg  = {1:'#993556',2:'#185FA5',3:'#BA7517',4:'#0F6E56'};
+  const lbl = {1:'P1',2:'P2',3:'P3',4:'P4'};
   return `<span class="lbadge" style="background:${bg[r.phase]}">${lbl[r.phase]}${r.locked?' 🔒':''}</span>`;
 }
-function drawFrom(need,bal,basis,taxRate) {
-  if(bal<=0||need<=0) return{drawn:0,taxPaid:0,netReceived:0,newBal:bal,newBasis:basis};
-  const gr=bal>basis?(bal-basis)/bal:0;
-  const gd=Math.min(bal,gr>0?need/(1-taxRate*gr):need);
-  const tax=gd*gr*taxRate;
-  return{drawn:gd,taxPaid:tax,netReceived:gd-tax,newBal:bal-gd,newBasis:Math.max(0,basis-(gd*(1-gr)))};
-}
-function buildSourceCell(sources) {
-  if(!sources||!sources.length) return '<span style="color:var(--color-text-tertiary);font-size:11px">— surplus</span>';
-  return sources.map(s=>`<span class="bk ${s.cls}">${s.label} €${fmt(s.amount)}</span>`).join('');
-}
+
 function renderTable() {
-  const tbody=document.getElementById('bd-body'); tbody.innerHTML='';
-  const filtered=allRows.filter(r=>currentTab==='all'?true:currentTab==='p1'?r.phase===1:currentTab==='p2'?r.phase===2:currentTab==='p3'?r.phase===3:r.phase===4);
-  if(!filtered.length) return;
-  const initTotal=allRows[0].initTotal;
-  filtered.forEach(r=>{
-    const pct=initTotal>0?r.total/initTotal:0;
-    const dc=pct<0.25?'color:var(--color-text-danger);font-weight:500':pct<0.5?'color:var(--color-text-warning);font-weight:500':'';
-    const nc=r.net>=0?'color:var(--color-text-success)':'color:var(--color-text-danger)';
-    const ns=r.net>=0?'+':'−';
-    let ul=''; r.unlocks.forEach(u=>{ul+=`<span class="unlock-marker">First draw: ${u.label} — bal €${fmt(u.bal)}</span>`;});
-    const tr=document.createElement('tr'); if(r.unlocks.length>0) tr.classList.add('unlock-row');
-    tr.innerHTML='<td>Y'+r.year+'</td><td>'+r.age+' '+badgeFor(r)+'</td><td style="color:var(--color-text-success)">+€'+fmt(r.inflow)+'</td><td>€'+fmt(r.spend)+'</td><td style="color:var(--color-text-danger)">'+(r.taxPaid>0?'−€'+fmt(r.taxPaid):'—')+'</td><td style="'+nc+'">'+ns+'€'+fmt(Math.abs(r.net))+'</td><td style="text-align:left">'+ul+buildSourceCell(r.sources)+'</td><td style="'+dc+'">'+fmtK(r.total)+'</td>';
+  const tbody    = document.getElementById('bd-body'); tbody.innerHTML = '';
+  const filtered = allRows.filter(r =>
+    currentTab === 'all' ? true :
+    currentTab === 'p1'  ? r.phase===1 :
+    currentTab === 'p2'  ? r.phase===2 :
+    currentTab === 'p3'  ? r.phase===3 : r.phase===4
+  );
+  if (!filtered.length) return;
+  const initTotal = allRows[0].initTotal;
+  filtered.forEach(r => {
+    const pct = initTotal > 0 ? r.total/initTotal : 0;
+    const dc  = pct<0.25 ? 'color:var(--color-text-danger);font-weight:500' : pct<0.5 ? 'color:var(--color-text-warning);font-weight:500' : '';
+    const nc  = r.net >= 0 ? 'color:var(--color-text-success)' : 'color:var(--color-text-danger)';
+    const ns  = r.net >= 0 ? '+' : '−';
+    let ul = '';
+    r.unlocks.forEach(u => { ul += `<span class="unlock-marker">First draw: ${u.label} — bal €${fmt(u.bal)}</span>`; });
+    const tr = document.createElement('tr');
+    if (r.unlocks.length) tr.classList.add('unlock-row');
+    tr.innerHTML = `<td>Y${r.year}</td><td>${r.age} ${badgeFor(r)}</td>` +
+      `<td style="color:var(--color-text-success)">+€${fmt(r.inflow)}</td>` +
+      `<td>€${fmt(r.spend)}</td>` +
+      `<td style="color:var(--color-text-danger)">${r.taxPaid>0?'−€'+fmt(r.taxPaid):'—'}</td>` +
+      `<td style="${nc}">${ns}€${fmt(Math.abs(r.net))}</td>` +
+      `<td style="text-align:left">${ul}${buildSourceCell(r.sources)}</td>` +
+      `<td style="${dc}">${fmtK(r.total)}</td>`;
     tbody.appendChild(tr);
   });
 }
-function getCSS(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
-function buildLegend(activeColEntries) {
-  const items=[{color:'#5B9BD5',label:'PEA'},{color:'#4DC79A',label:'AV'},{color:'#E8A040',label:'CTO'},{color:'#7DC94E',label:'Livrets'},{color:'#9E9D97',label:'Cash'}];
-  activeColEntries.forEach(e=>items.push({color:e.chartColor,label:'🇨🇴 '+e.label}));
-  document.getElementById('chart-legend').innerHTML=items.map(c=>`<span><span class="legend-dot" style="background:${c.color}"></span>${c.label}</span>`).join('');
-}
 
-/* ═══════════════════════════════════════════════
-   STICKY HEADER UPDATE
-═══════════════════════════════════════════════ */
 function updateStickyHeader(frTotal, totCopEur, grandTotal, depleteAge) {
-  document.getElementById('sh-fr').textContent = '€' + fmt(frTotal/1000) + 'K';
-  document.getElementById('sh-col').textContent = '€' + fmt(totCopEur/1000) + 'K';
+  document.getElementById('sh-fr').textContent    = '€' + fmt(frTotal/1000) + 'K';
+  document.getElementById('sh-col').textContent   = '€' + fmt(totCopEur/1000) + 'K';
   document.getElementById('sh-total').textContent = '€' + fmt(grandTotal/1000) + 'K';
   const ageEl = document.getElementById('sh-age');
-  const ageText = depleteAge ? 'Age ' + depleteAge : 'Age 90+';
-  ageEl.textContent = ageText;
-  ageEl.style.color = !depleteAge || depleteAge > 80
-    ? 'var(--color-text-success)'
-    : depleteAge > 70
-      ? 'var(--color-text-warning)'
-      : 'var(--color-text-danger)';
+  ageEl.textContent = depleteAge ? 'Age ' + depleteAge : 'Age 90+';
+  ageEl.style.color = !depleteAge || depleteAge > 80 ? 'var(--color-text-success)'
+    : depleteAge > 70 ? 'var(--color-text-warning)' : 'var(--color-text-danger)';
 }
 
 /* ═══════════════════════════════════════════════
-   BREAK-EVEN SIDE INCOME
-═══════════════════════════════════════════════ */
-
-// Shadow simulation: runs the drawdown loop with a given uniform Phase 2 side income.
-// Returns the age at which capital is depleted, or null if it lasts all 44 years.
-function shadowRun(p2SideIncome) {
-  const sa = S.startAge;
-  const pea = S.pea*1000, av = S.av*1000, cto = S.cto*1000;
-  const liv = S.liv*1000, cash = S.cash*1000;
-  const peaR = S['pea-r']/100, avR = S['av-r']/100, ctoR = S['cto-r']/100, livR = S['liv-r']/100;
-  const infl = S.infl/100, salary = S.salary, lockYrs = S.lock;
-  const chomageY1 = salary*6 + (salary*0.5)*6;
-
-  // Colombian active balances
-  const colActive = {};
-  COL_ENTRIES.forEach(e => {
-    colActive[e.id] = {
-      bal: colOn(e.id) ? (S[e.id]*1e6)/COP_EUR : 0,
-      basis: colOn(e.id) ? (S[e.id]*1e6)/COP_EUR : 0,
-      rD: S[e.id+'-r']/100,
-      active: colOn(e.id)
-    };
-  });
-
-  let bPea=pea, bAv=av, bCto=cto, bLiv=liv, bCash=cash;
-  let basePea=pea, baseAv=av, baseCto=cto;
-
-  for (let y = 0; y <= 43; y++) {
-    const age = sa+y, locked = y < lockYrs, phase = getPhase(age);
-    let baseSpend, baseSide, basePartner, baseRet;
-    if (phase===1)      { baseSpend=S[`p2s_${sa+1}`]||1800; baseSide=0;            basePartner=S.partner1; baseRet=0; }
-    else if (phase===2) { baseSpend=S[`p2s_${age}`];         baseSide=p2SideIncome; basePartner=S.partner1; baseRet=0; }
-    else if (phase===3) { baseSpend=S.spend2;                baseSide=S.side2;      basePartner=S.partner2; baseRet=0; }
-    else                { baseSpend=S.spend3;                baseSide=S.side3;      basePartner=S.partner3; baseRet=S.retraite; }
-
-    const inflSpend = baseSpend * Math.pow(1+infl, y);
-    const chomage = phase===1 ? chomageY1 : 0;
-    bPea*=(1+peaR); bAv*=(1+avR); bCto*=(1+ctoR); bLiv*=(1+livR);
-    COL_ENTRIES.forEach(e=>{ if(colActive[e.id].active) colActive[e.id].bal*=(1+colActive[e.id].rD); });
-
-    const inflow = chomage + baseSide*12 + basePartner*12 + baseRet*12;
-    let bCashNew = bCash + inflow - inflSpend*12;
-
-    if (bCashNew < 0) {
-      let need = -bCashNew; bCashNew = 0;
-      // Livrets
-      if (bLiv > 0 && need > 0) { const d=Math.min(bLiv,need); bLiv-=d; need-=d; }
-      // Invested (after lock)
-      if (!locked && need > 0) {
-        if (bCto > 0 && need > 0) { const r=drawFrom(need,bCto,baseCto,TAX.cto); bCto=r.newBal; baseCto=r.newBasis; need-=r.netReceived; }
-        if (bPea > 0 && need > 0) { const r=drawFrom(need,bPea,basePea,TAX.pea); bPea=r.newBal; basePea=r.newBasis; need-=r.netReceived; }
-        if (bAv  > 0 && need > 0) { const r=drawFrom(need,bAv,baseAv,TAX.av);   bAv=r.newBal;  baseAv=r.newBasis;  need-=r.netReceived; }
-        for (const e of COL_ENTRIES) {
-          const cs = colActive[e.id];
-          if (cs.active && cs.bal > 0 && need > 0) {
-            const r = drawFrom(need, cs.bal, cs.basis, 0);
-            cs.bal=r.newBal; cs.basis=r.newBasis; need-=r.netReceived;
-          }
-        }
-      }
-    }
-    bCash = Math.max(0, bCashNew);
-    bPea=Math.max(0,bPea); bAv=Math.max(0,bAv); bCto=Math.max(0,bCto); bLiv=Math.max(0,bLiv);
-    COL_ENTRIES.forEach(e=>{ colActive[e.id].bal=Math.max(0,colActive[e.id].bal); });
-
-    const colTotal = COL_ENTRIES.reduce((s,e)=>s+(colActive[e.id].active?colActive[e.id].bal:0),0);
-    const total = bPea+bAv+bCto+bLiv+bCash+colTotal;
-    if (total <= 0) return age;
-  }
-  return null; // survives all 44 years
-}
-
-// Binary search: find minimum uniform Phase 2 side income to reach targetAge.
-// Returns the monthly amount (to nearest €10), or null if impossible even at €10K/mo,
-// or 0 if already achievable with €0 side income.
-function findBreakEven(targetAge) {
-  // Check if already achievable with zero side income
-  if (shadowRun(0) === null || (shadowRun(0) !== null && shadowRun(0) > targetAge)) {
-    return 0;
-  }
-  // Check if achievable at all (€10 000/mo cap)
-  const maxCheck = shadowRun(10000);
-  if (maxCheck !== null && maxCheck <= targetAge) return null; // impossible
-
-  let lo = 0, hi = 10000;
-  for (let i = 0; i < 25; i++) {
-    const mid = (lo + hi) / 2;
-    const result = shadowRun(mid);
-    if (result === null || result > targetAge) {
-      hi = mid;
-    } else {
-      lo = mid;
-    }
-  }
-  return Math.ceil(hi / 10) * 10; // round up to nearest €10
-}
-
-function updateBreakEven() {
-  const TARGET_AGES = [75, 80, 85, 90];
-
-  // Current average Phase 2 side income from actual sliders
-  const ages = getP2Ages();
-  const currentAvg = ages.length > 0
-    ? ages.reduce((s,a) => s + S[`p2i_${a}`], 0) / ages.length
-    : S.side2;
-
-  const container = document.getElementById('be-results');
-  if (!container) return;
-
-  let html = '';
-  TARGET_AGES.forEach(targetAge => {
-    const needed = findBreakEven(targetAge);
-    const delta = needed === null ? null : needed - currentAvg;
-
-    let cardCls = '', amountHtml = '', deltaTxt = '', deltaCls = '';
-
-    if (needed === null) {
-      // Impossible even at max income
-      cardCls = 'be-low';
-      amountHtml = '<p class="be-result-amount be-impossible">Not achievable</p>';
-      deltaTxt = 'Even €10K/mo is insufficient';
-      deltaCls = 'low';
-    } else if (needed === 0) {
-      // Already covered with zero side income
-      cardCls = 'be-ok';
-      amountHtml = '<p class="be-result-amount">€0 <span style="font-size:12px;font-weight:400">/mo</span></p>';
-      deltaTxt = '✓ Covered with no side income';
-      deltaCls = 'ok';
-    } else {
-      const diff = Math.round(delta);
-      if (diff <= 0) {
-        cardCls = 'be-ok';
-        deltaTxt = '✓ You\'re already there (+€' + fmt(Math.abs(diff)) + ' surplus)';
-        deltaCls = 'ok';
-      } else if (diff <= 300) {
-        cardCls = 'be-near';
-        deltaTxt = '↑ €' + fmt(diff) + '/mo more needed';
-        deltaCls = 'near';
-      } else {
-        cardCls = 'be-low';
-        deltaTxt = '↑ €' + fmt(diff) + '/mo more needed';
-        deltaCls = 'low';
-      }
-      amountHtml = '<p class="be-result-amount">€' + fmt(needed) + ' <span style="font-size:12px;font-weight:400">/mo</span></p>';
-    }
-
-    html += `<div class="be-result-card ${cardCls}">
-      <p class="be-result-age">Age ${targetAge}</p>
-      ${amountHtml}
-      <p class="be-result-sub">avg side income needed</p>
-      <p class="be-result-delta ${deltaCls}">${deltaTxt}</p>
-    </div>`;
-  });
-
-  container.innerHTML = html;
-}
-
-/* ═══════════════════════════════════════════════
-   MAIN DRAW FUNCTION
+   MAIN DRAW — orchestrates every update
 ═══════════════════════════════════════════════ */
 function draw() {
-  ensureAllP2(); buildPh2UI(); updateLabels();
-  const sa=S.startAge, ages=getP2Ages();
-  document.getElementById('ph1-label').textContent=`Phase 1 — Chômage: age ${sa}`;
-  document.getElementById('phase-summary').textContent=`P1: ${sa}  ·  P2: ${sa+1}–59  ·  P3: 60–64  ·  P4: 65+`;
+  ensureAllP2();
+  buildPh2UI();
+  updateLabels();
 
-  const activeCount=countColOn();
-  const badge=document.getElementById('col-badge-header');
-  badge.textContent=activeCount+' / 4 in totals';
-  badge.style.background=activeCount>0?'var(--color-background-success)':'var(--color-background-warning)';
-  badge.style.color=activeCount>0?'var(--color-text-success)':'var(--color-text-warning)';
-  badge.style.borderColor=activeCount>0?'var(--teal-border)':'var(--amb-border)';
+  const sa  = S.startAge;
+  const ages = getP2Ages();
+  const activeColEntries = COL_ENTRIES.filter(e => colOn(e.id));
 
-  const activeColEntries=COL_ENTRIES.filter(e=>colOn(e.id));
-  const orderNote='Withdrawal order: <strong>Cash → Livrets → CTO → PEA → AV'+(activeColEntries.length>0?' → '+activeColEntries.map(e=>'🇨🇴 '+e.label).join(' → '):'')+'</strong>';
-  document.getElementById('order-note').innerHTML=orderNote;
+  // ── Phase labels ──
+  document.getElementById('ph1-label').textContent   = `Phase 1 — Chômage: age ${sa}`;
+  document.getElementById('phase-summary').textContent = `P1: ${sa}  ·  P2: ${sa+1}–59  ·  P3: 60–64  ·  P4: 65+`;
 
-  const copEntries=COL_ENTRIES.map(e=>({id:e.id,amtM:S[e.id],rD:S[e.id+'-r']/100}));
-  const totCopNow=copEntries.reduce((s,e)=>s+e.amtM,0);
-  const totCopEur=(totCopNow*1e6)/COP_EUR;
+  // ── Colombian badge & withdrawal note ──
+  const activeCount = activeColEntries.length;
+  const badge = document.getElementById('col-badge-header');
+  badge.textContent   = activeCount + ' / 4 in totals';
+  badge.style.background  = activeCount > 0 ? 'var(--color-bg-success)'  : 'var(--color-bg-warning)';
+  badge.style.color        = activeCount > 0 ? 'var(--color-text-success)' : 'var(--color-text-warning)';
+  badge.style.borderColor  = activeCount > 0 ? 'var(--teal-border)'        : 'var(--amb-border)';
+  document.getElementById('order-note').innerHTML =
+    'Withdrawal order: <strong>Cash → Livrets → CTO → PEA → AV' +
+    (activeCount > 0 ? ' → ' + activeColEntries.map(e=>'🇨🇴 '+e.label).join(' → ') : '') + '</strong>';
 
-  COL_ENTRIES.forEach(e=>{
-    const on=colOn(e.id);
-    const lbl=document.getElementById('lbl-'+e.id);
-    const card=document.getElementById('card-'+e.id);
-    if(lbl){lbl.textContent=on?'Included in projection':'Excluded from projection';lbl.className='csl'+(on?' on':'');}
-    if(card) card.classList.toggle('col-active',on);
-    document.getElementById(e.id+'-eur').textContent='≈ €'+fmt((S[e.id]*1e6)/COP_EUR);
-    buildProjGrid(e.id+'-proj',S[e.id],S[e.id+'-r']/100);
+  // ── Colombian asset cards & totals ──
+  const copEntries = COL_ENTRIES.map(e => ({ id:e.id, amtM:S[e.id], rD:S[e.id+'-r']/100 }));
+  const totCopNow  = copEntries.reduce((s,e)=>s+e.amtM, 0);
+  const totCopEur  = (totCopNow * 1e6) / COP_EUR;
+  COL_ENTRIES.forEach(e => {
+    const on = colOn(e.id);
+    const lbl  = document.getElementById('lbl-' + e.id);
+    const card = document.getElementById('card-' + e.id);
+    if (lbl)  { lbl.textContent = on ? 'Included in projection' : 'Excluded from projection'; lbl.className = 'csl' + (on?' on':''); }
+    if (card)   card.classList.toggle('col-active', on);
+    document.getElementById(e.id+'-eur').textContent = '≈ €' + fmt((S[e.id]*1e6)/COP_EUR);
+    buildProjGrid(e.id+'-proj', S[e.id], S[e.id+'-r']/100);
+  });
+  document.getElementById('cop-total-cop').textContent  = fmt(totCopNow) + 'M COP';
+  document.getElementById('cop-total-eur').textContent  = '≈ €' + fmt(totCopEur) + ' today';
+  document.getElementById('col-header-cop').textContent = fmt(totCopNow) + 'M COP';
+  document.getElementById('col-header-eur').textContent = '≈ €' + fmt(totCopEur/1000) + 'K';
+  buildTotalProjGrid('cop-total-proj', copEntries);
+
+  // ── French totals ──
+  const pea=S.pea*1000, av=S.av*1000, cto=S.cto*1000, liv=S.liv*1000, cash=S.cash*1000;
+  const peaR=S['pea-r']/100, avR=S['av-r']/100, ctoR=S['cto-r']/100, livR=S['liv-r']/100;
+  const frTotal  = pea+av+cto+liv+cash;
+  const passive  = pea*peaR + av*avR + cto*ctoR + liv*livR;
+  const avgRet   = frTotal > 0 ? (passive/frTotal*100) : 0;
+  document.getElementById('fr-total-eur').textContent    = '€' + fmt(frTotal/1000) + 'K';
+  document.getElementById('fr-total-sub').textContent    = 'Weighted avg return: ' + avgRet.toFixed(1) + '%  ·  Passive income: €' + fmt(passive) + '/yr';
+  document.getElementById('fr-total-cop').textContent    = '≈ ' + fmt(Math.round((frTotal*COP_EUR)/1e6)) + 'M COP  (at COP/EUR ≈ 4 500)';
+  document.getElementById('fr-header-total').textContent = '€' + fmt(frTotal/1000) + 'K';
+  document.getElementById('avg-ret').textContent         = avgRet.toFixed(1) + '%';
+  document.getElementById('m-passive').textContent       = '€' + fmt(passive) + '/yr';
+
+  // ── Grand total ──
+  const grandTotalEur = frTotal + totCopEur;
+  document.getElementById('grand-total-value').textContent     = '€' + fmt(grandTotalEur/1000) + 'K';
+  document.getElementById('grand-total-breakdown').textContent = '🇫🇷 €'+fmt(frTotal/1000)+'K  +  🇨🇴 €'+fmt(totCopEur/1000)+'K ('+fmt(totCopNow)+'M COP)';
+
+  // ── Phase descriptions ──
+  const infl = S.infl/100, salary = S.salary, lockYrs = S.lock;
+  document.getElementById('chomage-desc').textContent =
+    'Months 1–6: ~€'+fmt(salary)+'/mo  ·  Months 7–12: ~€'+fmt(Math.round(salary*0.5))+'/mo  ·  Year 2+: €0';
+  document.getElementById('lock-info').innerHTML =
+    '<strong>PEA, AV and CTO</strong> locked until age <strong>'+(sa+lockYrs)+'</strong>. Cash and Livrets available from day one.';
+
+  // ── Net burn metrics ──
+  const n = ages.length;
+  const avgP2Spend = n > 0 ? ages.reduce((s,a)=>s+S[`p2s_${a}`],0)/n : 0;
+  const avgP2Side  = n > 0 ? ages.reduce((s,a)=>s+S[`p2i_${a}`],0)/n : 0;
+  const burns = [
+    avgP2Spend - avgP2Side  - S.partner1 - passive/12,
+    S.spend2   - S.side2    - S.partner2 - passive/12,
+    S.spend3   - S.side3    - S.partner3 - S.retraite - passive/12,
+  ];
+  ['m-burn1','m-burn2','m-burn3'].forEach((id, i) => {
+    document.getElementById(id).textContent = fmtBurn(burns[i]);
+    document.getElementById(id).style.color = burnColor(burns[i]);
   });
 
-  document.getElementById('cop-total-cop').textContent=fmt(totCopNow)+'M COP';
-  document.getElementById('cop-total-eur').textContent='≈ €'+fmt(totCopEur)+' today';
-  document.getElementById('col-header-cop').textContent=fmt(totCopNow)+'M COP';
-  document.getElementById('col-header-eur').textContent='≈ €'+fmt(totCopEur/1000)+'K';
-  buildTotalProjGrid('cop-total-proj',copEntries);
-
-  const pea=S.pea*1000,av=S.av*1000,cto=S.cto*1000,liv=S.liv*1000,cash=S.cash*1000;
-  const peaR=S['pea-r']/100,avR=S['av-r']/100,ctoR=S['cto-r']/100,livR=S['liv-r']/100;
-  const infl=S.infl/100,salary=S.salary,lockYrs=S.lock;
-  const frTotal=pea+av+cto+liv+cash;
-  const passive=pea*peaR+av*avR+cto*ctoR+liv*livR;
-  const avgRet=frTotal>0?(passive/frTotal*100):0;
-  const frCOP=Math.round((frTotal*COP_EUR)/1e6);
-  document.getElementById('fr-total-eur').textContent='€'+fmt(frTotal/1000)+'K';
-  document.getElementById('fr-total-sub').textContent='Weighted avg return: '+avgRet.toFixed(1)+'%  ·  Passive income: €'+fmt(passive)+'/yr';
-  document.getElementById('fr-total-cop').textContent='≈ '+fmt(frCOP)+'M COP  (at COP/EUR ≈ 4 500)';
-  document.getElementById('fr-header-total').textContent='€'+fmt(frTotal/1000)+'K';
-  document.getElementById('avg-ret').textContent=avgRet.toFixed(1)+'%';
-  document.getElementById('m-passive').textContent='€'+fmt(passive)+'/yr';
-
-  const grandTotalEur=frTotal+totCopEur;
-  document.getElementById('grand-total-value').textContent='€'+fmt(grandTotalEur/1000)+'K';
-  document.getElementById('grand-total-breakdown').textContent='🇫🇷 €'+fmt(frTotal/1000)+'K  +  🇨🇴 €'+fmt(totCopEur/1000)+'K ('+fmt(totCopNow)+'M COP)';
-
-  const chomageY1=salary*6+(salary*0.5)*6;
-  document.getElementById('chomage-desc').textContent='Months 1–6: ~€'+fmt(salary)+'/mo  ·  Months 7–12: ~€'+fmt(Math.round(salary*0.5))+'/mo  ·  Year 2+: €0';
-  document.getElementById('lock-info').innerHTML='<strong>PEA, AV and CTO</strong> locked until age <strong>'+(sa+lockYrs)+'</strong>. Cash and Livrets available from day one.';
-
-  const n=ages.length;
-  const avgP2Spend=n>0?ages.reduce((s,a)=>s+S[`p2s_${a}`],0)/n:0;
-  const avgP2Side=n>0?ages.reduce((s,a)=>s+S[`p2i_${a}`],0)/n:0;
-  const netBurn1=avgP2Spend-avgP2Side-S.partner1-passive/12;
-  const netBurn2=S.spend2-S.side2-S.partner2-passive/12;
-  const netBurn3=S.spend3-S.side3-S.partner3-S.retraite-passive/12;
-  document.getElementById('m-burn1').textContent=fmtBurn(netBurn1); document.getElementById('m-burn1').style.color=burnColor(netBurn1);
-  document.getElementById('m-burn2').textContent=fmtBurn(netBurn2); document.getElementById('m-burn2').style.color=burnColor(netBurn2);
-  document.getElementById('m-burn3').textContent=fmtBurn(netBurn3); document.getElementById('m-burn3').style.color=burnColor(netBurn3);
-
+  // ── Simulation loop ──
   const labels=[],hPea=[],hAv=[],hCto=[],hLiv=[],hCash=[];
-  const hCol={cop1:[],cop3:[],cop4:[],cop2:[]};
-  allRows=[];
-  let depleteAge=null,lockSetDone=false;
-  let bPea=pea,bAv=av,bCto=cto,bLiv=liv,bCash=cash;
-  let basePea=pea,baseAv=av,baseCto=cto;
-  const colState={};
-  COL_ENTRIES.forEach(e=>{
-    const initEur=colOn(e.id)?(S[e.id]*1e6)/COP_EUR:0;
-    colState[e.id]={bal:initEur,basis:initEur,rD:S[e.id+'-r']/100,everDrawn:false,active:colOn(e.id)};
+  const hCol = { cop1:[],cop3:[],cop4:[],cop2:[] };
+  allRows = [];
+  let depleteAge=null, lockSetDone=false;
+  let bPea=pea, bAv=av, bCto=cto, bLiv=liv, bCash=cash;
+  let basePea=pea, baseAv=av, baseCto=cto;
+  const colState = {};
+  COL_ENTRIES.forEach(e => {
+    const active = colOn(e.id);
+    const initEur = active ? (S[e.id]*1e6)/COP_EUR : 0;
+    colState[e.id] = { bal:initEur, basis:initEur, rD:S[e.id+'-r']/100, everDrawn:false, active };
   });
-  const everDrawn={cto:false,pea:false,av:false,liv:false};
-  const initTotal=frTotal+COL_ENTRIES.reduce((s,e)=>s+(colOn(e.id)?(S[e.id]*1e6)/COP_EUR:0),0);
+  const everDrawn  = { cto:false, pea:false, av:false, liv:false };
+  const chomageY1  = salary * 9; // 6 full + 6 half months
+  const initTotal  = frTotal + COL_ENTRIES.reduce((s,e)=>s+(colOn(e.id)?(S[e.id]*1e6)/COP_EUR:0),0);
 
-  for(let y=0;y<=43;y++){
-    const age=sa+y,locked=y<lockYrs,phase=getPhase(age);
-    let baseSpend,baseSide,basePartner,baseRet;
-    if(phase===1){baseSpend=S[`p2s_${sa+1}`]||1800;baseSide=0;basePartner=S.partner1;baseRet=0;}
-    else if(phase===2){baseSpend=S[`p2s_${age}`];baseSide=S[`p2i_${age}`];basePartner=S.partner1;baseRet=0;}
-    else if(phase===3){baseSpend=S.spend2;baseSide=S.side2;basePartner=S.partner2;baseRet=0;}
-    else{baseSpend=S.spend3;baseSide=S.side3;basePartner=S.partner3;baseRet=S.retraite;}
-    const inflSpend=baseSpend*Math.pow(1+infl,y);
-    const chomage=phase===1?chomageY1:0;
-    bPea*=(1+peaR);bAv*=(1+avR);bCto*=(1+ctoR);bLiv*=(1+livR);
-    COL_ENTRIES.forEach(e=>{if(colState[e.id].active)colState[e.id].bal*=(1+colState[e.id].rD);});
-    const inflow=chomage+baseSide*12+basePartner*12+baseRet*12;
-    const netCash=inflow-inflSpend*12;
-    const cashBefore=bCash; bCash+=netCash;
-    let yearTaxPaid=0; const sources=[],unlocks=[];
-    if(bCash<0){
-      let need=-bCash; bCash=0;
-      if(cashBefore>0) sources.push({cls:'bk-cash',label:'Cash',amount:cashBefore});
-      if(bLiv>0&&need>0){const d=Math.min(bLiv,need);if(d>1){if(!everDrawn.liv){unlocks.push({label:'Livrets',bal:bLiv});everDrawn.liv=true;}sources.push({cls:'bk-liv',label:'Livrets',amount:d});bLiv-=d;need-=d;}}
-      if(!locked&&need>0){
-        if(bCto>0&&need>0){const bb=bCto,r=drawFrom(need,bCto,baseCto,TAX.cto);if(r.drawn>1){if(!everDrawn.cto){unlocks.push({label:'CTO',bal:bb});everDrawn.cto=true;}sources.push({cls:'bk-cto',label:'CTO',amount:r.drawn});bCto=r.newBal;baseCto=r.newBasis;yearTaxPaid+=r.taxPaid;need-=r.netReceived;}}
-        if(bPea>0&&need>0){const bb=bPea,r=drawFrom(need,bPea,basePea,TAX.pea);if(r.drawn>1){if(!everDrawn.pea){unlocks.push({label:'PEA',bal:bb});everDrawn.pea=true;}sources.push({cls:'bk-pea',label:'PEA',amount:r.drawn});bPea=r.newBal;basePea=r.newBasis;yearTaxPaid+=r.taxPaid;need-=r.netReceived;}}
-        if(bAv>0&&need>0){const bb=bAv,r=drawFrom(need,bAv,baseAv,TAX.av);if(r.drawn>1){if(!everDrawn.av){unlocks.push({label:'AV',bal:bb});everDrawn.av=true;}sources.push({cls:'bk-av',label:'AV',amount:r.drawn});bAv=r.newBal;baseAv=r.newBasis;yearTaxPaid+=r.taxPaid;need-=r.netReceived;}}
-        for(const e of COL_ENTRIES){
-          const cs=colState[e.id];
-          if(cs.active&&cs.bal>0&&need>0){
-            const bb=cs.bal,r=drawFrom(need,cs.bal,cs.basis,0);
-            if(r.drawn>1){
-              if(!cs.everDrawn){unlocks.push({label:'🇨🇴 '+e.label,bal:bb});cs.everDrawn=true;}
-              sources.push({cls:e.bkCls,label:e.label,amount:r.drawn});
-              cs.bal=r.newBal;cs.basis=r.newBasis;need-=r.netReceived;
+  for (let y = 0; y <= 43; y++) {
+    const age=sa+y, locked=y<lockYrs, phase=getPhase(age);
+    let spend, side, partner, ret;
+    if      (phase===1) { spend=S[`p2s_${sa+1}`]||1800; side=0;           partner=S.partner1; ret=0; }
+    else if (phase===2) { spend=S[`p2s_${age}`];          side=S[`p2i_${age}`]; partner=S.partner1; ret=0; }
+    else if (phase===3) { spend=S.spend2;                  side=S.side2;      partner=S.partner2; ret=0; }
+    else                { spend=S.spend3;                  side=S.side3;      partner=S.partner3; ret=S.retraite; }
+
+    const inflSpend = spend * Math.pow(1+infl, y);
+    const chomage   = phase===1 ? chomageY1 : 0;
+    bPea*=(1+peaR); bAv*=(1+avR); bCto*=(1+ctoR); bLiv*=(1+livR);
+    COL_ENTRIES.forEach(e => { if (colState[e.id].active) colState[e.id].bal *= (1+colState[e.id].rD); });
+
+    const inflow  = chomage + side*12 + partner*12 + ret*12;
+    const netCash = inflow - inflSpend*12;
+    const cashBefore = bCash;
+    bCash += netCash;
+
+    let yearTaxPaid = 0;
+    const sources = [], unlocks = [];
+
+    if (bCash < 0) {
+      let need = -bCash; bCash = 0;
+      if (cashBefore > 0) sources.push({ cls:'bk-cash', label:'Cash', amount:cashBefore });
+      if (bLiv > 0 && need > 0) {
+        const d = Math.min(bLiv, need);
+        if (d > 1) {
+          if (!everDrawn.liv) { unlocks.push({label:'Livrets',bal:bLiv}); everDrawn.liv=true; }
+          sources.push({cls:'bk-liv',label:'Livrets',amount:d}); bLiv-=d; need-=d;
+        }
+      }
+      if (!locked && need > 0) {
+        if (bCto > 0 && need > 0) { const bb=bCto, r=drawFrom(need,bCto,baseCto,TAX.cto); if(r.drawn>1){if(!everDrawn.cto){unlocks.push({label:'CTO',bal:bb});everDrawn.cto=true;}sources.push({cls:'bk-cto',label:'CTO',amount:r.drawn});bCto=r.newBal;baseCto=r.newBasis;yearTaxPaid+=r.taxPaid;need-=r.netReceived;} }
+        if (bPea > 0 && need > 0) { const bb=bPea, r=drawFrom(need,bPea,basePea,TAX.pea); if(r.drawn>1){if(!everDrawn.pea){unlocks.push({label:'PEA',bal:bb});everDrawn.pea=true;}sources.push({cls:'bk-pea',label:'PEA',amount:r.drawn});bPea=r.newBal;basePea=r.newBasis;yearTaxPaid+=r.taxPaid;need-=r.netReceived;} }
+        if (bAv  > 0 && need > 0) { const bb=bAv,  r=drawFrom(need,bAv,baseAv,TAX.av);   if(r.drawn>1){if(!everDrawn.av){unlocks.push({label:'AV',bal:bb});everDrawn.av=true;}sources.push({cls:'bk-av',label:'AV',amount:r.drawn});bAv=r.newBal;baseAv=r.newBasis;yearTaxPaid+=r.taxPaid;need-=r.netReceived;} }
+        for (const e of COL_ENTRIES) {
+          const cs = colState[e.id];
+          if (cs.active && cs.bal > 0 && need > 0) {
+            const bb=cs.bal, r=drawFrom(need,cs.bal,cs.basis,0);
+            if (r.drawn > 1) {
+              if (!cs.everDrawn) { unlocks.push({label:'🇨🇴 '+e.label, bal:bb}); cs.everDrawn=true; }
+              sources.push({cls:e.bkCls, label:e.label, amount:r.drawn});
+              cs.bal=r.newBal; cs.basis=r.newBasis; need-=r.netReceived;
             }
           }
         }
       }
-    } else if(netCash<0&&cashBefore>0){
-      sources.push({cls:'bk-cash',label:'Cash',amount:Math.min(-netCash,cashBefore)});
+    } else if (netCash < 0 && cashBefore > 0) {
+      sources.push({cls:'bk-cash', label:'Cash', amount:Math.min(-netCash, cashBefore)});
     }
-    if(y===lockYrs&&!lockSetDone){document.getElementById('m-atlock').textContent=fmtK(bPea+bAv+bCto);lockSetDone=true;}
-    bPea=Math.max(0,bPea);bAv=Math.max(0,bAv);bCto=Math.max(0,bCto);
-    bLiv=Math.max(0,bLiv);bCash=Math.max(0,bCash);
-    COL_ENTRIES.forEach(e=>{colState[e.id].bal=Math.max(0,colState[e.id].bal);});
-    const colTotal=COL_ENTRIES.reduce((s,e)=>s+(colState[e.id].active?colState[e.id].bal:0),0);
-    const totalAfter=bPea+bAv+bCto+bLiv+bCash+colTotal;
-    if(totalAfter<=0&&depleteAge===null) depleteAge=age;
+
+    if (y === lockYrs && !lockSetDone) {
+      document.getElementById('m-atlock').textContent = fmtK(bPea+bAv+bCto);
+      lockSetDone = true;
+    }
+    bPea=Math.max(0,bPea); bAv=Math.max(0,bAv); bCto=Math.max(0,bCto);
+    bLiv=Math.max(0,bLiv); bCash=Math.max(0,bCash);
+    COL_ENTRIES.forEach(e => { colState[e.id].bal = Math.max(0, colState[e.id].bal); });
+
+    const colTotal  = COL_ENTRIES.reduce((s,e) => s+(colState[e.id].active?colState[e.id].bal:0), 0);
+    const totalAfter = bPea+bAv+bCto+bLiv+bCash+colTotal;
+    if (totalAfter <= 0 && depleteAge === null) depleteAge = age;
+
     labels.push('Age '+age);
-    hPea.push(Math.round(bPea/1000));hAv.push(Math.round(bAv/1000));
-    hCto.push(Math.round(bCto/1000));hLiv.push(Math.round(bLiv/1000));
+    hPea.push(Math.round(bPea/1000)); hAv.push(Math.round(bAv/1000));
+    hCto.push(Math.round(bCto/1000)); hLiv.push(Math.round(bLiv/1000));
     hCash.push(Math.round(Math.max(0,bCash)/1000));
-    COL_ENTRIES.forEach(e=>{hCol[e.id].push(colState[e.id].active?Math.round(colState[e.id].bal/1000):null);});
-    allRows.push({year:y+1,age,phase,locked,inflow,spend:inflSpend*12,taxPaid:yearTaxPaid,net:netCash-yearTaxPaid,sources,unlocks,total:Math.max(0,totalAfter),initTotal});
+    COL_ENTRIES.forEach(e => { hCol[e.id].push(colState[e.id].active ? Math.round(colState[e.id].bal/1000) : null); });
+    allRows.push({ year:y+1, age, phase, locked, inflow, spend:inflSpend*12, taxPaid:yearTaxPaid, net:netCash-yearTaxPaid, sources, unlocks, total:Math.max(0,totalAfter), initTotal });
   }
 
-  if(!lockSetDone) document.getElementById('m-atlock').textContent=fmtK(pea+av+cto);
-  const mAge=document.getElementById('m-age');
-  mAge.textContent=depleteAge?String(depleteAge):'90+';
-  mAge.style.color=!depleteAge||depleteAge>80?'var(--color-text-success)':depleteAge>70?'var(--color-text-warning)':'var(--color-text-danger)';
+  // ── Post-loop UI ──
+  if (!lockSetDone) document.getElementById('m-atlock').textContent = fmtK(pea+av+cto);
+  const mAge = document.getElementById('m-age');
+  mAge.textContent = depleteAge ? String(depleteAge) : '90+';
+  mAge.style.color = !depleteAge||depleteAge>80 ? 'var(--color-text-success)'
+    : depleteAge>70 ? 'var(--color-text-warning)' : 'var(--color-text-danger)';
 
-  // Update sticky header
   updateStickyHeader(frTotal, totCopEur, grandTotalEur, depleteAge);
-
   buildLegend(activeColEntries);
-  const tc=getCSS('--color-text-secondary')||'#aaa';
-  const gc=getCSS('--color-border-tertiary')||'rgba(128,128,128,0.15)';
-  const datasets=[
-    {label:'PEA',data:hPea,borderColor:'#5B9BD5',backgroundColor:'rgba(91,155,213,0.15)',fill:true,tension:0.35,pointRadius:0,borderWidth:2},
-    {label:'AV',data:hAv,borderColor:'#4DC79A',backgroundColor:'rgba(77,199,154,0.12)',fill:true,tension:0.35,pointRadius:0,borderWidth:2},
-    {label:'CTO',data:hCto,borderColor:'#E8A040',backgroundColor:'rgba(232,160,64,0.12)',fill:true,tension:0.35,pointRadius:0,borderWidth:2},
-    {label:'Livrets',data:hLiv,borderColor:'#7DC94E',backgroundColor:'rgba(125,201,78,0.12)',fill:true,tension:0.35,pointRadius:0,borderWidth:2},
-    {label:'Cash',data:hCash,borderColor:'#9E9D97',backgroundColor:'rgba(158,157,151,0.10)',fill:true,tension:0.35,pointRadius:0,borderWidth:2},
+
+  const tc = getCSS('--color-text-secondary') || '#aaa';
+  const gc = getCSS('--color-border-tertiary') || 'rgba(128,128,128,0.15)';
+  const datasets = [
+    {label:'PEA',    data:hPea,  borderColor:'#5B9BD5', backgroundColor:'rgba(91,155,213,0.15)',  fill:true, tension:0.35, pointRadius:0, borderWidth:2},
+    {label:'AV',     data:hAv,   borderColor:'#4DC79A', backgroundColor:'rgba(77,199,154,0.12)',   fill:true, tension:0.35, pointRadius:0, borderWidth:2},
+    {label:'CTO',    data:hCto,  borderColor:'#E8A040', backgroundColor:'rgba(232,160,64,0.12)',   fill:true, tension:0.35, pointRadius:0, borderWidth:2},
+    {label:'Livrets',data:hLiv,  borderColor:'#7DC94E', backgroundColor:'rgba(125,201,78,0.12)',   fill:true, tension:0.35, pointRadius:0, borderWidth:2},
+    {label:'Cash',   data:hCash, borderColor:'#9E9D97', backgroundColor:'rgba(158,157,151,0.10)',  fill:true, tension:0.35, pointRadius:0, borderWidth:2},
   ];
-  COL_ENTRIES.forEach(e=>{
-    if(colState[e.id].active) datasets.push({label:'🇨🇴 '+e.label,data:hCol[e.id],borderColor:e.chartColor,backgroundColor:e.chartBg,fill:true,tension:0.35,pointRadius:0,borderWidth:2,borderDash:[5,3]});
+  COL_ENTRIES.forEach(e => {
+    if (colState[e.id].active)
+      datasets.push({label:'🇨🇴 '+e.label, data:hCol[e.id], borderColor:e.chartColor, backgroundColor:e.chartBg, fill:true, tension:0.35, pointRadius:0, borderWidth:2, borderDash:[5,3]});
   });
-  if(chart) chart.destroy();
-  chart=new Chart(document.getElementById('chart'),{
-    type:'line',data:{labels,datasets},
-    options:{responsive:true,maintainAspectRatio:false,
-      interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': €'+new Intl.NumberFormat('fr-FR').format(ctx.parsed.y)+'K'}}},
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById('chart'), {
+    type:'line', data:{labels, datasets},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index', intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label: ctx => ' '+ctx.dataset.label+': €'+new Intl.NumberFormat('fr-FR').format(ctx.parsed.y)+'K'}}
+      },
       scales:{
-        x:{ticks:{autoSkip:true,maxTicksLimit:10,font:{size:11},color:tc},grid:{display:false}},
-        y:{ticks:{callback:v=>'€'+v+'K',font:{size:11},color:tc},grid:{color:gc}}
+        x:{ticks:{autoSkip:true, maxTicksLimit:10, font:{size:11}, color:tc}, grid:{display:false}},
+        y:{ticks:{callback: v=>'€'+v+'K', font:{size:11}, color:tc}, grid:{color:gc}}
       }
     }
   });
+
   renderTable();
-
-  // Refresh scenario cards after every draw
   renderScenarioCards();
-
-  // Update break-even panel
   updateBreakEven();
-
-  // Auto-save on every draw
   saveState();
 }
 
@@ -1860,8 +1585,8 @@ function draw() {
    INIT
 ═══════════════════════════════════════════════ */
 ensureAllP2();
-loadState();   // restore S, colChecks, and scenarios from localStorage
-draw();        // first render (also triggers saveState + renderScenarioCards)
+loadState();
+draw();
 </script>
 </body>
 </html>
