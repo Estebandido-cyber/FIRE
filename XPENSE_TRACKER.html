@@ -41,7 +41,7 @@
     font-family: 'DM Mono', monospace;
     font-size: 13px;
     min-height: 100vh;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   /* ─── HEADER ─── */
@@ -52,11 +52,12 @@
     background: rgba(14,15,17,0.95);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 0 24px;
+    padding: 8px 24px;
     display: flex;
     align-items: center;
-    gap: 24px;
-    height: 60px;
+    gap: 12px;
+    flex-wrap: wrap;
+    min-height: 60px;
   }
 
   .app-title {
@@ -72,9 +73,10 @@
 
   .header-totals {
     display: flex;
-    gap: 24px;
+    gap: 16px;
     align-items: center;
     flex: 1;
+    flex-wrap: wrap;
   }
 
   .header-stat {
@@ -101,8 +103,9 @@
 
   .header-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     margin-left: auto;
+    flex-wrap: wrap;
   }
 
   .btn {
@@ -343,6 +346,7 @@
     display: none;
     border-top: 1px solid var(--border);
     overflow-x: auto;
+    overflow-y: hidden;
   }
   .week-body.open { display: block; }
 
@@ -820,6 +824,51 @@
   .cf-trend-lbl { font-size:9px; color:var(--text3); white-space:nowrap; }
   .cf-trend-amt { font-size:9px; font-family:'Syne',sans-serif; font-weight:600; }
 
+  /* ─── MOBILE RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .app-header {
+      padding: 8px 12px;
+      gap: 8px;
+    }
+    .app-title {
+      font-size: 15px;
+      flex: 0 0 auto;
+    }
+    .header-totals {
+      flex: 0 0 100%;
+      order: 2;
+      gap: 10px;
+      padding: 4px 0;
+      border-top: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    .header-stat-label { font-size: 8px; }
+    .header-stat-value { font-size: 12px; }
+    .header-actions {
+      order: 1;
+      margin-left: auto;
+      gap: 5px;
+    }
+    .btn {
+      padding: 5px 8px;
+      font-size: 10px;
+      letter-spacing: 0;
+    }
+    .main {
+      padding: 12px 8px 60px;
+    }
+    .month-label { font-size: 16px; min-width: 140px; }
+    .month-total-badge { padding: 6px 10px; }
+    .month-total-badge-value { font-size: 15px; }
+    /* Always show delete button on touch devices */
+    .entry-del {
+      opacity: 1 !important;
+      color: var(--red) !important;
+      width: 18px !important;
+      font-size: 15px !important;
+    }
+  }
+
   /* Scrollbar */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
@@ -1130,11 +1179,11 @@
     </div>
   </div>
   <div class="header-actions">
-    <button class="btn btn-ghost" onclick="openSettings()">⚙ Settings</button>
-    <button class="btn btn-drive" id="drive-save-btn" onclick="gdriveSave()" title="Save to Google Drive">☁ Save to Drive</button>
-    <button class="btn btn-drive" id="drive-load-btn" onclick="gdriveLoad()" title="Load from Google Drive">☁ Load from Drive</button>
+    <button class="btn btn-drive" id="drive-save-btn" onclick="gdriveSave()" title="Save to Google Drive">☁ Save</button>
+    <button class="btn btn-drive" id="drive-load-btn" onclick="gdriveLoad()" title="Load from Google Drive">☁ Load</button>
     <button class="btn btn-ghost" onclick="openExport()">↓ Export</button>
     <button class="btn btn-ghost" onclick="openImport()">↑ Import</button>
+    <button class="btn btn-ghost" onclick="openSettings()">⚙ Settings</button>
   </div>
 </header>
 
@@ -1180,6 +1229,13 @@
           <div class="cf-inner">
             <input class="cf-amt" id="cf-extra" type="number" placeholder="0" oninput="cfSave()">
             <input class="cf-note" id="cf-extra-note" type="text" placeholder="Note (optional)" oninput="cfSave()">
+          </div>
+        </div>
+        <div class="cf-row">
+          <div class="cf-lbl">Extra Income 2</div>
+          <div class="cf-inner">
+            <input class="cf-amt" id="cf-extra2" type="number" placeholder="0" oninput="cfSave()">
+            <input class="cf-note" id="cf-extra2-note" type="text" placeholder="Note (optional)" oninput="cfSave()">
           </div>
         </div>
         <div class="cf-divider"></div>
@@ -2325,8 +2381,10 @@ function cfSave() {
   cfData[mk] = {
     salary:    parseFloat(document.getElementById('cf-salary').value)    || 0,
     partner:   parseFloat(document.getElementById('cf-partner').value)   || 0,
-    extra:     parseFloat(document.getElementById('cf-extra').value)     || 0,
-    extraNote: document.getElementById('cf-extra-note').value            || ''
+    extra:      parseFloat(document.getElementById('cf-extra').value)      || 0,
+    extraNote:  document.getElementById('cf-extra-note').value             || '',
+    extra2:     parseFloat(document.getElementById('cf-extra2').value)     || 0,
+    extra2Note: document.getElementById('cf-extra2-note').value            || ''
   };
   localStorage.setItem(CF_KEY, JSON.stringify(cfData));
   cfUpdateRemaining();
@@ -2349,8 +2407,10 @@ function cfRender() {
   const cf = cfData[mk] || { salary:0, partner:0, extra:0, extraNote:'' };
   document.getElementById('cf-salary').value     = cf.salary    || '';
   document.getElementById('cf-partner').value    = cf.partner   || '';
-  document.getElementById('cf-extra').value      = cf.extra     || '';
-  document.getElementById('cf-extra-note').value = cf.extraNote || '';
+  document.getElementById('cf-extra').value       = cf.extra      || '';
+  document.getElementById('cf-extra-note').value  = cf.extraNote  || '';
+  document.getElementById('cf-extra2').value       = cf.extra2     || '';
+  document.getElementById('cf-extra2-note').value  = cf.extra2Note || '';
   cfUpdateRemaining();
   cfUpdateYear();
   cfRenderTrend();
@@ -2361,7 +2421,7 @@ function cfRender() {
 function cfUpdateRemaining() {
   const mk = cfMk();
   const cf = cfData[mk] || {};
-  const income   = (cf.salary||0) + (cf.partner||0) + (cf.extra||0);
+  const income   = (cf.salary||0) + (cf.partner||0) + (cf.extra||0) + (cf.extra2||0);
   const expenses = getMonthTotal();
   const rem      = income - expenses;
 
@@ -2391,7 +2451,7 @@ function cfUpdateYear() {
   for (let m = 0; m < 12; m++) {
     const mk = yr + '-' + String(m + 1).padStart(2, '0');
     const cf = cfData[mk] || {};
-    yearIncome += (cf.salary||0) + (cf.partner||0) + (cf.extra||0);
+    yearIncome += (cf.salary||0) + (cf.partner||0) + (cf.extra||0) + (cf.extra2||0);
     Object.keys(data).forEach(dk => {
       if (dk.startsWith(mk)) data[dk].forEach(e => yearExpenses += parseFloat(e.amt) || 0);
     });
@@ -2437,7 +2497,7 @@ function cfRenderTrend() {
 
   const remainings = months.map(mk => {
     const cf = cfData[mk] || {};
-    const income = (cf.salary||0) + (cf.partner||0) + (cf.extra||0);
+    const income = (cf.salary||0) + (cf.partner||0) + (cf.extra||0) + (cf.extra2||0);
     let exp = 0;
     Object.keys(data).forEach(dk => {
       if (dk.startsWith(mk)) data[dk].forEach(e => exp += parseFloat(e.amt) || 0);
