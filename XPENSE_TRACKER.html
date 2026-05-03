@@ -44,10 +44,10 @@
     background: rgba(14,15,17,0.95);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 8px 24px;
+    padding: 8px 32px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 28px;
     flex-wrap: wrap;
     min-height: 60px;
   }
@@ -81,12 +81,12 @@
     font-size: 9px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--text3);
+    color: var(--text2);
   }
 
   .header-stat-value {
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 17px;
+    font-weight: 600;
     color: var(--text);
     font-family: 'Syne', sans-serif;
   }
@@ -193,7 +193,7 @@
     font-size: 9px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--text3);
+    color: var(--text2);
   }
 
   .month-total-badge-value {
@@ -318,12 +318,12 @@
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--text2);
+    color: var(--text);
   }
 
   .week-date-range {
     font-size: 11px;
-    color: var(--text3);
+    color: var(--text2);
   }
 
   .week-total {
@@ -370,7 +370,7 @@
     font-size: 9px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--text3);
+    color: var(--text2);
     font-weight: 500;
   }
 
@@ -513,7 +513,7 @@
     font-size: 9px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--text3);
+    color: var(--text2);
   }
 
   .day-total-value {
@@ -759,6 +759,12 @@
   .btn-drive { background:#1a73e8; border-color:#1a73e8; color:#fff; }
   .btn-drive:hover { background:#1557b0; border-color:#1557b0; }
   .btn-drive:disabled { opacity:0.5; cursor:not-allowed; }
+  .btn-export { background:rgba(240,140,60,0.12); border-color:#e07838; color:#e07838; }
+  .btn-export:hover { background:rgba(240,140,60,0.22); }
+  .btn-import { background:rgba(80,200,176,0.12); border-color:#50c8b0; color:#50c8b0; }
+  .btn-import:hover { background:rgba(80,200,176,0.22); }
+  .btn-settings { background:rgba(160,124,224,0.12); border-color:#a07ce0; color:#a07ce0; }
+  .btn-settings:hover { background:rgba(160,124,224,0.22); }
   .drive-status-bar {
     text-align:center; font-size:10px; color:var(--text3);
     padding:4px 8px; letter-spacing:0.5px;
@@ -821,6 +827,7 @@
     .app-header {
       padding: 8px 12px;
       gap: 8px;
+      justify-content: center;
     }
     .app-title {
       font-size: 15px;
@@ -833,13 +840,15 @@
       padding: 4px 0;
       border-top: 1px solid var(--border);
       overflow-x: auto;
+      justify-content: center;
     }
     .header-stat-label { font-size: 8px; }
-    .header-stat-value { font-size: 12px; }
+    .header-stat-value { font-size: 14px; }
     .header-actions {
       order: 1;
       margin-left: auto;
       gap: 5px;
+      justify-content: center;
     }
     .btn {
       padding: 5px 8px;
@@ -1152,9 +1161,9 @@
   <div class="header-actions">
     <button class="btn btn-drive" id="drive-save-btn" onclick="gdriveSave()" title="Save to Google Drive">☁ Save</button>
     <button class="btn btn-drive" id="drive-load-btn" onclick="gdriveLoad()" title="Load from Google Drive">☁ Load</button>
-    <button class="btn btn-ghost" onclick="openExport()">↓ Export</button>
-    <button class="btn btn-ghost" onclick="openImport()">↑ Import</button>
-    <button class="btn btn-ghost" onclick="openSettings()">⚙ Settings</button>
+    <button class="btn btn-export" onclick="openExport()">↓ Export</button>
+    <button class="btn btn-import" onclick="openImport()">↑ Import</button>
+    <button class="btn btn-settings" onclick="openSettings()">⚙ Settings</button>
   </div>
 </header>
 
