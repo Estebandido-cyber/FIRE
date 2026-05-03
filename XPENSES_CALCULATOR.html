@@ -621,26 +621,25 @@ function driveAuth(callback) {
   if (driveToken) { callback(driveToken); return; }
   driveSetStatus('Connecting to Google…', 'working');
   gapi.load('client:auth2', () => {
-    gapi.auth2.init({ client_id: DRIVE_CLIENT_ID }).then(() => {
-      const auth = gapi.auth2.getAuthInstance();
-      const finish = () => {
-        driveToken = auth.currentUser.get().getAuthResponse().access_token;
-        callback(driveToken);
-      };
-      if (auth.isSignedIn.get()) {
-        finish();
-      } else {
-        auth.signIn({ scope: DRIVE_SCOPE })
-          .then(finish)
-          .catch(() => {
-            driveSetStatus('Sign-in cancelled', 'err');
-            driveSetBusy(false);
-          });
-      }
-    }).catch(() => {
-      driveSetStatus('Google auth failed', 'err');
-      driveSetBusy(false);
-    });
+    gapi.auth2.init({ client_id: DRIVE_CLIENT_ID });
+    const authInstance = gapi.auth2.getAuthInstance();
+    const signIn = () => {
+      authInstance.signIn({ scope: DRIVE_SCOPE })
+        .then(user => {
+          driveToken = user.getAuthResponse().access_token;
+          callback(driveToken);
+        })
+        .catch(() => {
+          driveSetStatus('Sign-in cancelled or failed', 'err');
+          driveSetBusy(false);
+        });
+    };
+    if (authInstance.isSignedIn.get()) {
+      driveToken = authInstance.currentUser.get().getAuthResponse().access_token;
+      callback(driveToken);
+    } else {
+      signIn();
+    }
   });
 }
 
