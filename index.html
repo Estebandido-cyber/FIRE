@@ -12,32 +12,25 @@
   :root {
     --bg: #0a0a0f;
     --bg2: #111118;
-    --bg3: #18181f;
     --surface: #1e1e28;
     --border: rgba(255,255,255,0.07);
     --border-hover: rgba(255,255,255,0.15);
     --text: #f0f0f5;
     --muted: rgba(240,240,245,0.45);
     --subtle: rgba(240,240,245,0.2);
-
     --accent-tracker: #00e5a0;
     --accent-tracker-dim: rgba(0,229,160,0.12);
     --accent-tracker-glow: rgba(0,229,160,0.25);
-
     --accent-calc: #7b8fff;
     --accent-calc-dim: rgba(123,143,255,0.12);
     --accent-calc-glow: rgba(123,143,255,0.25);
-
     --accent-planner: #ffd166;
     --accent-planner-dim: rgba(255,209,102,0.12);
     --accent-planner-glow: rgba(255,209,102,0.25);
-
     --accent-fire: #ff6b6b;
     --accent-fire-dim: rgba(255,107,107,0.12);
     --accent-fire-glow: rgba(255,107,107,0.25);
   }
-
-  html { font-size: 16px; }
 
   body {
     background: var(--bg);
@@ -48,7 +41,6 @@
     padding: 0 0 60px;
   }
 
-  /* ─── background mesh ─── */
   body::before {
     content: '';
     position: fixed;
@@ -61,7 +53,6 @@
     z-index: 0;
   }
 
-  /* ─── grid texture ─── */
   body::after {
     content: '';
     position: fixed;
@@ -82,15 +73,14 @@
     padding: 0 20px;
   }
 
-  /* ─── header ─── */
   header {
     padding: 52px 0 36px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    animation: fadeUp 0.4s both;
   }
 
-  .logo-block {}
   .logo-eyebrow {
     font-family: 'DM Mono', monospace;
     font-size: 10px;
@@ -111,10 +101,7 @@
     background-clip: text;
   }
 
-  .header-meta {
-    text-align: right;
-    padding-top: 6px;
-  }
+  .header-meta { text-align: right; padding-top: 6px; }
   .date-display {
     font-family: 'DM Mono', monospace;
     font-size: 11px;
@@ -122,7 +109,6 @@
     line-height: 1.6;
   }
 
-  /* ─── section label ─── */
   .section-label {
     font-family: 'DM Mono', monospace;
     font-size: 10px;
@@ -132,7 +118,6 @@
     margin: 0 0 14px;
   }
 
-  /* ─── tiles grid ─── */
   .tiles {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -140,22 +125,26 @@
     margin-bottom: 14px;
   }
 
-  /* ─── tile ─── */
   .tile {
     position: relative;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 20px;
-    padding: 22px 20px 18px;
+    padding: 22px 20px 38px;
     cursor: pointer;
     text-decoration: none;
     color: inherit;
     display: flex;
     flex-direction: column;
-    min-height: 190px;
+    min-height: 200px;
     overflow: hidden;
     transition: border-color 0.25s, transform 0.2s;
+    animation: fadeUp 0.5s both;
   }
+  .tile:nth-child(1) { animation-delay: 0.05s; }
+  .tile:nth-child(2) { animation-delay: 0.1s; }
+  .tile:nth-child(3) { animation-delay: 0.15s; }
+  .tile:nth-child(4) { animation-delay: 0.2s; }
 
   .tile::before {
     content: '';
@@ -171,17 +160,13 @@
 
   .tile-tracker::before { background: radial-gradient(ellipse at top left, var(--accent-tracker-dim), transparent 70%); }
   .tile-tracker:hover { border-color: var(--accent-tracker-glow); }
-
   .tile-calc::before { background: radial-gradient(ellipse at top left, var(--accent-calc-dim), transparent 70%); }
   .tile-calc:hover { border-color: var(--accent-calc-glow); }
-
   .tile-planner::before { background: radial-gradient(ellipse at top left, var(--accent-planner-dim), transparent 70%); }
   .tile-planner:hover { border-color: var(--accent-planner-glow); }
-
   .tile-fire::before { background: radial-gradient(ellipse at top left, var(--accent-fire-dim), transparent 70%); }
   .tile-fire:hover { border-color: var(--accent-fire-glow); }
 
-  /* ─── tile icon ─── */
   .tile-icon {
     width: 36px;
     height: 36px;
@@ -200,7 +185,6 @@
   .tile-planner .tile-icon { background: var(--accent-planner-dim); }
   .tile-fire .tile-icon    { background: var(--accent-fire-dim); }
 
-  /* ─── tile name ─── */
   .tile-name {
     font-family: 'Syne', sans-serif;
     font-size: 13px;
@@ -215,7 +199,6 @@
   .tile-planner .tile-name { color: var(--accent-planner); }
   .tile-fire .tile-name    { color: var(--accent-fire); }
 
-  /* ─── tile stats ─── */
   .tile-stats {
     flex: 1;
     display: flex;
@@ -225,11 +208,7 @@
     z-index: 1;
   }
 
-  .stat {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-  }
+  .stat { display: flex; flex-direction: column; gap: 1px; }
   .stat-label {
     font-size: 9.5px;
     font-family: 'DM Mono', monospace;
@@ -244,15 +223,8 @@
     color: var(--text);
     line-height: 1.15;
   }
-  .stat-value.big {
-    font-size: 21px;
-  }
-  .stat-value.dim {
-    font-size: 14px;
-    color: var(--muted);
-  }
+  .stat-value.big { font-size: 20px; }
 
-  /* ─── divider inside tile ─── */
   .stat-divider {
     width: 100%;
     height: 1px;
@@ -260,7 +232,6 @@
     margin: 2px 0;
   }
 
-  /* ─── tile arrow ─── */
   .tile-arrow {
     position: absolute;
     bottom: 16px;
@@ -270,12 +241,19 @@
     transition: color 0.2s, transform 0.2s;
     z-index: 1;
   }
-  .tile:hover .tile-arrow {
-    color: var(--muted);
-    transform: translate(2px, -2px);
+  .tile:hover .tile-arrow { color: var(--muted); transform: translate(2px, -2px); }
+
+  .tile-footer {
+    position: absolute;
+    bottom: 16px;
+    left: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--subtle);
+    letter-spacing: 0.05em;
+    z-index: 1;
   }
 
-  /* ─── no data state ─── */
   .no-data {
     font-family: 'DM Mono', monospace;
     font-size: 11px;
@@ -283,7 +261,6 @@
     font-style: italic;
   }
 
-  /* ─── pulse dot ─── */
   .live-dot {
     display: inline-block;
     width: 5px;
@@ -296,23 +273,8 @@
     position: relative;
     top: -1px;
   }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
-  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-  /* ─── last save ─── */
-  .tile-footer {
-    margin-top: 10px;
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--subtle);
-    letter-spacing: 0.05em;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ─── bottom bar ─── */
   .bottom-bar {
     margin-top: 28px;
     padding: 18px 20px;
@@ -323,12 +285,9 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    animation: fadeUp 0.5s 0.25s both;
   }
-  .bottom-label {
-    font-size: 11px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-  }
+  .bottom-label { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
   .refresh-btn {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -341,26 +300,13 @@
     transition: border-color 0.2s, color 0.2s;
     white-space: nowrap;
   }
-  .refresh-btn:hover {
-    border-color: var(--border-hover);
-    color: var(--text);
-  }
+  .refresh-btn:hover { border-color: var(--border-hover); color: var(--text); }
 
-  /* ─── entry animations ─── */
-  .tile { animation: fadeUp 0.5s both; }
-  .tile:nth-child(1) { animation-delay: 0.05s; }
-  .tile:nth-child(2) { animation-delay: 0.1s; }
-  .tile:nth-child(3) { animation-delay: 0.15s; }
-  .tile:nth-child(4) { animation-delay: 0.2s; }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  header { animation: fadeUp 0.4s both; }
-  .bottom-bar { animation: fadeUp 0.5s 0.25s both; }
-
-  /* ─── responsive ─── */
   @media (max-width: 380px) {
     .tiles { grid-template-columns: 1fr; }
     .tile { min-height: auto; }
@@ -369,7 +315,6 @@
 </style>
 </head>
 <body>
-
 <div class="wrap">
 
   <header>
@@ -386,46 +331,34 @@
 
   <div class="tiles">
 
-    <!-- XPENSE TRACKER -->
     <a class="tile tile-tracker" href="XPENSE_TRACKER.html">
       <div class="tile-icon">💳</div>
       <div class="tile-name">Xpenser</div>
-      <div class="tile-stats" id="stats-tracker">
-        <div class="no-data">Loading…</div>
-      </div>
+      <div class="tile-stats" id="stats-tracker"><div class="no-data">Loading…</div></div>
       <div class="tile-footer" id="footer-tracker"></div>
       <div class="tile-arrow">↗</div>
     </a>
 
-    <!-- XPENSES CALCULATOR -->
     <a class="tile tile-calc" href="XPENSES_CALCULATOR.html">
       <div class="tile-icon">🧮</div>
       <div class="tile-name">Calculator</div>
-      <div class="tile-stats" id="stats-calc">
-        <div class="no-data">Loading…</div>
-      </div>
+      <div class="tile-stats" id="stats-calc"><div class="no-data">Loading…</div></div>
       <div class="tile-footer" id="footer-calc"></div>
       <div class="tile-arrow">↗</div>
     </a>
 
-    <!-- WEEK PLANNER -->
     <a class="tile tile-planner" href="WEEK_PLANNER.html">
       <div class="tile-icon">📅</div>
       <div class="tile-name">Week Planner</div>
-      <div class="tile-stats" id="stats-planner">
-        <div class="no-data">Loading…</div>
-      </div>
+      <div class="tile-stats" id="stats-planner"><div class="no-data">Loading…</div></div>
       <div class="tile-footer" id="footer-planner"></div>
       <div class="tile-arrow">↗</div>
     </a>
 
-    <!-- FIRE SIM -->
     <a class="tile tile-fire" href="FIRE_SIM.html">
       <div class="tile-icon">🔥</div>
       <div class="tile-name">FIRE Sim</div>
-      <div class="tile-stats" id="stats-fire">
-        <div class="no-data">Loading…</div>
-      </div>
+      <div class="tile-stats" id="stats-fire"><div class="no-data">Loading…</div></div>
       <div class="tile-footer" id="footer-fire"></div>
       <div class="tile-arrow">↗</div>
     </a>
@@ -438,257 +371,158 @@
   </div>
 
 </div>
-
 <script>
-// ─── date display ─────────────────────────────────────────────────
+// ── date ─────────────────────────────────────────────────────────
 (function() {
   const d = new Date();
   const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   document.getElementById('date-display').innerHTML =
-    days[d.getDay()] + '<br>' +
-    d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    days[d.getDay()] + '<br>' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
 })();
 
-// ─── helpers ──────────────────────────────────────────────────────
+// ── helpers ──────────────────────────────────────────────────────
 function fmt(n) {
-  if (isNaN(n) || n === null || n === undefined) return '—';
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return new Intl.NumberFormat('fr-FR', {style:'currency', currency:'EUR', maximumFractionDigits:0}).format(n);
 }
-function fmtCOP(n) {
-  if (isNaN(n) || n === null || n === undefined) return '—';
-  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(n);
-}
-function safeGet(key) {
-  try { return localStorage.getItem(key); } catch(e) { return null; }
-}
-function safeParse(v) {
-  try { return v ? JSON.parse(v) : null; } catch(e) { return null; }
-}
+function safeGet(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
+function safeParse(v) { try { return v ? JSON.parse(v) : null; } catch(e) { return null; } }
 function statHTML(label, value, big) {
-  return `<div class="stat">
-    <div class="stat-label">${label}</div>
-    <div class="stat-value${big ? ' big' : ''}">${value}</div>
-  </div>`;
+  return `<div class="stat"><div class="stat-label">${label}</div><div class="stat-value${big?' big':''}">${value}</div></div>`;
 }
-function noDataHTML(msg) {
-  return `<div class="no-data">${msg || 'No data yet'}</div>`;
-}
-function fmtSaveTime(iso) {
+function noData(msg) { return `<div class="no-data">${msg||'No data yet'}</div>`; }
+function fmtAgo(iso) {
   if (!iso) return '';
   try {
-    const d = new Date(iso);
-    const now = new Date();
-    const diff = Math.floor((now - d) / 60000);
+    const diff = Math.floor((Date.now() - new Date(iso)) / 60000);
     if (diff < 1) return 'saved just now';
     if (diff < 60) return `saved ${diff}m ago`;
-    const h = Math.floor(diff / 60);
+    const h = Math.floor(diff/60);
     if (h < 24) return `saved ${h}h ago`;
     return `saved ${Math.floor(h/24)}d ago`;
   } catch(e) { return ''; }
 }
 
-// ─── XPENSE TRACKER ───────────────────────────────────────────────
+// ── XPENSE TRACKER ───────────────────────────────────────────────
 function loadTracker() {
-  const raw = safeGet('depenses_data_v1');
-  const data = safeParse(raw);
-  const lastSave = safeGet('depenses_last_save');
+  const data = safeParse(safeGet('depenses_data_v1'));
   const el = document.getElementById('stats-tracker');
   const foot = document.getElementById('footer-tracker');
-
-  if (!data) { el.innerHTML = noDataHTML('Open tracker to start'); return; }
+  if (!data) { el.innerHTML = noData('Open tracker to start'); return; }
 
   const now = new Date();
   const curMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
   const curYear = String(now.getFullYear());
-
   let monthTotal = 0, yearTotal = 0;
 
-  Object.entries(data).forEach(([dateKey, entries]) => {
+  Object.entries(data).forEach(([k, entries]) => {
     if (!Array.isArray(entries)) return;
-    const daySum = entries.reduce((s, e) => s + (parseFloat(e.amt) || 0), 0);
-    if (dateKey.startsWith(curYear)) yearTotal += daySum;
-    if (dateKey.startsWith(curMonth)) monthTotal += daySum;
+    const sum = entries.reduce((s, e) => s + (parseFloat(e.amt)||0), 0);
+    if (k.startsWith(curYear)) yearTotal += sum;
+    if (k.startsWith(curMonth)) monthTotal += sum;
   });
 
   el.innerHTML =
     statHTML('This month', fmt(monthTotal), true) +
     '<div class="stat-divider"></div>' +
     statHTML('This year', fmt(yearTotal));
-
-  foot.textContent = fmtSaveTime(lastSave);
+  foot.textContent = fmtAgo(safeGet('depenses_last_save'));
 }
 
-// ─── XPENSES CALCULATOR ───────────────────────────────────────────
+// ── XPENSES CALCULATOR ───────────────────────────────────────────
+// Structure: { now: { salary, tickets, rent, ... }, fire: { ... } }
+// Income = salary + tickets. Left = income - all expense fields.
+function calcLeft(tab) {
+  if (!tab) return null;
+  const income = (parseFloat(tab.salary)||0) + (parseFloat(tab.tickets)||0);
+  const expKeys = ['rent','insurance','internet','netflix','electricity','sharedAcc',
+    'phone','amazonPrime','smoothie','beer','chess','billar','billarMonth',
+    'lunch','extras','health','drums','savings','partnerFixed'];
+  const expenses = expKeys.reduce((s, k) => s + (parseFloat(tab[k])||0), 0);
+  return income - expenses;
+}
+
 function loadCalc() {
-  const raw = safeGet('xpenses_calculator_v1');
-  const states = safeParse(raw);
+  const states = safeParse(safeGet('xpenses_calculator_v1'));
   const el = document.getElementById('stats-calc');
-
-  if (!states) { el.innerHTML = noDataHTML('Open calculator to start'); return; }
-
-  // Try to find "left at end of month" from now and fire tabs
-  let nowLeft = null, fireLeft = null;
-
-  // States is typically an object keyed by tab name or an array
-  // Try common patterns
-  const tryExtract = (obj) => {
-    if (!obj) return null;
-    // look for fields like: left, remaining, balance, leftAtEnd
-    const candidates = ['left', 'leftAtEnd', 'remaining', 'balance', 'monthlySurplus', 'surplus'];
-    for (const k of candidates) {
-      if (typeof obj[k] === 'number') return obj[k];
-    }
-    // Try income - expenses pattern
-    const income = obj.income || obj.salary || obj.totalIncome || 0;
-    const expenses = obj.expenses || obj.totalExpenses || obj.total || 0;
-    if (income > 0 && expenses > 0) return income - expenses;
-    return null;
-  };
-
-  if (Array.isArray(states)) {
-    nowLeft = tryExtract(states[0]);
-    fireLeft = tryExtract(states[1]);
-  } else if (typeof states === 'object') {
-    const keys = Object.keys(states);
-    const nowKey = keys.find(k => k.toLowerCase().includes('now')) || keys[0];
-    const fireKey = keys.find(k => k.toLowerCase().includes('fire')) || keys[1];
-    nowLeft = tryExtract(states[nowKey]);
-    fireLeft = tryExtract(states[fireKey]);
+  if (!states || (!states.now && !states.fire)) {
+    el.innerHTML = noData('Open calculator to start'); return;
   }
-
-  if (nowLeft === null && fireLeft === null) {
-    el.innerHTML = noDataHTML('Open calculator to update');
-    return;
-  }
-
-  let html = '';
-  if (nowLeft !== null) html += statHTML('Left / month · now', fmt(nowLeft), true);
-  if (nowLeft !== null && fireLeft !== null) html += '<div class="stat-divider"></div>';
-  if (fireLeft !== null) html += statHTML('Left / month · FIRE', fmt(fireLeft));
-
-  el.innerHTML = html || noDataHTML('Open calculator to update');
+  const nowLeft = calcLeft(states.now);
+  const fireLeft = calcLeft(states.fire);
+  el.innerHTML =
+    statHTML('Left / month · now', fmt(nowLeft), true) +
+    '<div class="stat-divider"></div>' +
+    statHTML('Left / month · FIRE', fmt(fireLeft));
 }
 
-// ─── WEEK PLANNER ─────────────────────────────────────────────────
+// ── WEEK PLANNER ─────────────────────────────────────────────────
+// Block structure: { aid, d, h, dur } — dur is hours (directly on each block)
 function loadPlanner() {
   const el = document.getElementById('stats-planner');
-  const curWeekRaw = safeGet('weekplan_curweek');
-  const curWeek = curWeekRaw !== null ? parseInt(curWeekRaw) || 0 : 0;
+  const curWeek = parseInt(safeGet('weekplan_curweek') || '0') || 0;
+  const curPlaces = safeParse(safeGet('weekplan_week' + curWeek)) || {};
+  const blocks = Object.values(curPlaces);
 
-  let totalHours = 0;
-  let hasData = false;
-
-  // Load all 4 weeks and find current week hours
-  const weekData = [];
-  for (let w = 0; w < 4; w++) {
-    const raw = safeGet('weekplan_week' + w);
-    const places = safeParse(raw) || {};
-    weekData.push(places);
-  }
-
-  // Count placed blocks in current week
-  // Each key is typically "col-slot" and value is an activity id
-  const curPlaces = weekData[curWeek] || {};
-  const slots = Object.values(curPlaces).filter(v => v && v !== 'empty' && v !== null);
-  const totalSlots = slots.length;
-
-  // Estimate hours: assume 30min or 1h slots — try to detect from acts
-  const actsRaw = safeGet('weekplan_acts');
-  const acts = safeParse(actsRaw) || [];
-
-  // Count distinct activity blocks placed this week
-  // Count hours by summing durations if available
-  let hoursPlanned = 0;
-  if (totalSlots > 0) {
-    // Try to sum durations from activities
-    const actMap = {};
-    acts.forEach(a => { actMap[a.id] = a; });
-    let slotHours = 0;
-    Object.values(curPlaces).forEach(actId => {
-      if (!actId) return;
-      const act = actMap[actId];
-      if (act && act.duration) slotHours += parseFloat(act.duration) || 0;
-      else slotHours += 1; // default 1h per block
-    });
-    hoursPlanned = slotHours;
-    hasData = true;
-  } else {
-    // check if any week has data
+  if (blocks.length === 0) {
+    let anyData = false;
     for (let w = 0; w < 4; w++) {
-      if (Object.keys(weekData[w]).length > 0) { hasData = true; break; }
+      if (Object.keys(safeParse(safeGet('weekplan_week'+w)) || {}).length > 0) { anyData = true; break; }
     }
-  }
-
-  if (!hasData) { el.innerHTML = noDataHTML('Open planner to start'); return; }
-
-  const weekLabel = `Week ${curWeek + 1}`;
-  el.innerHTML =
-    statHTML('Current week', weekLabel) +
-    '<div class="stat-divider"></div>' +
-    statHTML('Hours planned', hoursPlanned > 0 ? hoursPlanned + 'h' : totalSlots + ' blocks', true);
-}
-
-// ─── FIRE SIM ─────────────────────────────────────────────────────
-function loadFire() {
-  const raw = safeGet('fire-sim-v1');
-  const state = safeParse(raw);
-  const el = document.getElementById('stats-fire');
-  const foot = document.getElementById('footer-fire');
-
-  if (!state) { el.innerHTML = noDataHTML('Open FIRE sim to start'); return; }
-
-  // S holds the main numeric state
-  const S = state.S || state;
-  if (!S) { el.innerHTML = noDataHTML('Run a simulation first'); return; }
-
-  // Try to find French assets, Colombian assets, total
-  // Common keys from FIRE sims
-  let french = null, colombian = null, total = null;
-
-  // Direct keys
-  const frKeys = ['frenchAssets','fr_assets','portfolioFR','portfolioFrance','pea','totalFR','french'];
-  const coKeys = ['colombianAssets','co_assets','portfolioCO','portfolioColombia','colombia','totalCO','cop'];
-  const totKeys = ['total','totalAssets','netWorth','globalTotal','portfolio','portfolioTotal'];
-
-  for (const k of frKeys) { if (typeof S[k] === 'number') { french = S[k]; break; } }
-  for (const k of coKeys) { if (typeof S[k] === 'number') { colombian = S[k]; break; } }
-  for (const k of totKeys) { if (typeof S[k] === 'number') { total = S[k]; break; } }
-
-  // If we got nothing useful, try summing PEA + CTO + AV + PEE etc.
-  if (french === null) {
-    const components = ['pea','cto','av','assuranceVie','pee','livretA','ldds','livrets','cash'];
-    let sum = 0; let found = false;
-    components.forEach(k => { if (typeof S[k] === 'number') { sum += S[k]; found = true; } });
-    if (found) french = sum;
-  }
-
-  // Compute total if we have parts
-  if (total === null && french !== null && colombian !== null) total = french + colombian;
-  if (total === null && french !== null) total = french;
-
-  if (french === null && colombian === null && total === null) {
-    el.innerHTML = noDataHTML('Run a simulation first');
+    el.innerHTML = anyData
+      ? statHTML('Week '+(curWeek+1), '0h planned', true)
+      : noData('Open planner to start');
     return;
   }
 
-  let html = '';
-  if (total !== null) html += statHTML('Total assets', fmt(total), true);
-  if (french !== null) html += '<div class="stat-divider"></div>' + statHTML('French portfolio', fmt(french));
+  // Each block object has a dur field = hours. Sum them directly.
+  const totalHours = blocks.reduce((s, b) => s + (b && typeof b==='object' ? (parseFloat(b.dur)||0) : 0), 0);
 
-  el.innerHTML = html || noDataHTML('Run a simulation first');
-
-  if (state.savedAt) foot.textContent = fmtSaveTime(state.savedAt);
+  el.innerHTML =
+    statHTML('Current week', 'Week ' + (curWeek + 1)) +
+    '<div class="stat-divider"></div>' +
+    statHTML('Hours planned', totalHours + 'h', true);
 }
 
-// ─── load all ─────────────────────────────────────────────────────
-function loadAll() {
-  loadTracker();
-  loadCalc();
-  loadPlanner();
-  loadFire();
+// ── FIRE SIM ─────────────────────────────────────────────────────
+// Values stored in €K (pea:100 = €100,000). Use activeScenario snapshot.
+function loadFire() {
+  const state = safeParse(safeGet('fire-sim-v1'));
+  const el = document.getElementById('stats-fire');
+  const foot = document.getElementById('footer-fire');
+  if (!state) { el.innerHTML = noData('Open FIRE sim to start'); return; }
+
+  // Pick the active scenario snapshot
+  let S = state.S;
+  let scenarioName = '';
+  if (Array.isArray(state.scenarios) && typeof state.activeScenario === 'number') {
+    const snap = state.scenarios[state.activeScenario];
+    if (snap && snap.snap && snap.snap.S) S = snap.snap.S;
+    if (snap && snap.name) scenarioName = snap.name;
+  }
+  if (!S) { el.innerHTML = noData('Run a simulation first'); return; }
+
+  // French assets in €K: pea + av + cto + liv + cash
+  const frK  = (S.pea||0) + (S.av||0) + (S.cto||0) + (S.liv||0) + (S.cash||0);
+  // Colombian assets in €K: cop1..cop4
+  const coK  = (S.cop1||0) + (S.cop2||0) + (S.cop3||0) + (S.cop4||0);
+  const totK = frK + coK;
+
+  const fmtK = n => fmt(n * 1000);
+
+  el.innerHTML =
+    statHTML('Total' + (scenarioName ? ` · ${scenarioName}` : ''), fmtK(totK), true) +
+    '<div class="stat-divider"></div>' +
+    statHTML('🇫🇷 French', fmtK(frK)) +
+    '<div class="stat-divider"></div>' +
+    statHTML('🇨🇴 Colombian', fmtK(coK));
+
+  if (state.savedAt) foot.textContent = fmtAgo(state.savedAt);
 }
 
+// ── init ─────────────────────────────────────────────────────────
+function loadAll() { loadTracker(); loadCalc(); loadPlanner(); loadFire(); }
 loadAll();
 </script>
 </body>
