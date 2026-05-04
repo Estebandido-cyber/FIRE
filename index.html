@@ -480,14 +480,10 @@ function loadCalc() {
   }
   const nowLeft = calcLeft(states.now);
   const fireLeft = calcLeft(states.fire);
-  const free = freeDaysThisWeek();
-  const freeLabel = free === 1 ? '1 free day' : `${free} free days`;
   el.innerHTML =
     statHTML('Left / month · now', fmt(nowLeft), true) +
     '<div class="stat-divider"></div>' +
-    statHTML('Left / month · FIRE', fmt(fireLeft)) +
-    '<div class="stat-divider"></div>' +
-    statHTML('Available this week', freeLabel);
+    statHTML('Left / month · FIRE', fmt(fireLeft));
 }
 
 // ── WEEK PLANNER ─────────────────────────────────────────────────
@@ -510,11 +506,15 @@ function loadPlanner() {
   }
 
   const totalHours = blocks.reduce((s, b) => s + (b && typeof b==='object' ? (parseFloat(b.dur)||0) : 0), 0);
+  const free = freeDaysThisWeek();
+  const freeLabel = free === 1 ? '1 free day' : `${free} free days`;
 
   el.innerHTML =
     statHTML('Current week', 'Week ' + (curWeek + 1)) +
     '<div class="stat-divider"></div>' +
-    statHTML('Hours planned', totalHours + 'h', true);
+    statHTML('Hours planned', totalHours + 'h', true) +
+    '<div class="stat-divider"></div>' +
+    statHTML('Available this week', freeLabel);
 }
 
 // ── FIRE SIM ─────────────────────────────────────────────────────
