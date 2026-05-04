@@ -158,12 +158,16 @@
   .tile:hover::before { opacity: 1; }
   .tile:active { transform: translateY(0) scale(0.98); }
 
+  .tile-tracker { border-color: rgba(255,209,102,0.3); }
   .tile-tracker::before { background: radial-gradient(ellipse at top left, var(--accent-tracker-dim), transparent 70%); }
   .tile-tracker:hover { border-color: var(--accent-tracker-glow); }
+  .tile-calc { border-color: rgba(0,229,160,0.3); }
   .tile-calc::before { background: radial-gradient(ellipse at top left, var(--accent-calc-dim), transparent 70%); }
   .tile-calc:hover { border-color: var(--accent-calc-glow); }
+  .tile-planner { border-color: rgba(167,139,250,0.3); }
   .tile-planner::before { background: radial-gradient(ellipse at top left, var(--accent-planner-dim), transparent 70%); }
   .tile-planner:hover { border-color: var(--accent-planner-glow); }
+  .tile-fire { border-color: rgba(125,211,252,0.3); }
   .tile-fire::before { background: radial-gradient(ellipse at top left, var(--accent-fire-dim), transparent 70%); }
   .tile-fire:hover { border-color: var(--accent-fire-glow); }
 
@@ -414,17 +418,28 @@ function loadTracker() {
   const now = new Date();
   const curMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
   const curYear = String(now.getFullYear());
-  let monthTotal = 0, yearTotal = 0;
+
+  // Compute Mon–Sun of current week
+  const dayOfWeek = now.getDay() === 0 ? 6 : now.getDay() - 1; // 0=Mon
+  const monday = new Date(now); monday.setDate(now.getDate() - dayOfWeek); monday.setHours(0,0,0,0);
+  const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6); sunday.setHours(23,59,59,999);
+
+  let weekTotal = 0, monthTotal = 0, yearTotal = 0;
 
   Object.entries(data).forEach(([k, entries]) => {
     if (!Array.isArray(entries)) return;
     const sum = entries.reduce((s, e) => s + (parseFloat(e.amt)||0), 0);
     if (k.startsWith(curYear)) yearTotal += sum;
     if (k.startsWith(curMonth)) monthTotal += sum;
+    // k format: "YYYY-MM-DD"
+    const d = new Date(k + 'T00:00:00');
+    if (d >= monday && d <= sunday) weekTotal += sum;
   });
 
   el.innerHTML =
-    statHTML('This month', fmt(monthTotal), true) +
+    statHTML('This week', fmt(weekTotal), true) +
+    '<div class="stat-divider"></div>' +
+    statHTML('This month', fmt(monthTotal)) +
     '<div class="stat-divider"></div>' +
     statHTML('This year', fmt(yearTotal));
   foot.textContent = fmtAgo(safeGet('depenses_last_save'));
@@ -443,6 +458,20 @@ function calcLeft(tab) {
   return income - expenses;
 }
 
+// Count Mon–Fri days in current week with < 2h planned in the week planner
+function freeDaysThisWeek() {
+  const curWeek = parseInt(safeGet('weekplan_curweek') || '0') || 0;
+  const curPlaces = safeParse(safeGet('weekplan_week' + curWeek)) || {};
+  // Group blocks by weekday column (d field: 0=Mon..4=Fri)
+  const hoursByDay = {0:0, 1:0, 2:0, 3:0, 4:0};
+  Object.values(curPlaces).forEach(b => {
+    if (b && typeof b === 'object' && b.d >= 0 && b.d <= 4) {
+      hoursByDay[b.d] += (parseFloat(b.dur)||0);
+    }
+  });
+  return Object.values(hoursByDay).filter(h => h < 2).length;
+}
+
 function loadCalc() {
   const states = safeParse(safeGet('xpenses_calculator_v1'));
   const el = document.getElementById('stats-calc');
@@ -451,10 +480,14 @@ function loadCalc() {
   }
   const nowLeft = calcLeft(states.now);
   const fireLeft = calcLeft(states.fire);
+  const free = freeDaysThisWeek();
+  const freeLabel = free === 1 ? '1 free day' : `${free} free days`;
   el.innerHTML =
     statHTML('Left / month · now', fmt(nowLeft), true) +
     '<div class="stat-divider"></div>' +
-    statHTML('Left / month · FIRE', fmt(fireLeft));
+    statHTML('Left / month · FIRE', fmt(fireLeft)) +
+    '<div class="stat-divider"></div>' +
+    statHTML('Available this week', freeLabel);
 }
 
 // ── WEEK PLANNER ─────────────────────────────────────────────────
@@ -476,7 +509,6 @@ function loadPlanner() {
     return;
   }
 
-  // Each block object has a dur field = hours. Sum them directly.
   const totalHours = blocks.reduce((s, b) => s + (b && typeof b==='object' ? (parseFloat(b.dur)||0) : 0), 0);
 
   el.innerHTML =
@@ -486,14 +518,17 @@ function loadPlanner() {
 }
 
 // ── FIRE SIM ─────────────────────────────────────────────────────
-// Values stored in €K (pea:100 = €100,000). Use activeScenario snapshot.
+// French assets stored in €K (pea:100 = €100,000)
+// Colombian assets stored in millions COP (cop2:300 = 300M COP)
+// Conversion: 1 EUR = 4500 COP → €value = copMillions * 1,000,000 / 4500
+const COP_EUR = 4500;
+
 function loadFire() {
   const state = safeParse(safeGet('fire-sim-v1'));
   const el = document.getElementById('stats-fire');
   const foot = document.getElementById('footer-fire');
   if (!state) { el.innerHTML = noData('Open FIRE sim to start'); return; }
 
-  // Pick the active scenario snapshot
   let S = state.S;
   let scenarioName = '';
   if (Array.isArray(state.scenarios) && typeof state.activeScenario === 'number') {
@@ -503,20 +538,18 @@ function loadFire() {
   }
   if (!S) { el.innerHTML = noData('Run a simulation first'); return; }
 
-  // French assets in €K: pea + av + cto + liv + cash
-  const frK  = (S.pea||0) + (S.av||0) + (S.cto||0) + (S.liv||0) + (S.cash||0);
-  // Colombian assets in €K: cop1..cop4
-  const coK  = (S.cop1||0) + (S.cop2||0) + (S.cop3||0) + (S.cop4||0);
-  const totK = frK + coK;
-
-  const fmtK = n => fmt(n * 1000);
+  // French: values in €K → multiply by 1000
+  const frEur = ((S.pea||0) + (S.av||0) + (S.cto||0) + (S.liv||0) + (S.cash||0)) * 1000;
+  // Colombian: values in millions COP → convert to EUR
+  const coEur = ((S.cop1||0) + (S.cop2||0) + (S.cop3||0) + (S.cop4||0)) * 1_000_000 / COP_EUR;
+  const totEur = frEur + coEur;
 
   el.innerHTML =
-    statHTML('Total' + (scenarioName ? ` · ${scenarioName}` : ''), fmtK(totK), true) +
+    statHTML('Total' + (scenarioName ? ` · ${scenarioName}` : ''), fmt(totEur), true) +
     '<div class="stat-divider"></div>' +
-    statHTML('🇫🇷 French', fmtK(frK)) +
+    statHTML('🇫🇷 French', fmt(frEur)) +
     '<div class="stat-divider"></div>' +
-    statHTML('🇨🇴 Colombian', fmtK(coK));
+    statHTML('🇨🇴 Colombian', fmt(coEur));
 
   if (state.savedAt) foot.textContent = fmtAgo(state.savedAt);
 }
