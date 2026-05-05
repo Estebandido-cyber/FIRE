@@ -584,7 +584,7 @@ function parseWorkoutText(text, date, loc) {
   const durM = text.match(/0?(\d+)h(\d+)m(?:\d+s)?/);
   if (durM) dur = parseInt(durM[1])*60 + parseInt(durM[2]);
 
-  // ── EXERCISE PARSING ──
+  // ── EXERCISE PARSING  ──
   // Detect block multipliers: standalone "X5" or "x5" on its own line
   // Group bullet lines into blocks separated by block multipliers
   const blocks = [];
