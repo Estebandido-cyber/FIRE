@@ -139,7 +139,7 @@ body { margin: 0; padding: 0; background: var(--color-bg-tertiary); color: var(-
 
 .sstat { display: flex; flex-direction: column; background: var(--stat-bg); border-radius: 6px; padding: 3px 9px; min-width: 86px; flex-shrink: 0; }
 .sstat-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; color: var(--color-text-tertiary); white-space: nowrap; margin-bottom: 1px; }
-.sstat-value { font-size: 12px; font-weight: 600; color: var(--color-text-primary); white-space: nowrap; line-height: 1.2; letter-spacing: 0; vertical-align: baseline; font-variant-numeric: tabular-nums; }
+.sstat-value { font-size: 12px; font-weight: 600; color: var(--color-text-primary); white-space: nowrap; line-height: 1.2; letter-spacing: 0; font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; -webkit-font-feature-settings: "tnum"; }
 .sstat-sep { width: 1px; height: 26px; background: var(--color-border-secondary); flex-shrink: 0; }
 
 .hdr-btn { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px; cursor: pointer; border: 1px solid; white-space: nowrap; transition: opacity .15s; }
@@ -393,7 +393,20 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
 .bk-col3 { background: rgba(245,100,32,0.22); color: var(--color-text-danger); }
 .bk-col4 { background: rgba(160,200,48,0.22); color: var(--color-text-success); }
 
-/* ── EMOJI FLAG FIX (GitHub / some desktop environments) ── */
+/* ── NUMERIC RENDERING FIX — all header/block totals ── */
+/* Prevents digit spacing, baseline drift, and proportional-digit gaps
+   on Apple system font across macOS and iOS */
+.sstat-value,
+#fr-header-total,
+#col-header-cop,
+#col-header-eur,
+#sh-fr, #sh-col, #sh-total, #sh-age {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  -webkit-font-feature-settings: "tnum";
+  letter-spacing: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', ui-monospace, sans-serif;
+}
 /* Force system emoji font for flag characters so they render on all platforms */
 .sstat-label, .col-badge, .grand-total-flags,
 #col-header-cop, #col-badge-header, #order-note,
