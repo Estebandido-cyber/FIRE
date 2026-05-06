@@ -18,33 +18,36 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-sans);font-si
 
 /* HEADER */
 .header{padding:24px 28px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.header-left .sup{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px}
-.header-left .title{font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--accent);letter-spacing:-.02em}
-.header-left .sub{font-size:11px;color:var(--muted);margin-top:3px}
+.header-left .sup{font-family:var(--font-mono);font-size:10px;color:#9a9aaa;letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px}
+.header-left .title{display:flex;align-items:center;gap:9px;line-height:1;margin-bottom:2px}
+.title-workout{font-family:var(--font-mono);font-size:26px;font-weight:700;color:var(--accent);letter-spacing:-.02em}
+.title-insights{font-family:var(--font-sans);font-size:23px;font-weight:300;color:rgba(232,232,234,0.5);letter-spacing:.06em}
+.title-emoji{font-size:22px;line-height:1}
+.header-left .sub{font-size:11px;color:#9a9aaa;margin-top:5px}
 .header-stats{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
 .hstat{text-align:right;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:8px 14px}
 .hstat-val{font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--text)}
-.hstat-label{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.hstat-label{font-size:10px;color:#9a9aaa;letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
 
 /* TOOLBAR */
 .toolbar{display:flex;gap:8px;padding:10px 28px;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
 .toolbar-group{display:flex;gap:6px;align-items:center}
 .toolbar-sep{width:1px;height:24px;background:var(--border);margin:0 4px}
-.tbtn{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:6px 12px;font-size:11px;font-family:var(--font-sans);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:.03em;white-space:nowrap}
-.tbtn:hover{color:var(--text);border-color:var(--muted)}
+.tbtn{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:6px 12px;font-size:11px;font-family:var(--font-sans);color:#b0b0be;cursor:pointer;transition:all .15s;letter-spacing:.03em;white-space:nowrap}
+.tbtn:hover{color:var(--text);border-color:#6b6b78}
 .tbtn.primary{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
 .tbtn.primary:hover{background:#d4ff3d}
 .tbtn.danger{border-color:var(--a4);color:var(--a4)}
 .tbtn.danger:hover{background:var(--a4);color:#000}
 .tbtn svg{width:13px;height:13px;flex-shrink:0}
-.status-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#6b6b78;flex-shrink:0}
 .status-dot.ok{background:var(--accent)}
 .status-dot.warn{background:var(--a3)}
-#statusText{font-size:11px;color:var(--muted)}
+#statusText{font-size:11px;color:#9a9aaa}
 
 /* NAV */
 .nav{display:flex;gap:4px;padding:10px 28px;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.nav-btn{background:none;border:1px solid transparent;border-radius:var(--r);padding:5px 13px;font-size:12px;font-family:var(--font-sans);color:var(--muted);cursor:pointer;transition:all .15s}
+.nav-btn{background:none;border:1px solid transparent;border-radius:var(--r);padding:5px 13px;font-size:12px;font-family:var(--font-sans);color:#b0b0be;cursor:pointer;transition:all .15s}
 .nav-btn:hover{color:var(--text);border-color:var(--border)}
 .nav-btn.active{background:var(--accent);color:#0a0a0b;border-color:var(--accent);font-weight:600}
 
@@ -57,8 +60,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-sans);font-si
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:9px;margin-bottom:22px}
 .card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px}
 .card-val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--text);line-height:1}
-.card-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:5px}
-.card-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.card-label{font-size:10px;color:#b0b0be;text-transform:uppercase;letter-spacing:.08em;margin-top:5px}
+.card-sub{font-size:11px;color:#9a9aaa;margin-top:2px}
 .card.ca{border-color:var(--accent)}.card.ca .card-val{color:var(--accent)}
 .card.c2{border-color:var(--a2)}.card.c2 .card-val{color:var(--a2)}
 .card.c3{border-color:var(--a3)}.card.c3 .card-val{color:var(--a3)}
@@ -68,7 +71,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-sans);font-si
 
 /* CHARTS */
 .chart-section{margin-bottom:26px}
-.section-label{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.section-label{font-family:var(--font-mono);font-size:10px;color:#b0b0be;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:8px}
 .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 .chart-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:15px;position:relative}
 .h160{height:160px}.h200{height:200px}.h240{height:240px}.h220{height:220px}
@@ -77,7 +80,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-sans);font-si
 
 /* TAB SWITCHERS */
 .tabs{display:flex;gap:4px;margin-bottom:11px;flex-wrap:wrap}
-.tab-btn{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 11px;font-size:11px;color:var(--muted);cursor:pointer;font-family:var(--font-sans);transition:all .1s}
+.tab-btn{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 11px;font-size:11px;color:#b0b0be;cursor:pointer;font-family:var(--font-sans);transition:all .1s}
 .tab-btn.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
 
 /* LOCATION BARS */
@@ -85,23 +88,29 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-sans);font-si
 .loc-name{font-size:12px;color:var(--text);width:160px;flex-shrink:0}
 .loc-track{flex:1;background:var(--bg2);border-radius:2px;height:5px}
 .loc-fill{height:100%;border-radius:2px;transition:width .4s ease}
-.loc-count{font-family:var(--font-mono);font-size:11px;color:var(--muted);width:45px;text-align:right}
+.loc-count{font-family:var(--font-mono);font-size:11px;color:#9a9aaa;width:45px;text-align:right}
 
 /* RECORDS */
 .records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:9px}
 .record-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:13px;display:flex;align-items:center;gap:11px}
 .record-icon{font-size:20px;width:32px;text-align:center;flex-shrink:0}
 .record-val{font-family:var(--font-mono);font-size:17px;font-weight:700;color:var(--accent)}
-.record-label{font-size:11px;color:var(--muted)}
-.record-date{font-size:10px;color:var(--muted);font-family:var(--font-mono)}
+.record-label{font-size:11px;color:#b0b0be}
+.record-date{font-size:10px;color:#9a9aaa;font-family:var(--font-mono)}
 
-/* ══ ADD WORKOUT PANEL  ══ */
-.add-panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:24px}
-.add-panel-title{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+/* ══ ADD WORKOUT PANEL ══ */
+.add-panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);margin-bottom:24px;overflow:hidden}
+.add-panel-header{display:flex;align-items:center;gap:8px;padding:14px 18px;cursor:pointer;user-select:none;transition:background .15s}
+.add-panel-header:hover{background:rgba(200,241,53,.04)}
+.add-panel-title{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:8px;flex:1}
 .add-panel-title::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.add-panel-arrow{color:#b0b0be;font-size:13px;transition:transform .25s;flex-shrink:0}
+.add-panel-arrow.open{transform:rotate(180deg)}
+.add-panel-body{padding:0 18px 18px;display:none}
+.add-panel-body.open{display:block}
 .add-row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .add-field{display:flex;flex-direction:column;gap:4px}
-.add-field label{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.add-field label{font-size:10px;color:#b0b0be;letter-spacing:.08em;text-transform:uppercase}
 .add-field input,.add-field select,.add-field textarea{background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font-sans);font-size:13px;padding:8px 11px;outline:none;transition:border-color .15s}
 .add-field input:focus,.add-field select:focus,.add-field textarea:focus{border-color:var(--accent)}
 .add-field select option{background:var(--bg2)}
@@ -148,7 +157,7 @@ canvas{display:block;width:100%!important}
 <div class="header">
   <div class="header-left">
     <div class="sup">Analytics Dashboard</div>
-    <div class="title">WORKOUT INSIGHTS</div>
+    <div class="title"><span class="title-workout">WORKOUT</span><span class="title-insights">Insights</span><span class="title-emoji">🏋️</span></div>
     <div class="sub" id="headerSub">Loading…</div>
   </div>
   <div class="header-stats">
@@ -207,7 +216,11 @@ canvas{display:block;width:100%!important}
 
   <!-- ADD WORKOUT PANEL -->
   <div class="add-panel">
-    <div class="add-panel-title">Add Workout</div>
+    <div class="add-panel-header" onclick="toggleAddPanel()">
+      <div class="add-panel-title">Add Workout</div>
+      <span class="add-panel-arrow" id="addPanelArrow">▼</span>
+    </div>
+    <div class="add-panel-body" id="addPanelBody">
     <div class="add-row">
       <div class="add-field">
         <label>Date</label>
@@ -242,6 +255,7 @@ canvas{display:block;width:100%!important}
       <div class="preview-grid" id="previewGrid"></div>
       <div class="preview-exercises" id="previewExercises"></div>
       <div class="preview-warn" id="previewWarn" style="display:none"></div>
+    </div>
     </div>
   </div>
 
@@ -584,7 +598,7 @@ function parseWorkoutText(text, date, loc) {
   const durM = text.match(/0?(\d+)h(\d+)m(?:\d+s)?/);
   if (durM) dur = parseInt(durM[1])*60 + parseInt(durM[2]);
 
-  // ── EXERCISE PARSING  ──
+  // ── EXERCISE PARSING ──
   // Detect block multipliers: standalone "X5" or "x5" on its own line
   // Group bullet lines into blocks separated by block multipliers
   const blocks = [];
@@ -757,6 +771,13 @@ function parseWorkoutText(text, date, loc) {
 // ══════════════════════════════════════════════════════════════
 // ADD WORKOUT UI
 // ══════════════════════════════════════════════════════════════
+function toggleAddPanel() {
+  const body = document.getElementById('addPanelBody');
+  const arrow = document.getElementById('addPanelArrow');
+  const open = body.classList.toggle('open');
+  arrow.classList.toggle('open', open);
+}
+
 function initAddWorkout() {
   const today = new Date().toISOString().slice(0,10);
   document.getElementById('addDate').value = today;
@@ -912,7 +933,7 @@ function rebuildMonthly() {
 // ══════════════════════════════════════════════════════════════
 const C = {pu:'#c8f135',dom:'#35d4f1',sq:'#a035f1',dip:'#f13575',jr:'#a035f1',run:'#35f1a5',hr:'#f13575',kcal:'#f1a535'};
 const grid='rgba(255,255,255,0.05)';
-const tick={color:'#6b6b78',font:{size:10,family:"'Space Mono'"}};
+const tick={color:'#b0b0be',font:{size:10,family:"'Space Mono'"}};
 const baseOpts={
   responsive:true,maintainAspectRatio:false,
   plugins:{legend:{display:false},tooltip:{backgroundColor:'#18181c',borderColor:'#2a2a30',borderWidth:1,titleFont:{family:"'Space Mono'",size:11},bodyFont:{family:"'DM Sans'",size:12},padding:10}},
