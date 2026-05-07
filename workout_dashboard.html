@@ -228,6 +228,7 @@ canvas{display:block;width:100%!important}
 
 <nav class="nav">
   <button class="nav-btn active" onclick="showTab('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showTab('lastworkout',this)">Last Workout</button>
   <button class="nav-btn" onclick="showTab('exercises',this)">Exercises</button>
   <button class="nav-btn" onclick="showTab('cardio',this)">Cardio &amp; Run</button>
   <button class="nav-btn" onclick="showTab('vitals',this)">Heart Rate &amp; Calories</button>
@@ -258,7 +259,7 @@ canvas{display:block;width:100%!important}
         <select id="addLoc" style="width:180px">
           <option value="Barras Rhône">Barras Rhône</option>
           <option value="Park 1 (Wilson)">Park 1 (Wilson)</option>
-          <option value="Park 2">Park 2</option>
+          <option value="Park 2 (Levallois)">Park 2 (Levallois)</option>
           <option value="Home" selected>Home</option>
           <option value="Colombia">Colombia</option>
           <option value="Germany">Germany</option>
@@ -308,11 +309,37 @@ canvas{display:block;width:100%!important}
   <div class="chart-section chart-wrap h240"><canvas id="volChart"></canvas></div>
 </div>
 
+<!-- ══ LAST WORKOUT ══ -->
+<div id="tab-lastworkout" class="tab-content">
+  <div class="section-label">Latest session</div>
+  <div id="lw-header" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:16px;align-items:center">
+    <div>
+      <div style="font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--accent)" id="lw-title">—</div>
+      <div style="font-size:12px;color:#9a9aaa;margin-top:3px" id="lw-meta">—</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-left:auto" id="lw-pills"></div>
+  </div>
+  <div class="cards" id="lw-cards"></div>
+  <div class="section-label">Exercise breakdown</div>
+  <div class="chart-wrap h220 chart-section"><canvas id="lwExChart"></canvas></div>
+  <div class="two-col">
+    <div>
+      <div class="section-label">Push-up variants</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="lwPuChart"></canvas></div>
+    </div>
+    <div>
+      <div class="section-label">Pull-up variants</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="lwDomChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
 <!-- ══ EXERCISES ══ -->
 <div id="tab-exercises" class="tab-content">
   <div class="section-label">Push-up variant breakdown — monthly totals</div>
   <div class="tabs" id="puTabs">
-    <button class="tab-btn active" data-key="pu_fu">Feet-Up (PUFU)</button>
+    <button class="tab-btn active" data-key="pu_plain">Regular</button>
+    <button class="tab-btn" data-key="pu_fu">Feet-Up (PUFU)</button>
     <button class="tab-btn" data-key="pu_diam">Diamond</button>
     <button class="tab-btn" data-key="pu_wide">Wide</button>
     <button class="tab-btn" data-key="pu_spartan">Spartan</button>
@@ -323,7 +350,8 @@ canvas{display:block;width:100%!important}
 
   <div class="section-label">Pull-up variant breakdown — monthly totals</div>
   <div class="tabs" id="domTabs">
-    <button class="tab-btn active" data-key="dom_neutr">Neutral grip</button>
+    <button class="tab-btn active" data-key="dom_plain">Regular</button>
+    <button class="tab-btn" data-key="dom_neutr">Neutral grip</button>
     <button class="tab-btn" data-key="dom_close">Close grip</button>
     <button class="tab-btn" data-key="dom_wide">Wide grip</button>
     <button class="tab-btn" data-key="dom_austr">Australian</button>
@@ -351,6 +379,7 @@ canvas{display:block;width:100%!important}
     <div class="card c5"><div class="card-val" id="cv-jr-best">—</div><div class="card-label">Best JR session</div></div>
     <div class="card c5"><div class="card-val" id="cv-jr-total">—</div><div class="card-label">Total JR</div></div>
     <div class="card c3"><div class="card-val" id="cv-run-best">—</div><div class="card-label">Longest run</div></div>
+    <div class="card c6"><div class="card-val" id="cv-run-total">—</div><div class="card-label">Total run</div></div>
   </div>
   <div class="section-label">Jump rope — total minutes per month</div>
   <div class="chart-wrap h200 chart-section"><canvas id="jrTotalChart"></canvas></div>
@@ -387,8 +416,8 @@ canvas{display:block;width:100%!important}
   <div class="section-label">Personal bests</div>
   <div class="records-grid" id="recordsGrid"></div>
   <br>
-  <div class="section-label">Best months by total volume</div>
-  <div class="chart-wrap h240"><canvas id="bestMonthsChart"></canvas></div>
+  <div class="section-label">Best vs 2nd best vs average</div>
+  <div id="recChartsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px"></div>
 </div>
 
 <!-- ══ CONTEXT ══ -->
@@ -1090,7 +1119,11 @@ function updateHeaderStats() {
     document.getElementById('cv-jr-best').textContent=Math.round(bestJR/60)+' min';
     document.getElementById('cv-jr-total').textContent=totalJRh.toFixed(1)+'h';
   }
-  if(withRun.length) document.getElementById('cv-run-best').textContent=Math.round(Math.max(...withRun.map(s=>s.run))/60)+' min';
+  if(withRun.length){
+    document.getElementById('cv-run-best').textContent=Math.round(Math.max(...withRun.map(s=>s.run))/60)+' min';
+    const totalRunH=(sessions.reduce((a,s)=>a+(s.run||0),0)/3600).toFixed(1);
+    document.getElementById('cv-run-total').textContent=totalRunH+'h';
+  }
   if(withKcal.length) document.getElementById('cv-maxkcal').textContent=Math.max(...withKcal.map(s=>s.kcal)).toLocaleString()+' kcal';
   if(withHR.length) document.getElementById('cv-maxhr').textContent=Math.max(...withHR.map(s=>s.mhr))+' bpm';
 }
@@ -1120,9 +1153,9 @@ function rebuildCharts() {
   // PU variants
   function buildPU(key){
     if(puVariantInst)puVariantInst.destroy();
-    puVariantInst=mkBar('puVariantChart',labels,monthly.map(m=>m[key]||0),{pu_fu:C.pu,pu_diam:C.dom,pu_wide:C.sq,pu_spartan:C.dip,pu_russian:C.jr,pu_indian:C.kcal}[key]||C.pu);
+    puVariantInst=mkBar('puVariantChart',labels,monthly.map(m=>m[key]||0),{pu_plain:C.pu,pu_fu:C.pu,pu_diam:C.dom,pu_wide:C.sq,pu_spartan:C.dip,pu_russian:C.jr,pu_indian:C.kcal}[key]||C.pu);
   }
-  buildPU('pu_fu');
+  buildPU('pu_plain');
   const puTabs=document.getElementById('puTabs');
   if(!puTabs._bound){
     puTabs.addEventListener('click',e=>{
@@ -1136,9 +1169,9 @@ function rebuildCharts() {
   // Dom variants
   function buildDom(key){
     if(domVariantInst)domVariantInst.destroy();
-    domVariantInst=mkBar('domVariantChart',labels,monthly.map(m=>m[key]||0),{dom_neutr:C.dom,dom_close:C.pu,dom_wide:C.sq,dom_austr:C.dip,dom_explo:C.jr,dom_fat:C.run,bic_chinup:C.hr}[key]||C.dom);
+    domVariantInst=mkBar('domVariantChart',labels,monthly.map(m=>m[key]||0),{dom_plain:C.dom,dom_neutr:C.dom,dom_close:C.pu,dom_wide:C.sq,dom_austr:C.dip,dom_explo:C.jr,dom_fat:C.run,bic_chinup:C.hr}[key]||C.dom);
   }
-  buildDom('dom_neutr');
+  buildDom('dom_plain');
   const domTabs=document.getElementById('domTabs');
   if(!domTabs._bound){
     domTabs.addEventListener('click',e=>{
@@ -1192,7 +1225,7 @@ function rebuildCharts() {
   sessions.forEach(s=>{locCount[s.loc]=(locCount[s.loc]||0)+1;});
   const locSorted=Object.entries(locCount).sort((a,b)=>b[1]-a[1]);
   const maxLoc=locSorted[0]?.[1]||1;
-  const locColors={'Barras Rhône':C.pu,'Park 1 (Wilson)':C.dom,'Home':C.kcal,'Park 2':C.dip,'Colombia':C.sq};
+  const locColors={'Barras Rhône':C.pu,'Park 1 (Wilson)':C.dom,'Home':C.kcal,'Park 2':C.dip,'Park 2 (Levallois)':C.dip,'Colombia':C.sq};
   const locDiv=document.getElementById('locBars');
   locDiv.innerHTML=locSorted.map(([name,count])=>`
     <div class="loc-bar">
@@ -1231,12 +1264,69 @@ function rebuildCharts() {
   const rg=document.getElementById('recordsGrid');
   rg.innerHTML=recs.map(r=>`<div class="record-card"><div class="record-icon">${r.icon}</div><div><div class="record-val">${r.val}</div><div class="record-label">${r.label}</div><div class="record-date">${r.date}</div></div></div>`).join('');
 
-  // Best months chart
-  const topMonths=[...monthly].sort((a,b)=>((b.pu||0)+(b.dom||0)+(b.sq||0)+(b.dip||0))-((a.pu||0)+(a.dom||0)+(a.sq||0)+(a.dip||0))).slice(0,12);
-  const bmCtx=document.getElementById('bestMonthsChart');if(bmCtx){
-    if(charts['bestMonthsChart'])charts['bestMonthsChart'].destroy();
-    charts['bestMonthsChart']=new Chart(bmCtx,{type:'bar',data:{labels:topMonths.map(m=>monthLabel(m.month)),datasets:[{data:topMonths.map(m=>(m.pu||0)+(m.dom||0)+(m.sq||0)+(m.dip||0)),backgroundColor:C.pu+'cc',borderRadius:3}]},options:{...baseOpts,indexAxis:'y'}});
+  // ── Records: best vs 2nd vs average mini-charts ──────────────
+  function topN(arr, key, n) {
+    return [...arr].filter(s=>s[key]>0).sort((a,b)=>b[key]-a[key]).slice(0,n);
   }
+  function avg(arr, key) {
+    const v=arr.filter(s=>s[key]>0);
+    return v.length?Math.round(v.reduce((a,s)=>a+(s[key]||0),0)/v.length):0;
+  }
+
+  const recDefs = [
+    {label:'Push-ups / session', key:'pu', unit:'', color:C.pu, fmt:v=>v},
+    {label:'Pull-ups / session', key:'dom', unit:'', color:C.dom, fmt:v=>v},
+    {label:'Calories burned', key:'kcal', unit:'kcal', color:C.kcal, fmt:v=>v},
+    {label:'Max heart rate', key:'mhr', unit:'bpm', color:C.hr, fmt:v=>v},
+    {label:'Jump rope / session', key:'jr', unit:'min', color:C.jr, fmt:v=>Math.round(v/60)},
+    {label:'Run time / session', key:'run', unit:'min', color:C.run, fmt:v=>Math.round(v/60)},
+    {label:'Squats / session', key:'sq', unit:'', color:C.sq, fmt:v=>v},
+    {label:'Dips / session', key:'dip', unit:'', color:C.dip, fmt:v=>v},
+  ];
+
+  const recGrid = document.getElementById('recChartsGrid');
+  recGrid.innerHTML = '';
+  recDefs.forEach((def, idx) => {
+    const top = topN(sessions, def.key, 2);
+    if (!top.length) return;
+    const best = def.fmt(top[0][def.key]);
+    const second = top[1] ? def.fmt(top[1][def.key]) : 0;
+    const average = def.fmt(avg(sessions, def.key));
+
+    const wrap = document.createElement('div');
+    wrap.className = 'chart-wrap';
+    wrap.style.cssText = 'height:160px;position:relative';
+    wrap.innerHTML = `<div style="font-family:var(--font-mono);font-size:10px;color:#b0b0be;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">${def.label}</div><canvas id="recChart${idx}"></canvas>`;
+    recGrid.appendChild(wrap);
+
+    setTimeout(() => {
+      const ctx = document.getElementById(`recChart${idx}`);
+      if (!ctx) return;
+      if (charts[`rec${idx}`]) charts[`rec${idx}`].destroy();
+      charts[`rec${idx}`] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['🥇 Best', '🥈 2nd', '📊 Avg'],
+          datasets: [{
+            data: [best, second, average],
+            backgroundColor: [def.color+'ee', def.color+'88', def.color+'44'],
+            borderRadius: 4, borderSkipped: false,
+          }]
+        },
+        options: {
+          ...baseOpts,
+          plugins: { ...baseOpts.plugins, tooltip: { ...baseOpts.plugins.tooltip,
+            callbacks: { label: ctx => ` ${ctx.raw}${def.unit?' '+def.unit:''}` }
+          }},
+          scales: {
+            x: { ...baseOpts.scales.x, ticks: { ...baseOpts.scales.x.ticks, maxRotation: 0 } },
+            y: { ...baseOpts.scales.y, ticks: { ...baseOpts.scales.y.ticks,
+              callback: v => v + (def.unit?' '+def.unit:'') }}
+          }
+        }
+      });
+    }, 0);
+  });
 
   // Context: pola
   const polaByMonth={};
@@ -1257,6 +1347,96 @@ function rebuildCharts() {
     charts['tempScatter']=new Chart(tsCtx,{type:'scatter',data:{datasets:[{data:tData,backgroundColor:'#c8f13555',borderColor:'#c8f135',pointRadius:3}]},options:{...baseOpts,scales:{x:{...baseOpts.scales.x,title:{display:true,text:'Temperature (°C)',color:'#6b6b78',font:{size:10}}},y:{...baseOpts.scales.y,title:{display:true,text:'Push-ups',color:'#6b6b78',font:{size:10}}}}}});
   }
 }
+
+  // ── Last Workout tab ───────────────────────────────────────
+  buildLastWorkout();
+
+function buildLastWorkout() {
+  if (!sessions.length) return;
+  const s = sessions[sessions.length - 1];
+  const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const d = new Date(s.d);
+  const dateStr = `${mn[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+
+  document.getElementById('lw-title').textContent = s.d;
+  document.getElementById('lw-meta').textContent = `${dateStr} · ${s.loc||'Unknown location'}`;
+
+  // Pills
+  const pills = [];
+  if(s.dur) pills.push({label:`${s.dur}min`, color:C.pu});
+  if(s.kcal) pills.push({label:`${s.kcal} kcal`, color:C.kcal});
+  if(s.mhr) pills.push({label:`❤️ ${s.mhr} bpm`, color:C.hr});
+  if(s.jr) pills.push({label:`🪢 ${Math.round(s.jr/60)}min JR`, color:C.jr});
+  if(s.run) pills.push({label:`🏃 ${Math.round(s.run/60)}min run`, color:C.run});
+  document.getElementById('lw-pills').innerHTML = pills.map(p=>
+    `<span style="background:${p.color}22;border:1px solid ${p.color}66;border-radius:20px;padding:4px 10px;font-size:11px;color:${p.color};font-family:var(--font-mono)">${p.label}</span>`
+  ).join('');
+
+  // Cards
+  const lwCards = [
+    {val:s.pu||0, label:'Push-ups', cls:'c2'},
+    {val:s.dom||0, label:'Pull-ups', cls:'c3'},
+    {val:s.sq||0, label:'Squats', cls:'c5'},
+    {val:s.dip||0, label:'Dips', cls:'c4'},
+    {val:s.kcal||'—', label:'Calories', cls:'c3'},
+    {val:s.mhr?s.mhr+' bpm':'—', label:'Max HR', cls:'c4'},
+  ];
+  document.getElementById('lw-cards').innerHTML = lwCards.map(c=>
+    `<div class="card ${c.cls}"><div class="card-val">${c.val}</div><div class="card-label">${c.label}</div></div>`
+  ).join('');
+
+  // Exercise breakdown bar chart
+  const exLabels = ['PU','Dom','Sq','Dip'];
+  const exData = [s.pu||0, s.dom||0, s.sq||0, s.dip||0];
+  const exColors = [C.pu, C.dom, C.sq, C.dip];
+  const lwCtx = document.getElementById('lwExChart');
+  if(lwCtx){
+    if(charts['lwEx'])charts['lwEx'].destroy();
+    charts['lwEx'] = new Chart(lwCtx,{
+      type:'bar',
+      data:{labels:exLabels,datasets:[{data:exData,backgroundColor:exColors.map(c=>c+'cc'),borderRadius:4}]},
+      options:{...baseOpts,plugins:{...baseOpts.plugins,legend:{display:false}}}
+    });
+  }
+
+  // PU variants pie
+  const puVars = {
+    'Regular':s.pu-(s.dfu||0)-(s.ddm||0)-(s.dwp||0)-(s.dsp||0)-(s.drs||0),
+    'Feet-Up':s.dfu||0,'Diamond':s.ddm||0,'Wide':s.dwp||0,'Spartan':s.dsp||0,'Russian':s.drs||0
+  };
+  const puVarF = Object.fromEntries(Object.entries(puVars).filter(([,v])=>v>0));
+  const lwPuCtx = document.getElementById('lwPuChart');
+  if(lwPuCtx && Object.keys(puVarF).length){
+    if(charts['lwPu'])charts['lwPu'].destroy();
+    charts['lwPu'] = new Chart(lwPuCtx,{
+      type:'doughnut',
+      data:{labels:Object.keys(puVarF),datasets:[{data:Object.values(puVarF),
+        backgroundColor:['#c8f135','#35d4f1','#f1a535','#f13575','#a035f1','#35f1a5'],borderWidth:0,hoverOffset:4}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+        plugins:{legend:{display:true,position:'right',labels:{color:'#b0b0be',font:{size:10},boxWidth:10}}}}
+    });
+  }
+
+  // Dom variants pie
+  const domVars = {
+    'Regular':s.dom-(s.dnd||0)-(s.dcd||0)-(s.dwd||0)-(s.dad||0)-(s.ded||0)-(s.dfd||0)-(s.dbc||0),
+    'Neutral':s.dnd||0,'Close':s.dcd||0,'Wide':s.dwd||0,'Australian':s.dad||0,
+    'Explosive':s.ded||0,'Fat Grip':s.dfd||0,'Chin-up':s.dbc||0
+  };
+  const domVarF = Object.fromEntries(Object.entries(domVars).filter(([,v])=>v>0));
+  const lwDomCtx = document.getElementById('lwDomChart');
+  if(lwDomCtx && Object.keys(domVarF).length){
+    if(charts['lwDom'])charts['lwDom'].destroy();
+    charts['lwDom'] = new Chart(lwDomCtx,{
+      type:'doughnut',
+      data:{labels:Object.keys(domVarF),datasets:[{data:Object.values(domVarF),
+        backgroundColor:['#35d4f1','#c8f135','#f1a535','#f13575','#a035f1','#35f1a5','#f1f135','#f135d4'],borderWidth:0,hoverOffset:4}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+        plugins:{legend:{display:true,position:'right',labels:{color:'#b0b0be',font:{size:10},boxWidth:10}}}}
+    });
+  }
+}
+
 
 function rebuildAll() {
   updateHeaderStats();
