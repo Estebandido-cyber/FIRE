@@ -533,25 +533,24 @@ function loadTracker() {
   foot.textContent = fmtAgo(safeGet('depenses_last_save'));
 }
 
-// ── XPENSES CALCULATOR ───────────────────────────────────────────
-// Structure: { now: { salary, tickets, rent, ... }, fire: { ... } }
-// Income = salary + tickets. Left = income - all expense fields.
-function calcLeft(tab) {
-  if (!tab) return null;
-  // Income fields: salary, tickets (RT/Barista), partnerFixed (partner transfer)
-  const income = (parseFloat(tab.salary)||0) + (parseFloat(tab.tickets)||0) + (parseFloat(tab.partnerFixed)||0);
-  const expKeys = ['rent','insurance','internet','netflix','electricity','sharedAcc',
-    'phone','amazonPrime','smoothie','beer','chess','billar','billarMonth',
-    'lunch','extras','health','drums','savings'];
-  const expenses = expKeys.reduce((s, k) => s + (parseFloat(tab[k])||0), 0);
-  return income - expenses;
+function loadCalc() {
+  const outputs = safeParse(safeGet('xpenses_calculator_outputs'));
+  const el = document.getElementById('stats-calc');
+  if (!outputs) { el.innerHTML = noData('Open calculator to start'); return; }
+
+  const nowLeft  = outputs?.now?.leftover  ?? null;
+  const fireLeft = outputs?.fire?.leftover ?? null;
+
+  el.innerHTML =
+    statHTML('Left / month · now',  nowLeft  !== null ? fmt(nowLeft)  : '—', true) +
+    '<div class="stat-divider"></div>' +
+    statHTML('Left / month · FIRE', fireLeft !== null ? fmt(fireLeft) : '—');
 }
 
 // Count Mon–Fri days in current week with < 2h planned in the week planner
 function freeDaysThisWeek() {
   const curWeek = parseInt(safeGet('weekplan_curweek') || '0') || 0;
   const curPlaces = safeParse(safeGet('weekplan_week' + curWeek)) || {};
-  // Group blocks by weekday column (d field: 0=Mon..4=Fri)
   const hoursByDay = {0:0, 1:0, 2:0, 3:0, 4:0};
   Object.values(curPlaces).forEach(b => {
     if (b && typeof b === 'object' && b.d >= 0 && b.d <= 4) {
@@ -559,20 +558,6 @@ function freeDaysThisWeek() {
     }
   });
   return Object.values(hoursByDay).filter(h => h < 2).length;
-}
-
-function loadCalc() {
-  const states = safeParse(safeGet('xpenses_calculator_v1'));
-  const el = document.getElementById('stats-calc');
-  if (!states || (!states.now && !states.fire)) {
-    el.innerHTML = noData('Open calculator to start'); return;
-  }
-  const nowLeft = calcLeft(states.now);
-  const fireLeft = calcLeft(states.fire);
-  el.innerHTML =
-    statHTML('Left / month · now', fmt(nowLeft), true) +
-    '<div class="stat-divider"></div>' +
-    statHTML('Left / month · FIRE', fmt(fireLeft));
 }
 
 // ── WEEK PLANNER ─────────────────────────────────────────────────
