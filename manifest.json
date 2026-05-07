@@ -4,7 +4,6 @@
   "description": "Personal dashboard — expenses, planning & FIRE",
   "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#0a0a0f",
   "theme_color": "#0a0a0f",
   "icons": [
