@@ -538,10 +538,11 @@ function loadTracker() {
 // Income = salary + tickets. Left = income - all expense fields.
 function calcLeft(tab) {
   if (!tab) return null;
-  const income = (parseFloat(tab.salary)||0) + (parseFloat(tab.tickets)||0);
+  // Income fields: salary, tickets (RT/Barista), partnerFixed (partner transfer)
+  const income = (parseFloat(tab.salary)||0) + (parseFloat(tab.tickets)||0) + (parseFloat(tab.partnerFixed)||0);
   const expKeys = ['rent','insurance','internet','netflix','electricity','sharedAcc',
     'phone','amazonPrime','smoothie','beer','chess','billar','billarMonth',
-    'lunch','extras','health','drums','savings','partnerFixed'];
+    'lunch','extras','health','drums','savings'];
   const expenses = expKeys.reduce((s, k) => s + (parseFloat(tab[k])||0), 0);
   return income - expenses;
 }
