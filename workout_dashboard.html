@@ -701,7 +701,7 @@ function parseWorkoutText(text, date, loc, pastedHtml='') {
   const blocks = [];
   let currentBlock = [];
   bulletLines.forEach(line => {
-    const blockMult = line.match(/^[Xx](\d+)$/);
+    const blockMult = line.trim().match(/^[Xx](\d+)$/);
     if (blockMult) {
       if (currentBlock.length) { blocks.push({lines:currentBlock, mult:parseInt(blockMult[1])}); currentBlock=[]; }
     } else {
@@ -715,25 +715,24 @@ function parseWorkoutText(text, date, loc, pastedHtml='') {
   const unrecognized = [];
   function parseLineExercises(line, blockMult=1) {
     const result = {};
+    // Trim the whole line first to eliminate trailing spaces from GCal paste
+    line = line.trim();
     const parts = line.split(/\s*\+\s*/);
 
     // Detect a SINGLE trailing xN on the whole line (no per-segment multipliers)
-    // e.g. "5 Bic + 20 Sq x10" — the x10 applies to ALL segments
-    const lastPart = parts[parts.length - 1];
+    const lastPart = parts[parts.length - 1].trim();
     const trailingXm = lastPart.match(/\bx\s*(\d+)$/i);
-    const anyOtherXm = parts.slice(0, -1).some(p => /\bx\s*\d+$/i.test(p));
+    const anyOtherXm = parts.slice(0, -1).some(p => /\bx\s*\d+$/i.test(p.trim()));
     const lineWideMult = (trailingXm && !anyOtherXm) ? parseInt(trailingXm[1]) : 1;
 
     parts.forEach(part => {
-      part = part.trim();
-      // Per-segment inline multiplier — only use if line-wide mult NOT active
+      part = part.trim();  // trim each part too
       let inlineMult = 1;
       let cleanPart = part;
       if (lineWideMult === 1) {
         const xm = part.match(/\bx\s*(\d+)$/i);
         if (xm) { inlineMult = parseInt(xm[1]); cleanPart = part.slice(0, xm.index).trim(); }
       } else {
-        // Strip the trailing xN from the last segment so it doesn't confuse numMatch
         if (part === lastPart && trailingXm) {
           cleanPart = part.slice(0, trailingXm.index).trim();
         }
