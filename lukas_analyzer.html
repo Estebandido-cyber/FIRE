@@ -194,6 +194,29 @@
   .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .table-scroll table { min-width: 900px; }
 
+  /* MANUAL UPDATE MODAL */
+  .update-modal { background:#181c22; border:1px solid var(--border); border-radius:14px; padding:28px; width:620px; max-width:96vw; max-height:85vh; display:flex; flex-direction:column; }
+  .update-modal-body { overflow-y:auto; flex:1; margin-top:16px; }
+  .update-section-head { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--muted); padding:10px 0 6px; border-bottom:1px solid var(--border); margin-bottom:4px; }
+  .update-row { display:grid; grid-template-columns:1fr auto auto auto; align-items:center; gap:10px; padding:8px 4px; border-bottom:1px solid rgba(255,255,255,0.04); }
+  .update-row:last-child { border-bottom:none; }
+  .update-name { font-size:12px; color:var(--chart-label); }
+  .update-account { font-size:10px; color:var(--muted); }
+  .update-staleness { font-size:10px; padding:2px 7px; border-radius:10px; white-space:nowrap; }
+  .stale-fresh  { background:rgba(34,197,94,0.12);  color:#22c55e; }
+  .stale-warn   { background:rgba(245,158,11,0.12); color:#f59e0b; }
+  .stale-old    { background:rgba(239,68,68,0.12);  color:#ef4444; }
+  .stale-never  { background:rgba(107,114,128,0.12);color:#6b7280; }
+  .update-input { background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:'DM Mono',monospace; font-size:13px; font-weight:500; padding:5px 10px; border-radius:6px; width:110px; text-align:right; outline:none; transition:border-color 0.2s; }
+  .update-input:focus { border-color:var(--accent); }
+  .update-input.changed { border-color:var(--accent2); background:rgba(245,158,11,0.06); }
+  .update-footer { display:flex; align-items:center; justify-content:space-between; margin-top:18px; padding-top:14px; border-top:1px solid var(--border); flex-wrap:wrap; gap:8px; }
+  .update-last-sync { font-size:10px; color:var(--muted); }
+  .btn-update { background:rgba(0,212,170,0.12); border:1px solid var(--accent); color:var(--accent); padding:6px 18px; border-radius:6px; cursor:pointer; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px; text-transform:uppercase; transition:all 0.2s; }
+  .btn-update:hover { background:var(--accent); color:var(--bg); }
+  .btn-mark-reviewed { background:transparent; border:1px solid var(--border); color:var(--muted); padding:6px 14px; border-radius:6px; cursor:pointer; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px; text-transform:uppercase; transition:all 0.2s; }
+  .btn-mark-reviewed:hover { border-color:var(--muted); color:var(--text); }
+
   /* DRIVE / EXPORT / IMPORT BUTTONS */
   .btn { padding: 6px 14px; border-radius: 6px; border: 1px solid; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; transition: all 0.2s; }
   .btn-drive { background:#1a73e8; border-color:#1a73e8; color:#fff; }
@@ -281,6 +304,7 @@
 
     <!-- RIGHT: 4 action buttons -->
     <div id="head-right">
+      <button class="btn btn-update" onclick="openUpdateModal()" title="Manually update fund positions">✎ Update</button>
       <button class="btn btn-drive" id="drive-save-btn" onclick="gdriveSave()" title="Save to Google Drive">☁ Save</button>
       <button class="btn btn-drive" id="drive-load-btn" onclick="gdriveLoad()" title="Load from Google Drive">☁ Load</button>
       <button class="btn btn-export" onclick="openExport()">↓ Export</button>
@@ -289,6 +313,25 @@
 
   </header>
   <div class="drive-status-bar" id="drive-status-bar"></div>
+
+  <!-- MANUAL UPDATE MODAL -->
+  <div class="modal-overlay" id="update-modal">
+    <div class="update-modal">
+      <div class="modal-title">
+        ✎ Update Positions
+        <button class="modal-close" onclick="closeUpdateModal()">×</button>
+      </div>
+      <p style="color:#9aa0ad;font-size:12px;line-height:1.6;">Enter current market values for manually-tracked positions. Live tickers (AAPL, AMD, etc.) update automatically and are shown for reference only.</p>
+      <div class="update-modal-body" id="updateModalBody"></div>
+      <div class="update-footer">
+        <div class="update-last-sync" id="updateLastSync"></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-mark-reviewed" onclick="markAllReviewed()">✓ Mark all reviewed</button>
+          <button class="btn-update" onclick="saveManualUpdates()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- EXPORT MODAL -->
   <div class="modal-overlay" id="export-modal">
@@ -576,6 +619,185 @@ let sortKey = 'value';
 let sortDir = -1;
 let benchScope = 'ALL';
 
+// ─── MANUAL POSITION VALUES ───────────────────────────────────────────────────
+// Tickers that get live prices — never manually edited
+const LIVE_TICKERS = new Set(['WPEA.PA','EUNL.DE','VUSA.AS','AAPL','AMD','SAP.DE']);
+
+// Load manual values from localStorage (keyed by ticker)
+function loadManualValues() {
+  try { return JSON.parse(localStorage.getItem('lukas_manual_values') || '{}'); } catch { return {}; }
+}
+function saveManualValuesToStorage(mv) {
+  localStorage.setItem('lukas_manual_values', JSON.stringify(mv));
+}
+
+// Returns current value for a position: live price if available, manual if set, reference as last resort
+function getPositionValue(pos) {
+  const live = getLivePrice(pos);
+  if (live !== null) return live * pos.shares;
+  const mv = loadManualValues();
+  const key = pos.realTicker || pos.ticker;
+  if (mv[key] && mv[key].value !== undefined) return mv[key].value;
+  return REFERENCE_VALUES[pos.ticker] || pos.avgPrice * pos.shares;
+}
+
+function getStaleness(ticker) {
+  const mv = loadManualValues();
+  if (!mv[ticker] || !mv[ticker].updatedAt) return 'never';
+  const days = (Date.now() - new Date(mv[ticker].updatedAt)) / (1000*60*60*24);
+  if (days < 7)  return 'fresh';
+  if (days < 30) return 'warn';
+  return 'old';
+}
+
+function getStalenessLabel(ticker) {
+  const mv = loadManualValues();
+  if (!mv[ticker] || !mv[ticker].updatedAt) return { cls:'stale-never', label:'Never updated' };
+  const days = Math.floor((Date.now() - new Date(mv[ticker].updatedAt)) / (1000*60*60*24));
+  if (days === 0) return { cls:'stale-fresh', label:'Updated today' };
+  if (days < 7)  return { cls:'stale-fresh', label:`${days}d ago` };
+  if (days < 30) return { cls:'stale-warn',  label:`${days}d ago` };
+  return { cls:'stale-old', label:`${days}d ago ⚠` };
+}
+
+// ─── UPDATE MODAL ─────────────────────────────────────────────────────────────
+let pendingManualChanges = {};
+
+function openUpdateModal() {
+  pendingManualChanges = {};
+  const mv = loadManualValues();
+
+  // Group manual positions by account
+  const manualPositions = STATIC_POSITIONS.filter(p => !LIVE_TICKERS.has(p.ticker));
+  const livePositions   = STATIC_POSITIONS.filter(p =>  LIVE_TICKERS.has(p.ticker));
+
+  // Also include Fonds Euros, Livrets, Cash as manually editable
+  const extraManual = [
+    ...FONDS_EUROS.map(f => ({ ticker: 'FE_'+f.account, name: f.name, account: f.account, type:'Fonds €', _isFondsEuros: true, _ref: f })),
+    ...LIVRETS.map(l    => ({ ticker: 'LV_'+l.name.replace(/ /g,''), name: l.name, account: l.account, type:'Livret', _isLivret: true, _ref: l })),
+    { ticker:'CASH', name:'Cash', account:'Cash', type:'Cash', _isCash:true },
+  ];
+
+  // Section: Manual funds grouped by account
+  const byAccount = {};
+  [...manualPositions, ...extraManual].forEach(p => {
+    if (!byAccount[p.account]) byAccount[p.account] = [];
+    byAccount[p.account].push(p);
+  });
+
+  let html = '';
+
+  // Manual positions section
+  html += `<div class="update-section-head">Fund Positions (Manual)</div>`;
+  Object.entries(byAccount).forEach(([acc, positions]) => {
+    const color = {'PEE':'#f472b6','PERE':'#fb923c','PERO':'#a78bfa','AV':'#34d399','Livret':'#fbbf24','Cash':'#94a3b8'}[acc]||'#888';
+    positions.forEach(p => {
+      const key = p.ticker;
+      let currentVal;
+      if (p._isCash) currentVal = CASH;
+      else if (p._isFondsEuros) currentVal = p._ref.value;
+      else if (p._isLivret) currentVal = p._ref.value;
+      else {
+        const stored = mv[key];
+        currentVal = stored ? stored.value : (REFERENCE_VALUES[p.ticker] || p.avgPrice * p.shares);
+      }
+      const sl = (p._isCash || p._isFondsEuros || p._isLivret) ? { cls:'stale-fresh', label:'Auto-tracked' } : getStalenessLabel(key);
+      html += `<div class="update-row" data-ticker="${key}">
+        <div>
+          <div class="update-name">${p.name}</div>
+          <div class="update-account" style="color:${color}">${acc} · ${p.type}</div>
+        </div>
+        <span class="update-staleness ${sl.cls}">${sl.label}</span>
+        <input class="update-input" type="number" step="0.01" value="${currentVal.toFixed(2)}"
+          data-ticker="${key}" data-original="${currentVal.toFixed(2)}"
+          data-special="${p._isCash?'cash':p._isFondsEuros?'fonds'+FONDS_EUROS.indexOf(p._ref):p._isLivret?'livret'+LIVRETS.indexOf(p._ref):''}"
+          oninput="onUpdateInput(this)">
+        <span style="color:var(--muted);font-size:11px">€</span>
+      </div>`;
+    });
+  });
+
+  // Live tickers section (read-only reference)
+  html += `<div class="update-section-head" style="margin-top:16px">Live Tickers (Auto-updated — read only)</div>`;
+  livePositions.forEach(p => {
+    const live = getLivePrice(p);
+    const val = live !== null ? live * p.shares : REFERENCE_VALUES[p.ticker];
+    const liveStr = live !== null ? `<span style="color:var(--gain)">● Live</span>` : `<span style="color:var(--muted)">● Fallback</span>`;
+    html += `<div class="update-row">
+      <div>
+        <div class="update-name">${p.name}</div>
+        <div class="update-account" style="color:${ACCOUNT_COLORS[p.account]}">${p.account} · ${p.type}</div>
+      </div>
+      ${liveStr}
+      <input class="update-input" type="number" value="${val.toFixed(2)}" disabled style="opacity:0.4;cursor:not-allowed">
+      <span style="color:var(--muted);font-size:11px">€</span>
+    </div>`;
+  });
+
+  document.getElementById('updateModalBody').innerHTML = html;
+
+  // Last sync info
+  const allUpdates = Object.values(mv).map(v => v.updatedAt).filter(Boolean).sort().reverse();
+  document.getElementById('updateLastSync').textContent = allUpdates.length
+    ? `Last manual update: ${new Date(allUpdates[0]).toLocaleDateString('fr-FR')} at ${new Date(allUpdates[0]).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}`
+    : 'No manual updates recorded yet';
+
+  document.getElementById('update-modal').classList.add('open');
+}
+
+function closeUpdateModal() {
+  document.getElementById('update-modal').classList.remove('open');
+  pendingManualChanges = {};
+}
+
+function onUpdateInput(el) {
+  const original = parseFloat(el.dataset.original);
+  const current  = parseFloat(el.value);
+  el.classList.toggle('changed', Math.abs(current - original) > 0.001);
+  pendingManualChanges[el.dataset.ticker] = { value: current, special: el.dataset.special };
+}
+
+function saveManualUpdates() {
+  const mv = loadManualValues();
+  const now = new Date().toISOString();
+
+  Object.entries(pendingManualChanges).forEach(([ticker, change]) => {
+    const val = change.value;
+    const special = change.special;
+
+    if (special === 'cash') {
+      CASH = val;
+      localStorage.setItem('portfolio_cash', val);
+    } else if (special.startsWith('fonds')) {
+      const idx = parseInt(special.replace('fonds',''));
+      FONDS_EUROS[idx].value = val;
+    } else if (special.startsWith('livret')) {
+      const idx = parseInt(special.replace('livret',''));
+      LIVRETS[idx].value = val;
+    } else {
+      mv[ticker] = { value: val, updatedAt: now };
+    }
+  });
+
+  saveManualValuesToStorage(mv);
+  pendingManualChanges = {};
+  closeUpdateModal();
+  render();
+}
+
+function markAllReviewed() {
+  const mv = loadManualValues();
+  const now = new Date().toISOString();
+  STATIC_POSITIONS.filter(p => !LIVE_TICKERS.has(p.ticker)).forEach(p => {
+    const key = p.realTicker || p.ticker;
+    if (!mv[key]) mv[key] = { value: REFERENCE_VALUES[p.ticker] || p.avgPrice * p.shares, updatedAt: now };
+    else mv[key].updatedAt = now;
+  });
+  saveManualValuesToStorage(mv);
+  // Refresh staleness badges without closing
+  openUpdateModal();
+}
+
 // ─── YAHOO FINANCE ────────────────────────────────────────────────────────────
 async function fetchPrice(ticker) {
   const t = ticker.endsWith('_PERO') ? ticker.replace('_PERO','') : ticker;
@@ -633,10 +855,12 @@ function render() {
 
   const rows = STATIC_POSITIONS.map(pos => {
     const live = getLivePrice(pos);
-    const value = live!==null ? live*pos.shares : REFERENCE_VALUES[pos.ticker]||pos.avgPrice*pos.shares;
+    const value = getPositionValue(pos);
     const cost = pos.avgPrice*pos.shares;
     const glEur = value-cost;
-    return { ...pos, livePrice:live, value, cost, glEur, glPct:(glEur/cost)*100 };
+    const isManual = !LIVE_TICKERS.has(pos.ticker) && live === null;
+    const staleness = isManual ? getStaleness(pos.realTicker||pos.ticker) : 'live';
+    return { ...pos, livePrice:live, value, cost, glEur, glPct:(glEur/cost)*100, isManual, staleness };
   });
 
   const fondsRows = FONDS_EUROS.map(f => ({
@@ -872,7 +1096,31 @@ function renderTable(allRows,totalValue) {
     const typeBadge={'ETF':'type-etf','Stock':'type-stock','Fund':'type-fund','Fonds €':'type-fund','Livret':'type-livret','Cash':'type-cash'}[row.type]||'type-fund';
     const accColor=ACCOUNT_COLORS[row.account]||'#888';
     if (row.ticker==='CASH') return `<tr><td class="ticker">CASH</td><td class="name-cell">Cash</td><td><span style="color:${accColor}">Cash</span></td><td><span class="badge type-cash">Cash</span></td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">${fmt(row.value)}</td><td class="neutral-cell" style="text-align:right">—</td><td class="neutral-cell" style="text-align:right">—</td><td style="text-align:right"><span class="sparkbar" style="background:${barColor};width:${barW}px"></span> ${wt.toFixed(1)}%</td></tr>`;
-    return `<tr><td class="ticker">${row.ticker.replace('_PERO','')}</td><td class="name-cell" title="${row.name}">${row.name}</td><td><span style="color:${accColor}">${row.account}</span></td><td><span class="badge ${typeBadge}">${row.type}</span></td><td style="text-align:right">${row.shares%1!==0?row.shares.toFixed(4):row.shares.toLocaleString('fr-FR')}</td><td style="text-align:right">${row.avgPrice.toFixed(2)} €</td><td style="text-align:right">${liveStr}</td><td style="text-align:right">${fmt(row.value)}</td><td style="text-align:right" class="${glClass}">${row.glEur!==0?(row.glEur>=0?'+':'')+fmt(row.glEur,0):'—'}</td><td style="text-align:right" class="${glClass}">${row.glPct!==0?fmtPct(row.glPct):'—'}</td><td style="text-align:right"><span class="sparkbar" style="background:${barColor};width:${barW}px"></span> ${wt.toFixed(1)}%</td></tr>`;
+
+    const staleColor = {'fresh':'#22c55e','warn':'#f59e0b','old':'#ef4444','never':'#6b7280','live':'#00d4aa'}[row.staleness||'live'];
+    const staleTitle = {'fresh':'Manually updated recently','warn':'Manual update >7 days ago','old':'Manual update >30 days ago ⚠','never':'Never manually updated','live':'Live price'}[row.staleness||'live'];
+    const liveStr = row.livePrice !== null
+      ? `<span style="color:var(--gain)">${row.livePrice>=1?row.livePrice.toFixed(2):row.livePrice.toFixed(4)} €</span>`
+      : row.isManual
+        ? `<span style="color:var(--muted);font-size:10px">manual</span>`
+        : `<span class="price-loading">…</span>`;
+
+    return `<tr>
+      <td class="ticker">${row.ticker.replace('_PERO','')}</td>
+      <td class="name-cell" title="${row.name}">${row.name}</td>
+      <td><span style="color:${accColor}">${row.account}</span></td>
+      <td><span class="badge ${typeBadge}">${row.type}</span></td>
+      <td style="text-align:right">${row.shares%1!==0?row.shares.toFixed(4):row.shares.toLocaleString('fr-FR')}</td>
+      <td style="text-align:right">${row.avgPrice.toFixed(2)} €</td>
+      <td style="text-align:right">${liveStr}</td>
+      <td style="text-align:right">${fmt(row.value)}</td>
+      <td style="text-align:right" class="${glClass}">${row.glEur!==0?(row.glEur>=0?'+':'')+fmt(row.glEur,0):'—'}</td>
+      <td style="text-align:right" class="${glClass}">${row.glPct!==0?fmtPct(row.glPct):'—'}</td>
+      <td style="text-align:right">
+        <span title="${staleTitle}" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${staleColor};margin-right:4px;vertical-align:middle"></span>
+        <span class="sparkbar" style="background:${barColor};width:${barW}px"></span> ${wt.toFixed(1)}%
+      </td>
+    </tr>`;
   }).join('');
 }
 
@@ -1047,24 +1295,36 @@ function doImport(overwrite) {
 // ═══════════════════════════════════════════════════════
 function getAllWidgetData() {
   return {
-    cash:            CASH,
-    livret_rate_A:   LIVRETS[0].rate,
-    livret_rate_LDDS:LIVRETS[1].rate,
-    fe_rate_PERE:    FONDS_EUROS[0].rate,
-    fe_rate_PERO:    FONDS_EUROS[1].rate,
-    fe_rate_AV:      FONDS_EUROS[2].rate,
-    tax_bracket:     parseInt(document.getElementById('taxBracket').value),
+    cash:             CASH,
+    livret_rate_A:    LIVRETS[0].rate,
+    livret_rate_LDDS: LIVRETS[1].rate,
+    livret_value_A:   LIVRETS[0].value,
+    livret_value_LDDS:LIVRETS[1].value,
+    fe_rate_PERE:     FONDS_EUROS[0].rate,
+    fe_rate_PERO:     FONDS_EUROS[1].rate,
+    fe_rate_AV:       FONDS_EUROS[2].rate,
+    fe_value_PERE:    FONDS_EUROS[0].value,
+    fe_value_PERO:    FONDS_EUROS[1].value,
+    fe_value_AV:      FONDS_EUROS[2].value,
+    tax_bracket:      parseInt(document.getElementById('taxBracket').value),
+    manual_values:    loadManualValues(),
   };
 }
 
 function restoreAllWidgetData(data, overwrite = true) {
-  if (data.cash            !== undefined) { CASH = data.cash; localStorage.setItem('portfolio_cash', CASH); }
-  if (data.livret_rate_A   !== undefined) { LIVRETS[0].rate = data.livret_rate_A;    localStorage.setItem('liv_rate_A',    data.livret_rate_A); }
-  if (data.livret_rate_LDDS!== undefined) { LIVRETS[1].rate = data.livret_rate_LDDS; localStorage.setItem('liv_rate_LDDS', data.livret_rate_LDDS); }
-  if (data.fe_rate_PERE    !== undefined) { FONDS_EUROS[0].rate = data.fe_rate_PERE; localStorage.setItem('fe_rate_PERE',  data.fe_rate_PERE); }
-  if (data.fe_rate_PERO    !== undefined) { FONDS_EUROS[1].rate = data.fe_rate_PERO; localStorage.setItem('fe_rate_PERO',  data.fe_rate_PERO); }
-  if (data.fe_rate_AV      !== undefined) { FONDS_EUROS[2].rate = data.fe_rate_AV;   localStorage.setItem('fe_rate_AV',    data.fe_rate_AV); }
-  if (data.tax_bracket     !== undefined) { document.getElementById('taxBracket').value = data.tax_bracket; }
+  if (data.cash             !== undefined) { CASH = data.cash; localStorage.setItem('portfolio_cash', CASH); }
+  if (data.livret_rate_A    !== undefined) { LIVRETS[0].rate  = data.livret_rate_A;    localStorage.setItem('liv_rate_A',    data.livret_rate_A); }
+  if (data.livret_rate_LDDS !== undefined) { LIVRETS[1].rate  = data.livret_rate_LDDS; localStorage.setItem('liv_rate_LDDS', data.livret_rate_LDDS); }
+  if (data.livret_value_A   !== undefined) { LIVRETS[0].value = data.livret_value_A; }
+  if (data.livret_value_LDDS!== undefined) { LIVRETS[1].value = data.livret_value_LDDS; }
+  if (data.fe_rate_PERE     !== undefined) { FONDS_EUROS[0].rate  = data.fe_rate_PERE;  localStorage.setItem('fe_rate_PERE',  data.fe_rate_PERE); }
+  if (data.fe_rate_PERO     !== undefined) { FONDS_EUROS[1].rate  = data.fe_rate_PERO;  localStorage.setItem('fe_rate_PERO',  data.fe_rate_PERO); }
+  if (data.fe_rate_AV       !== undefined) { FONDS_EUROS[2].rate  = data.fe_rate_AV;    localStorage.setItem('fe_rate_AV',    data.fe_rate_AV); }
+  if (data.fe_value_PERE    !== undefined) { FONDS_EUROS[0].value = data.fe_value_PERE; }
+  if (data.fe_value_PERO    !== undefined) { FONDS_EUROS[1].value = data.fe_value_PERO; }
+  if (data.fe_value_AV      !== undefined) { FONDS_EUROS[2].value = data.fe_value_AV; }
+  if (data.tax_bracket      !== undefined) { document.getElementById('taxBracket').value = data.tax_bracket; }
+  if (data.manual_values    !== undefined) { saveManualValuesToStorage(data.manual_values); }
   render();
 }
 </script>
