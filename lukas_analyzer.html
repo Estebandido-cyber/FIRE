@@ -1088,7 +1088,6 @@ function renderTable(allRows,totalValue) {
   });
   document.getElementById('tableBody').innerHTML=sorted.map(row=>{
     const live=row.livePrice;
-    const liveStr=live!==null?`<span>${live>=1?live.toFixed(2):live.toFixed(4)} €</span>`:`<span class="price-loading">…</span>`;
     const glClass=row.glEur>0?'gain-cell':row.glEur<0?'loss-cell':'neutral-cell';
     const wt=totalValue>0?(row.value/totalValue*100):0;
     const barW=Math.max(2,Math.min(80,wt*3));
