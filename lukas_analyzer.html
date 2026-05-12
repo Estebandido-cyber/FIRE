@@ -302,13 +302,14 @@
       </div>
     </div>
 
-    <!-- RIGHT: 4 action buttons -->
+    <!-- RIGHT: action buttons -->
     <div id="head-right">
       <button class="btn btn-update" onclick="openUpdateModal()" title="Manually update fund positions">✎ Update</button>
       <button class="btn btn-drive" id="drive-save-btn" onclick="gdriveSave()" title="Save to Google Drive">☁ Save</button>
       <button class="btn btn-drive" id="drive-load-btn" onclick="gdriveLoad()" title="Load from Google Drive">☁ Load</button>
       <button class="btn btn-export" onclick="openExport()">↓ Export</button>
       <button class="btn btn-import" onclick="openImport()">↑ Import</button>
+      <button id="debugBtn" class="btn" onclick="toggleDebug()" title="Toggle debug logging in browser console" style="background:transparent;border-color:var(--border);color:var(--muted);font-size:10px">⚙ Debug</button>
     </div>
 
   </header>
@@ -631,18 +632,52 @@ function saveManualValuesToStorage(mv) {
   localStorage.setItem('lukas_manual_values', JSON.stringify(mv));
 }
 
+// ─── DEBUG MODE ───────────────────────────────────────────────────────────────
+let DEBUG = false;
+function toggleDebug() {
+  DEBUG = !DEBUG;
+  const btn = document.getElementById('debugBtn');
+  if (DEBUG) {
+    btn.style.background = 'rgba(245,158,11,0.3)';
+    btn.style.color = '#f59e0b';
+    console.clear();
+    console.log('%c[LUKAS Flow] DEBUG MODE ON', 'color:#f59e0b;font-weight:bold;font-size:14px');
+    console.log('%cManual values in localStorage:', 'color:#9ca3af');
+    console.log(loadManualValues());
+    console.log('%cFonds Euros values:', 'color:#9ca3af');
+    FONDS_EUROS.forEach(f => console.log(` ${f.name}: ${f.value} € (rate ${f.rate}%)`));
+    console.log('%cLivrets values:', 'color:#9ca3af');
+    LIVRETS.forEach(l => console.log(` ${l.name}: ${l.value} € (rate ${l.rate}%)`));
+    console.log('%cCash:', 'color:#9ca3af', CASH);
+    render();
+  } else {
+    btn.style.background = '';
+    btn.style.color = '';
+    console.log('%c[LUKAS Flow] Debug mode off', 'color:#6b7280');
+  }
+}
+
 // Returns current value for a position: live price for known-good tickers, manual if set, reference as last resort
 function getPositionValue(pos) {
+  const key = pos.realTicker || pos.ticker;
   // Only trust live prices for tickers we know Yahoo serves reliably
   if (LIVE_TICKERS.has(pos.ticker)) {
     const live = getLivePrice(pos);
-    if (live !== null) return live * pos.shares;
+    if (live !== null) {
+      if (DEBUG) console.log(`%c[LIVE]   ${pos.ticker}: ${(live * pos.shares).toFixed(2)} € (price: ${live.toFixed(4)})`, 'color:#22c55e');
+      return live * pos.shares;
+    }
   }
-  // For everything else: manual value takes priority over any live/fallback price
+  // For everything else: manual value takes priority
   const mv = loadManualValues();
-  const key = pos.realTicker || pos.ticker;
-  if (mv[key] && mv[key].value !== undefined) return mv[key].value;
-  return REFERENCE_VALUES[pos.ticker] || pos.avgPrice * pos.shares;
+  if (mv[key] && mv[key].value !== undefined) {
+    if (DEBUG) console.log(`%c[MANUAL] ${pos.ticker}: ${mv[key].value.toFixed(2)} € (saved: ${mv[key].updatedAt?.slice(0,10)||'?'})`, 'color:#00d4aa');
+    return mv[key].value;
+  }
+  // Last resort: reference value
+  const ref = REFERENCE_VALUES[pos.ticker] || pos.avgPrice * pos.shares;
+  if (DEBUG) console.log(`%c[REF]    ${pos.ticker}: ${ref.toFixed(2)} € (hardcoded fallback)`, 'color:#ef4444');
+  return ref;
 }
 
 function getStaleness(ticker) {
@@ -820,7 +855,10 @@ async function fetchPrice(ticker) {
 async function fetchAllPrices() {
   document.getElementById('refreshBtn').disabled = true;
   setStatus('loading','Fetching live prices…');
-  const tickers = [...new Set(STATIC_POSITIONS.map(p => p.realTicker || p.ticker))];
+  // Only fetch for tickers we actually trust live prices for
+  const tickers = [...new Set(STATIC_POSITIONS
+    .filter(p => LIVE_TICKERS.has(p.ticker))
+    .map(p => p.realTicker || p.ticker))];
   let errors = 0;
   for (let i = 0; i < tickers.length; i += 4) {
     const batch = tickers.slice(i,i+4);
@@ -833,6 +871,10 @@ async function fetchAllPrices() {
   document.getElementById('refreshBtn').disabled = false;
   const now = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
   setStatus(errors>0?'error':'live', errors>0?`Updated ${now} — ${errors} failed`:`Live — ${now}`);
+  if (DEBUG) {
+    console.log('%c[LUKAS Flow] Prices after fetch:', 'color:#f59e0b;font-weight:bold');
+    console.log(prices);
+  }
   render();
 }
 
@@ -1133,7 +1175,9 @@ function setFilter(f,el) { currentFilter=f; document.querySelectorAll('.filter-t
 function sortBy(key) { if(sortKey===key) sortDir*=-1; else{sortKey=key;sortDir=-1;} render(); }
 function updateCash(val) { CASH=parseFloat(val)||0; localStorage.setItem('portfolio_cash',CASH); render(); }
 
+// Initial render with stored values immediately (no flicker — fetch updates in place)
 render();
+// Then fetch live prices — render() is called once inside fetchAllPrices when done
 fetchAllPrices();
 setInterval(fetchAllPrices, 5*60*1000);
 
