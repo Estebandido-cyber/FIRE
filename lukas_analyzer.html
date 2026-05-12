@@ -631,10 +631,14 @@ function saveManualValuesToStorage(mv) {
   localStorage.setItem('lukas_manual_values', JSON.stringify(mv));
 }
 
-// Returns current value for a position: live price if available, manual if set, reference as last resort
+// Returns current value for a position: live price for known-good tickers, manual if set, reference as last resort
 function getPositionValue(pos) {
-  const live = getLivePrice(pos);
-  if (live !== null) return live * pos.shares;
+  // Only trust live prices for tickers we know Yahoo serves reliably
+  if (LIVE_TICKERS.has(pos.ticker)) {
+    const live = getLivePrice(pos);
+    if (live !== null) return live * pos.shares;
+  }
+  // For everything else: manual value takes priority over any live/fallback price
   const mv = loadManualValues();
   const key = pos.realTicker || pos.ticker;
   if (mv[key] && mv[key].value !== undefined) return mv[key].value;
@@ -856,11 +860,11 @@ function render() {
   const irBracket = parseInt(document.getElementById('taxBracket').value);
 
   const rows = STATIC_POSITIONS.map(pos => {
-    const live = getLivePrice(pos);
+    const live = LIVE_TICKERS.has(pos.ticker) ? getLivePrice(pos) : null;
     const value = getPositionValue(pos);
     const cost = pos.avgPrice*pos.shares;
     const glEur = value-cost;
-    const isManual = !LIVE_TICKERS.has(pos.ticker) && live === null;
+    const isManual = !LIVE_TICKERS.has(pos.ticker);
     const staleness = isManual ? getStaleness(pos.realTicker||pos.ticker) : 'live';
     return { ...pos, livePrice:live, value, cost, glEur, glPct:(glEur/cost)*100, isManual, staleness };
   });
