@@ -194,6 +194,7 @@ canvas{display:block;width:100%!important}
     <div class="hstat"><div class="hstat-val" id="hPU">—</div><div class="hstat-label">Push-ups</div></div>
     <div class="hstat"><div class="hstat-val" id="hDom">—</div><div class="hstat-label">Pull-ups</div></div>
     <div class="hstat"><div class="hstat-val" id="hJR">—</div><div class="hstat-label">Jump Rope</div></div>
+    <div class="hstat"><div class="hstat-val" id="hRun">—</div><div class="hstat-label">Total Run</div></div>
   </div>
 </div>
 
@@ -299,6 +300,7 @@ canvas{display:block;width:100%!important}
     <div class="card c5"><div class="card-val" id="cv-sq">—</div><div class="card-label">Squats</div></div>
     <div class="card c4"><div class="card-val" id="cv-dip">—</div><div class="card-label">Dips</div></div>
     <div class="card c6"><div class="card-val" id="cv-jr">—</div><div class="card-label">Jump Rope</div><div class="card-sub">total logged</div></div>
+    <div class="card c3"><div class="card-val" id="cv-run">—</div><div class="card-label">Total Run</div><div class="card-sub">all time</div></div>
   </div>
 
   <div class="section-label">Sessions per month</div>
@@ -828,6 +830,8 @@ function parseWorkoutText(text, date, loc, pastedHtml='') {
     if (/knee.*pan(?:th|ter)|pan(?:th|ter).*knee/i.test(ex)) return 'pu_panth';
     if (/\bpu\b/i.test(ex)) return 'pu_plain';
     // Dips
+    if (/dip.*knee.*up.*hold|dip.*knee.*hold/i.test(ex)) return 'dip_hold';
+    if (/dip.*tuck.*hold|dip.*hold.*tuck/i.test(ex)) return 'dip_hold';
     if (/dip/i.test(ex)) return 'dip_plain';
     // Squats/Legs
     if (/bulg.*sq|sq.*bulg|bulgarian/i.test(ex)) return 'squat_bulg';
@@ -1083,8 +1087,8 @@ function rebuildMonthly() {
       month:ym,sessions:0,sick_days:0,
       pu:0,dom:0,sq:0,dip:0,
       jr_min_total:0,jr_max_s:0,run_min_total:0,
-      pu_fu:0,pu_diam:0,pu_wide:0,pu_spartan:0,pu_russian:0,pu_indian:0,
-      dom_neutr:0,dom_close:0,dom_wide:0,dom_austr:0,dom_explo:0,dom_fat:0,bic_chinup:0,
+      pu_fu:0,pu_diam:0,pu_wide:0,pu_spartan:0,pu_russian:0,pu_indian:0,pu_plain:0,
+      dom_neutr:0,dom_close:0,dom_wide:0,dom_austr:0,dom_explo:0,dom_fat:0,bic_chinup:0,dom_plain:0,
       kcal_arr:[],max_hr_arr:[],av_hr_arr:[],dur_arr:[]
     };
     const m=agg[ym];
@@ -1097,10 +1101,15 @@ function rebuildMonthly() {
     if(s.mhr)m.max_hr_arr.push(s.mhr);
     if(s.ahr)m.av_hr_arr.push(s.ahr);
     if(s.dur)m.dur_arr.push(s.dur);
-    // variants
+    // named variants
     const vmap={dfu:'pu_fu',ddm:'pu_diam',dwp:'pu_wide',dsp:'pu_spartan',drs:'pu_russian',
                 dnd:'dom_neutr',dcd:'dom_close',dwd:'dom_wide',dad:'dom_austr',ded:'dom_explo',dfd:'dom_fat',dbc:'bic_chinup'};
     Object.entries(vmap).forEach(([sk,mk])=>{m[mk]+=(s[sk]||0);});
+    // plain (regular) = total minus all named variants
+    const puVariantsSum=(s.dfu||0)+(s.ddm||0)+(s.dwp||0)+(s.dsp||0)+(s.drs||0);
+    m.pu_plain += Math.max(0,(s.pu||0)-puVariantsSum);
+    const domVariantsSum=(s.dnd||0)+(s.dcd||0)+(s.dwd||0)+(s.dad||0)+(s.ded||0)+(s.dfd||0)+(s.dbc||0);
+    m.dom_plain += Math.max(0,(s.dom||0)-domVariantsSum);
   });
 
   monthly = Object.values(agg).sort((a,b)=>a.month.localeCompare(b.month)).map(m=>({
@@ -1114,9 +1123,10 @@ function rebuildMonthly() {
     avg_hr:m.av_hr_arr.length?Math.round(m.av_hr_arr.reduce((a,b)=>a+b)/m.av_hr_arr.length):null,
     avg_dur:m.dur_arr.length?Math.round(m.dur_arr.reduce((a,b)=>a+b)/m.dur_arr.length):null,
     pu_fu:m.pu_fu, pu_diam:m.pu_diam, pu_wide:m.pu_wide, pu_spartan:m.pu_spartan,
-    pu_russian:m.pu_russian, pu_indian:m.pu_indian||0,
+    pu_russian:m.pu_russian, pu_indian:m.pu_indian||0, pu_plain:m.pu_plain,
     dom_neutr:m.dom_neutr, dom_close:m.dom_close, dom_wide:m.dom_wide,
-    dom_austr:m.dom_austr, dom_explo:m.dom_explo, dom_fat:m.dom_fat, bic_chinup:m.bic_chinup,
+    dom_austr:m.dom_austr, dom_explo:m.dom_explo, dom_fat:m.dom_fat,
+    bic_chinup:m.bic_chinup, dom_plain:m.dom_plain,
   }));
 }
 
@@ -1163,10 +1173,12 @@ function updateHeaderStats() {
   const totalPU=sessions.reduce((a,s)=>a+(s.pu||0),0);
   const totalDom=sessions.reduce((a,s)=>a+(s.dom||0),0);
   const totalJRh=sessions.reduce((a,s)=>a+(s.jr||0),0)/3600;
+  const totalRunH=sessions.reduce((a,s)=>a+(s.run||0),0)/3600;
   document.getElementById('hSessions').textContent=sessions.length.toLocaleString();
   document.getElementById('hPU').textContent=fmtNum(totalPU);
   document.getElementById('hDom').textContent=fmtNum(totalDom);
   document.getElementById('hJR').textContent=totalJRh.toFixed(1)+'h';
+  document.getElementById('hRun').textContent=totalRunH.toFixed(1)+'h';
 
   const first=new Date(sessions[0].d), last=new Date(sessions[sessions.length-1].d);
   const mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1183,6 +1195,7 @@ function updateHeaderStats() {
   document.getElementById('cv-sq').textContent=fmtNum(totalSq);
   document.getElementById('cv-dip').textContent=fmtNum(totalDip);
   document.getElementById('cv-jr').textContent=totalJRh.toFixed(1)+'h';
+  document.getElementById('cv-run').textContent=totalRunH.toFixed(1)+'h';
 
   // Cardio cards
   const withJR=sessions.filter(s=>s.jr);
@@ -1525,7 +1538,9 @@ function showTab(name, btn) {
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
-  if(btn)btn.classList.add('active');
+  if(btn) btn.classList.add('active');
+  else document.querySelectorAll('.nav-btn').forEach(b=>{ if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+name+"'")) b.classList.add('active'); });
+  try { localStorage.setItem('workout_insights_active_tab', name); } catch(e){}
 }
 function showModal(title, body, okLabel='OK', onOk=null) {
   document.getElementById('modalTitle').textContent=title;
@@ -1560,6 +1575,12 @@ async function init() {
       setStatus(`Loaded ${sessions.length} sessions from embedded data`,'ok');
     } catch(e) { console.error(e); setStatus('Failed to load data','warn'); }
   }
+
+  // Restore last active tab
+  try {
+    const savedTab = localStorage.getItem('workout_insights_active_tab');
+    if (savedTab && document.getElementById('tab-'+savedTab)) showTab(savedTab);
+  } catch(e){}
 }
 
 init();
