@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIRE Stratégie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --gold: #c9a84c;
+    --gold2: #e8c97a;
+    --gold-dim: rgba(201,168,76,0.15);
+    --gold-glow: rgba(201,168,76,0.08);
+    --text: #e8e6e0;
+    --text2: #9a9890;
+    --text3: #5a5856;
+    --green: #4caf7d;
+    --green-dim: rgba(76,175,125,0.12);
+    --blue: #5b9bd5;
+    --blue-dim: rgba(91,155,213,0.12);
+    --coral: #d4745a;
+    --coral-dim: rgba(212,116,90,0.12);
+    --purple: #9b72cf;
+    --purple-dim: rgba(155,114,207,0.12);
+    --red: #c05050;
+    --red-dim: rgba(192,80,80,0.1);
+    --teal: #4aacb8;
+    --teal-dim: rgba(74,172,184,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 3rem 3rem 2rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .title-block h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 400;
+    color: var(--gold2);
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+  }
+  .title-block .subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text3);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 0.4rem;
+  }
+  .header-meta {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .meta-item { text-align: right; }
+  .meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .meta-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    color: var(--gold);
+    font-weight: 500;
+    margin-top: 0.15rem;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 3rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .tab-btn {
+    padding: 1rem 1.8rem;
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+    top: 1px;
+  }
+  .tab-btn:hover { color: var(--text2); }
+  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 2.5rem 3rem 4rem; }
+  .tab-content.active { display: block; }
+
+  /* PORTFOLIO SNAPSHOT */
+  .snapshot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+  .snap-cell {
+    background: var(--surface);
+    padding: 1rem 1.2rem;
+    transition: background 0.2s;
+  }
+  .snap-cell:hover { background: var(--surface2); }
+  .snap-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+  .snap-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--gold2);
+  }
+  .snap-sub {
+    font-size: 0.65rem;
+    color: var(--text3);
+    margin-top: 0.15rem;
+  }
+  .snap-total {
+    background: var(--gold-glow);
+  }
+  .snap-total .snap-value { color: var(--gold2); font-size: 1.2rem; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* TIMELINE */
+  .timeline { position: relative; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 22px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--border2) 5%, var(--border2) 95%, transparent);
+  }
+
+  .phase-block {
+    position: relative;
+    padding-left: 60px;
+    margin-bottom: 1.2rem;
+  }
+
+  .phase-dot {
+    position: absolute;
+    left: 15px;
+    top: 20px;
+    width: 15px; height: 15px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: var(--bg);
+    z-index: 2;
+    transition: transform 0.2s;
+  }
+  .phase-block:hover .phase-dot { transform: scale(1.3); }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .phase-header:hover { border-color: var(--border2); background: var(--surface2); }
+  .phase-header.open { border-radius: 8px 8px 0 0; }
+
+  .phase-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    min-width: 55px;
+  }
+  .phase-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    flex: 1;
+  }
+  .phase-dates {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text2);
+  }
+  .phase-income {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .phase-chevron {
+    font-size: 0.7rem;
+    color: var(--text3);
+    transition: transform 0.25s;
+    min-width: 12px;
+  }
+  .phase-header.open .phase-chevron { transform: rotate(180deg); }
+
+  .phase-body {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.35s ease;
+  }
+  .phase-body.open { max-height: 2000px; }
+  .phase-inner { padding: 1.2rem 1.4rem 1.4rem; }
+
+  .phase-desc {
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.75;
+    margin-bottom: 1.2rem;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .detail-cell {
+    background: var(--bg);
+    padding: 0.75rem 1rem;
+  }
+  .detail-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.25rem;
+  }
+  .detail-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.88rem;
+    color: var(--text);
+  }
+
+  .action-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .action-list li {
+    font-size: 0.85rem;
+    color: var(--text2);
+    padding-left: 1.2rem;
+    position: relative;
+    line-height: 1.6;
+  }
+  .action-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--text3);
+    font-size: 0.75rem;
+  }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+    letter-spacing: 0.05em;
+  }
+
+  .fallback-box {
+    border-left: 2px solid var(--coral);
+    padding: 0.75rem 1rem;
+    background: var(--coral-dim);
+    border-radius: 0 6px 6px 0;
+    margin-top: 1rem;
+  }
+  .fallback-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--coral);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+  .fallback-text {
+    font-size: 0.82rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ASSETS SECTION */
+  .assets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+  .asset-card {
+    background: var(--surface);
+    padding: 1rem 1.2rem;
+  }
+  .asset-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text2);
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+  }
+  .asset-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    color: var(--gold2);
+    font-weight: 500;
+  }
+  .asset-role {
+    font-size: 0.75rem;
+    color: var(--text3);
+    margin-top: 0.3rem;
+    line-height: 1.5;
+  }
+  .asset-holdings {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text3);
+    margin-top: 0.3rem;
+  }
+
+  /* DIE WITH ZERO */
+  .dwz-section {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+  .dwz-header {
+    padding: 1.2rem 1.4rem;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .dwz-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    flex: 1;
+  }
+  .dwz-body {
+    padding: 1.4rem;
+    background: var(--surface);
+  }
+  .dwz-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .dwz-card {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+  }
+  .dwz-card-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .dwz-card-text {
+    font-size: 0.82rem;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+
+  /* FINAL EXIT */
+  .exit-section {
+    border: 1px solid rgba(155,114,207,0.25);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+    background: var(--purple-dim);
+  }
+  .exit-header {
+    padding: 1.2rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid rgba(155,114,207,0.15);
+  }
+  .exit-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--purple);
+    flex: 1;
+  }
+  .exit-body { padding: 1.4rem; }
+  .exit-body .phase-desc { color: var(--text2); }
+  .exit-detail {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(155,114,207,0.15);
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+    margin-top: 1rem;
+  }
+  .exit-detail-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+  .exit-detail-text {
+    font-size: 0.82rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* PHILO TAB */
+  .philo-intro {
+    max-width: 640px;
+    margin-bottom: 3rem;
+  }
+  .philo-intro p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--text2);
+    line-height: 1.85;
+    font-style: italic;
+  }
+
+  .manifesto-block {
+    margin-bottom: 2rem;
+    border-left: 2px solid var(--border2);
+    padding-left: 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .manifesto-block:hover { border-left-color: var(--gold); }
+  .manifesto-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .manifesto-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--gold2);
+    margin-bottom: 0.8rem;
+    font-weight: 400;
+  }
+  .manifesto-body {
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.85;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .manifesto-body.open { max-height: 1000px; }
+  .manifesto-body p { margin-bottom: 0.8rem; }
+  .manifesto-body p:last-child { margin-bottom: 0; }
+
+  .pull-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    font-style: italic;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 0;
+    margin: 3rem 0;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .dwz-philo {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  .dwz-philo h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--gold2);
+    font-weight: 400;
+    margin-bottom: 1rem;
+  }
+  .dwz-philo p {
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.85;
+    margin-bottom: 0.8rem;
+  }
+  .dwz-pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .dwz-pillar {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+  }
+  .dwz-pillar-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .dwz-pillar-text {
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+
+  /* COLOR HELPERS */
+  .c-gold { color: var(--gold); border-color: var(--gold); }
+  .c-green { color: var(--green); border-color: var(--green); }
+  .c-blue { color: var(--blue); border-color: var(--blue); }
+  .c-coral { color: var(--coral); border-color: var(--coral); }
+  .c-purple { color: var(--purple); border-color: var(--purple); }
+  .c-teal { color: var(--teal); border-color: var(--teal); }
+  .c-red { color: var(--red); border-color: var(--red); }
+
+  .dot-gold { border-color: var(--gold); }
+  .dot-green { border-color: var(--green); background: var(--green-dim) !important; }
+  .dot-blue { border-color: var(--blue); background: var(--blue-dim) !important; }
+  .dot-coral { border-color: var(--coral); background: var(--coral-dim) !important; }
+  .dot-purple { border-color: var(--purple); background: var(--purple-dim) !important; }
+  .dot-teal { border-color: var(--teal); background: var(--teal-dim) !important; }
+  .dot-red { border-color: var(--red); background: var(--red-dim) !important; }
+
+  .income-green { background: var(--green-dim); color: var(--green); }
+  .income-blue { background: var(--blue-dim); color: var(--blue); }
+  .income-coral { background: var(--coral-dim); color: var(--coral); }
+  .income-purple { background: var(--purple-dim); color: var(--purple); }
+  .income-teal { background: var(--teal-dim); color: var(--teal); }
+  .income-red { background: var(--red-dim); color: var(--red); }
+  .income-gold { background: var(--gold-dim); color: var(--gold); }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+  }
+
+  @media (max-width: 600px) {
+    .header, .tabs, .tab-content { padding-left: 1.2rem; padding-right: 1.2rem; }
+    .title-block h1 { font-size: 1.6rem; }
+    .header-meta { flex-direction: column; gap: 0.8rem; }
+    .meta-item { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="title-block">
+      <h1>FIRE Stratégie</h1>
+      <div class="subtitle">Personal Financial Independence Roadmap · Confidential</div>
+    </div>
+    <div class="header-meta">
+      <div class="meta-item">
+        <div class="meta-label">Current age</div>
+        <div class="meta-value">46</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Target departure</div>
+        <div class="meta-value">2027</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Retirement age</div>
+        <div class="meta-value">47–48</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Portfolio today</div>
+        <div class="meta-value">~€222k</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('financial')">⬡ Financial Plan</button>
+  <button class="tab-btn" onclick="switchTab('philo')">◇ Life Manifesto</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ FINANCIAL TAB -->
+<div id="tab-financial" class="tab-content active">
+
+  <div class="section-title">Portfolio snapshot · 2025</div>
+  <div class="snapshot-grid">
+    <div class="snap-cell">
+      <div class="snap-label">PEA</div>
+      <div class="snap-value">€50k</div>
+      <div class="snap-sub">WPEA MSCI World</div>
+    </div>
+    <div class="snap-cell">
+      <div class="snap-label">PEE</div>
+      <div class="snap-value">€95k</div>
+      <div class="snap-sub">Natixis · mostly unlocked</div>
+    </div>
+    <div class="snap-cell">
+      <div class="snap-label">CTO — ETFs</div>
+      <div class="snap-value">€38k</div>
+      <div class="snap-sub">VUSA.AS · EUNL.DE</div>
+    </div>
+    <div class="snap-cell">
+      <div class="snap-label">CTO — Stocks</div>
+      <div class="snap-value">€17k</div>
+      <div class="snap-sub">AAPL · AMD</div>
+    </div>
+    <div class="snap-cell">
+      <div class="snap-label">PERE</div>
+      <div class="snap-value">€15k</div>
+      <div class="snap-sub">Retirement plan</div>
+    </div>
+    <div class="snap-cell">
+      <div class="snap-label">PERO</div>
+      <div class="snap-value">€6k</div>
+      <div class="snap-sub">Employer plan</div>
+    </div>
+    <div class="snap-cell">
+      <div class="snap-label">Assurance Vie</div>
+      <div class="snap-value">€1k</div>
+      <div class="snap-sub">Boursobank · building</div>
+    </div>
+    <div class="snap-cell" style="background: var(--gold-glow);">
+      <div class="snap-label">🇫🇷 Total France</div>
+      <div class="snap-value" style="color:var(--gold2); font-size:1.15rem;">~€222k</div>
+      <div class="snap-sub">Investissements</div>
+    </div>
+    <div class="snap-cell">
+      <div class="snap-label">🇨🇴 Colombia</div>
+      <div class="snap-value">~€100k</div>
+      <div class="snap-sub">Fondo + Heritage + Appt</div>
+    </div>
+    <div class="snap-cell" style="background: var(--gold-glow);">
+      <div class="snap-label">Grand total</div>
+      <div class="snap-value" style="color:var(--gold2); font-size:1.15rem;">~€322k</div>
+      <div class="snap-sub">All assets combined</div>
+    </div>
+  </div>
+
+  <div class="section-title">Timeline · Phase by phase</div>
+  <div class="timeline">
+
+    <!-- PHASE 0 -->
+    <div class="phase-block">
+      <div class="phase-dot dot-gold"></div>
+      <div class="phase-header" onclick="togglePhase(this)">
+        <span class="phase-num">Phase 0</span>
+        <span class="phase-name c-gold">The Accumulation Sprint</span>
+        <span class="phase-dates">2025 – 2027</span>
+        <span class="phase-income income-gold">Full salary</span>
+        <span class="phase-chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <p class="phase-desc">Still employed. Every euro of income is either saved or invested. The goal is to maximize all wrappers before the PSE window opens, simulate the retirement lifestyle now to validate the numbers, and build the psychological muscle for the transition.</p>
+          <div class="detail-grid">
+            <div class="detail-cell"><div class="detail-label">Income</div><div class="detail-value">Full salary</div></div>
+            <div class="detail-cell"><div class="detail-label">Portfolio target at exit</div><div class="detail-value">€250k+ France</div></div>
+            <div class="detail-cell"><div class="detail-label">Seniority at PSE</div><div class="detail-value">~18 years</div></div>
+            <div class="detail-cell"><div class="detail-label">Est. severance</div><div class="detail-value">~€80k</div></div>
+          </div>
+          <ul class="action-list">
+            <li>Drain unlocked PEE tranches systematically → reinvest into PEA (priority: PEA ceiling is irreplaceable)</li>
+            <li>Build Assurance Vie on Boursobank: fonds euros floor + SCPI UC + diversified UC (8-yr clock starts 2025)</li>
+            <li>Keep Livret A + LDDS maxed as liquidity buffer</li>
+            <li>Monitor PSE calendar at work — target 2027, fallback 2028</li>
+            <li>Simulate €2k/month lifestyle now — validate it's genuinely comfortable</li>
+            <li>Watch AI restructuring at company for opportunities or acceleration</li>
+          </ul>
+          <div class="tag-row">
+            <span class="tag c-gold">PEE → PEA pipeline</span>
+            <span class="tag c-gold">AV clock starts</span>
+            <span class="tag c-gold">Frugality simulation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 1 -->
+    <div class="phase-block">
+      <div class="phase-dot dot-green"></div>
+      <div class="phase-header" onclick="togglePhase(this)">
+        <span class="phase-num">Phase 1</span>
+        <span class="phase-name c-green">Congé de Reclassement</span>
+        <span class="phase-dates">2027 – 2028 (~9–12 months)</span>
+        <span class="phase-income income-green">Near-full salary</span>
+        <span class="phase-chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <p class="phase-desc">Still technically an employee. Paid at near-full salary by the company while formally in a career transition program. This is the golden decompression year — no portfolio drawdown needed, income is guaranteed, and the company pays for reconversion. Use it wisely.</p>
+          <div class="detail-grid">
+            <div class="detail-cell"><div class="detail-label">Income</div><div class="detail-value">~Full salary</div></div>
+            <div class="detail-cell"><div class="detail-label">Duration</div><div class="detail-value">9 – 12 months</div></div>
+            <div class="detail-cell"><div class="detail-label">Portfolio action</div><div class="detail-value">Untouched</div></div>
+            <div class="detail-cell"><div class="detail-label">Training budget</div><div class="detail-value">Company-funded</div></div>
+          </div>
+          <ul class="action-list">
+            <li>Complete CACES R489 (forklift) certification — CPF (~€5k) + company funding</li>
+            <li>Add 2 additional certifications (vehicle, machine, or logistics-related)</li>
+            <li>This satisfies the mandatory "reconversion activity" requirement of the program</li>
+            <li>Decompress from 18 years of corporate life — no rush, no hustle</li>
+            <li>Travel light, rest deeply, rediscover what free time actually feels like</li>
+            <li>Finalize all administrative transitions: mutuelle, bank, tax status</li>
+          </ul>
+          <div class="tag-row">
+            <span class="tag c-green">CACES R489</span>
+            <span class="tag c-green">CPF deployed</span>
+            <span class="tag c-green">Company-funded training</span>
+            <span class="tag c-green">Decompression</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase-block">
+      <div class="phase-dot dot-blue"></div>
+      <div class="phase-header" onclick="togglePhase(this)">
+        <span class="phase-num">Phase 2</span>
+        <span class="phase-name c-blue">ARE — Chômage</span>
+        <span class="phase-dates">2028 – 2029 (~18 months)</span>
+        <span class="phase-income income-blue">~€3.2k → €1.6k/mo</span>
+        <span class="phase-chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <p class="phase-desc">Unemployment allocation kicks in. Significant income replacement — the system doing its job after 18 years of contributions. Portfolio stays untouched. Optional barista work is possible without losing ARE rights, provided income stays within Pôle Emploi thresholds.</p>
+          <div class="detail-grid">
+            <div class="detail-cell"><div class="detail-label">Year 1 ARE</div><div class="detail-value">~€3,200/mo</div></div>
+            <div class="detail-cell"><div class="detail-label">Final 6 months</div><div class="detail-value">~€1,600/mo</div></div>
+            <div class="detail-cell"><div class="detail-label">Duration</div><div class="detail-value">~18 months total</div></div>
+            <div class="detail-cell"><div class="detail-label">Target spend</div><div class="detail-value">€2,000/mo</div></div>
+          </div>
+          <ul class="action-list">
+            <li>Year 1: ARE covers expenses with surplus — buffer any extra into Livret A</li>
+            <li>Year 1.5: ARE drops — lifestyle adjustment or light barista missions to fill gap</li>
+            <li>Keep ARE-compliant if working: cumul emploi-chômage rules allow partial work</li>
+            <li>Portfolio stays invested and compounding throughout</li>
+            <li>Begin planning the post-ARE income bridge (phase 3 activation)</li>
+          </ul>
+          <div class="fallback-box">
+            <div class="fallback-title">⚠ Fallback</div>
+            <div class="fallback-text">If ARE income drops uncomfortably in month 13–18, activate barista missions early. CACES certifications are ready. Light logistics work (1–2 days/week) can bridge the gap without losing ARE fully.</div>
+          </div>
+          <div class="tag-row">
+            <span class="tag c-blue">ARE income</span>
+            <span class="tag c-blue">Portfolio untouched</span>
+            <span class="tag c-blue">Cumul emploi-chômage</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase-block">
+      <div class="phase-dot dot-coral"></div>
+      <div class="phase-header" onclick="togglePhase(this)">
+        <span class="phase-num">Phase 3</span>
+        <span class="phase-name c-coral">Barista FIRE</span>
+        <span class="phase-dates">2030 – 2040 (ages 50 – 60)</span>
+        <span class="phase-income income-coral">Selective missions</span>
+        <span class="phase-chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <p class="phase-desc">The bridge decade. No more structured employment — only chosen, occasional missions. CACES-certified logistics work when wanted, not when needed. The portfolio is left to grow undisturbed. This phase is designed to feel like semi-retirement, not a second career.</p>
+          <div class="detail-grid">
+            <div class="detail-cell"><div class="detail-label">Work type</div><div class="detail-value">Logistics / forklift missions</div></div>
+            <div class="detail-cell"><div class="detail-label">Frequency target</div><div class="detail-value">1–2 weeks/month max</div></div>
+            <div class="detail-cell"><div class="detail-label">Mission income</div><div class="detail-value">€1,000 – €2,000/mo</div></div>
+            <div class="detail-cell"><div class="detail-label">Portfolio role</div><div class="detail-value">Grow or flat — no drawdown</div></div>
+          </div>
+          <ul class="action-list">
+            <li>Work only when desired — missions are supplemental, not structural</li>
+            <li>AV 8-year window matures around 2033 (opened 2025) — begins generating tax-efficient withdrawals if needed</li>
+            <li>PERE accessible from 60 — note for end-of-phase planning</li>
+            <li>CTO managed for tax-efficient capital gains harvesting</li>
+            <li>This is the decade of living: travel, chess, fitness, philosophy, time</li>
+          </ul>
+          <div class="fallback-box">
+            <div class="fallback-title">⚠ Fallback</div>
+            <div class="fallback-text">If global markets crash or portfolio drops below €150k, increase mission frequency temporarily. Colombia relocation also activates here — €1,800/mo lifestyle cost vs €2,000 in France buys significant additional runway.</div>
+          </div>
+          <div class="tag-row">
+            <span class="tag c-coral">Chosen work only</span>
+            <span class="tag c-coral">AV matures 2033</span>
+            <span class="tag c-coral">Portfolio compounding</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="phase-block">
+      <div class="phase-dot dot-teal"></div>
+      <div class="phase-header" onclick="togglePhase(this)">
+        <span class="phase-num">Phase 4</span>
+        <span class="phase-name c-teal">Big Drawdown</span>
+        <span class="phase-dates">2040 – 2051 (ages 60 – 64)</span>
+        <span class="phase-income income-teal">Portfolio + optional missions</span>
+        <span class="phase-chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <p class="phase-desc">The primary income is now the portfolio. Structured, tax-optimized withdrawals from PEA, AV, and CTO. Barista missions remain available as an emergency lever — market crash, unexpected expense, or simply wanting to do something for a few weeks. PERE accessible from age 60.</p>
+          <div class="detail-grid">
+            <div class="detail-cell"><div class="detail-label">Primary income</div><div class="detail-value">Portfolio drawdown</div></div>
+            <div class="detail-cell"><div class="detail-label">Target withdrawal</div><div class="detail-value">€2,000/mo</div></div>
+            <div class="detail-cell"><div class="detail-label">AV status</div><div class="detail-value">Fully tax-optimized</div></div>
+            <div class="detail-cell"><div class="detail-label">PERE access</div><div class="detail-value">From age 60</div></div>
+          </div>
+          <ul class="action-list">
+            <li>PEA: withdrawals after 5 years are exempt from income tax (only social charges 17.2%)</li>
+            <li>AV: withdraw up to €4,600/yr (single) tax-free above fonds euros annual return</li>
+            <li>CTO: harvest capital gains progressively, manage annual tax envelope</li>
+            <li>Barista missions remain on standby — activate if portfolio drops below €50k or sequence-of-returns risk materializes</li>
+            <li>Colombia relocation trigger: if portfolio trends below €50k too early, relocate and cut spend to €1,800/mo</li>
+          </ul>
+          <div class="fallback-box">
+            <div class="fallback-title">⚠ Fallback triggers</div>
+            <div class="fallback-text">Portfolio below €50k → consider Colombia relocation. Market crash → resume light missions. Partner separation → Colombia option activates independently as lifestyle reset + cost reduction.</div>
+          </div>
+          <div class="tag-row">
+            <span class="tag c-teal">PEA tax-free</span>
+            <span class="tag c-teal">AV tax-optimized</span>
+            <span class="tag c-teal">PERE unlocked</span>
+            <span class="tag c-teal">Barista standby</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 5 -->
+    <div class="phase-block">
+      <div class="phase-dot dot-purple"></div>
+      <div class="phase-header" onclick="togglePhase(this)">
+        <span class="phase-num">Phase 5</span>
+        <span class="phase-name c-purple">French State Pension</span>
+        <span class="phase-dates">From 2051 (age 64+)</span>
+        <span class="phase-income income-purple">Pension + portfolio floor</span>
+        <span class="phase-chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+          <p class="phase-desc">The pension kicks in and dramatically reduces portfolio drawdown pressure. The remaining portfolio becomes an experience fund — memory dividends, travel, gifts, moments. The target portfolio floor at age 75 is €20k. After that, zero.</p>
+          <div class="detail-grid">
+            <div class="detail-cell"><div class="detail-label">Pension access age</div><div class="detail-value">64 (current law)</div></div>
+            <div class="detail-cell"><div class="detail-label">Portfolio floor at 75</div><div class="detail-value">~€20k</div></div>
+            <div class="detail-cell"><div class="detail-label">Die with Zero target</div><div class="detail-value">~€0 at 75</div></div>
+            <div class="detail-cell"><div class="detail-label">Colombia option</div><div class="detail-value">Always available</div></div>
+          </div>
+          <ul class="action-list">
+            <li>Pension income covers core living costs — drawdown rate drops significantly</li>
+            <li>Remaining capital deployed on experiences: travel, generosity, life quality</li>
+            <li>Ratchet down the portfolio intentionally toward the €20k floor at 75</li>
+            <li>No legacy wealth target — memories are the dividend</li>
+          </ul>
+          <div class="tag-row">
+            <span class="tag c-purple">Pension base income</span>
+            <span class="tag c-purple">Experience fund</span>
+            <span class="tag c-purple">€20k floor at 75</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end timeline -->
+
+  <hr class="divider">
+
+  <!-- DIE WITH ZERO -->
+  <div class="section-title">Die with Zero — the philosophy in numbers</div>
+  <div class="dwz-section">
+    <div class="dwz-header" onclick="toggleDwz(this)">
+      <span class="dwz-title">Die with (Almost) Zero — Framework</span>
+      <span class="phase-dates">Ages 46 → 75+</span>
+      <span class="phase-chevron c-gold">▼</span>
+    </div>
+    <div class="dwz-body">
+      <p class="phase-desc">Die with Zero is not recklessness — it is precision. The goal is to convert every euro of capital into the maximum possible life experience before death. Hoarding wealth you never use is a form of waste. The optimal trajectory is a deliberate, planned descent to zero.</p>
+      <div class="dwz-grid">
+        <div class="dwz-card">
+          <div class="dwz-card-title">Memory dividend</div>
+          <div class="dwz-card-text">Experiences compound in memory. A trip at 50 is enjoyed in the moment and then relived for 25 years. A trip at 75 is enjoyed once. Spend on experiences early — the return on memory is highest when health and energy are still full.</div>
+        </div>
+        <div class="dwz-card">
+          <div class="dwz-card-title">Health × money × time</div>
+          <div class="dwz-card-text">The three resources of a rich life. Money alone is nothing. The optimal zone — high health, enough money, free time — is the window this plan is designed to maximize. You enter it at 47. Most people never enter it at all.</div>
+        </div>
+        <div class="dwz-card">
+          <div class="dwz-card-title">The €20k floor</div>
+          <div class="dwz-card-text">Not a nest egg to be guarded — a safety buffer for the final years. Covers emergency care, final logistics, and dignity. Everything above this threshold is to be used. Intentionally. Joyfully.</div>
+        </div>
+        <div class="dwz-card">
+          <div class="dwz-card-title">Bucket timing</div>
+          <div class="dwz-card-text">Age 47–60: adventure bucket — travel, physical experiences, novelty. Age 60–70: depth bucket — culture, relationships, slower richness. Age 70–75: comfort bucket — peace, beauty, presence. Each decade has its own spending logic.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- FINAL EXIT -->
+  <div class="section-title">Final act — on your own terms</div>
+  <div class="exit-section">
+    <div class="exit-header" onclick="toggleExit(this)">
+      <span class="exit-title">The Final Exit — Switzerland</span>
+      <span class="phase-dates" style="color:var(--purple)">Planned · Timing TBD</span>
+      <span class="phase-chevron c-purple">▼</span>
+    </div>
+    <div class="exit-body" id="exit-body" style="display:none">
+      <p class="phase-desc">The plan includes a conscious, dignified conclusion in Switzerland — not a medical emergency, not a decision made under distress, but a considered and prepared final act. This is the ultimate expression of autonomy: choosing the terms of one's own exit.</p>
+      <div class="exit-detail">
+        <div class="exit-detail-label">Organizations</div>
+        <div class="exit-detail-text">The two main Swiss organizations are <strong style="color:var(--text)">Dignitas</strong> (Forch, Zurich canton) and <strong style="color:var(--text)">Exit International</strong>. Dignitas is the primary option for non-Swiss residents. Their website: dignitas.ch — membership and consultation process begins well in advance.</div>
+      </div>
+      <div class="exit-detail">
+        <div class="exit-detail-label">Process & timeline</div>
+        <div class="exit-detail-text">Dignitas requires: membership (annual fee ~CHF 80), a formal request with medical documentation, evaluation by Swiss physicians, and a waiting period. The process from first contact to final approval typically takes 6–18 months. It is not a crisis service — it requires planning, documentation, and a demonstration of mental competence and consistent wish over time.</div>
+      </div>
+      <div class="exit-detail">
+        <div class="exit-detail-label">Cost</div>
+        <div class="exit-detail-text">Total cost including travel, accommodation, physician fees, and the procedure itself: approximately CHF 10,000 – 15,000 (~€10k–€16k). This should be reserved as a dedicated line item in the portfolio floor — included within or alongside the €20k terminal buffer.</div>
+      </div>
+      <div class="exit-detail">
+        <div class="exit-detail-label">Legal status</div>
+        <div class="exit-detail-text">Assisted dying is legal in Switzerland for non-residents who meet the criteria. French law as of 2025 is moving toward limited assisted dying legislation, but Switzerland remains the most reliable option for full autonomy. No criminal liability for accompanying persons under Swiss law.</div>
+      </div>
+      <div class="exit-detail">
+        <div class="exit-detail-label">Philosophical framing</div>
+        <div class="exit-detail-text">This is not a footnote. It is the capstone of the plan. A life lived with full autonomy — financial, temporal, relational — should end with the same principle. Knowing the exit exists changes everything: it removes the fear of slow decline and gives permission to spend fully, live fully, and choose the moment.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- COLOMBIA -->
+  <div class="section-title">Colombia — always-available fallback</div>
+  <div class="assets-grid">
+    <div class="asset-card">
+      <div class="asset-name">Fondo de pensiones (COP)</div>
+      <div class="asset-value">~€34k</div>
+      <div class="asset-role">140M COP at current EUR/COP rates. Colombian retirement savings, accessible under local rules.</div>
+    </div>
+    <div class="asset-card">
+      <div class="asset-name">Heritage / inheritance (COP)</div>
+      <div class="asset-value">~€73k</div>
+      <div class="asset-role">300M COP. Family inheritance asset. Contingency reserve — not modeled in primary plan.</div>
+    </div>
+    <div class="asset-card">
+      <div class="asset-name">Apartment — your half (COP)</div>
+      <div class="asset-value">~€49k</div>
+      <div class="asset-role">200M COP. Shared property. If liquidated, adds ~€49k to usable capital. Also available as housing if relocated.</div>
+    </div>
+    <div class="asset-card" style="background: var(--green-dim); border-left: 2px solid var(--green);">
+      <div class="asset-name" style="color:var(--green)">Colombia total reserve</div>
+      <div class="asset-value" style="color:var(--green)">~€156k</div>
+      <div class="asset-role">Combined Colombian assets at current exchange rates. A parallel financial universe — one that can sustain a €1,800/mo lifestyle independently.</div>
+      <div class="asset-holdings">Trigger: France portfolio below €50k · or · partner separation</div>
+    </div>
+  </div>
+
+</div><!-- end financial tab -->
+
+
+<!-- ═══════════════════════════════════════════════════ PHILO TAB -->
+<div id="tab-philo" class="tab-content">
+
+  <div class="philo-intro">
+    <p>This is not a financial plan. The numbers exist to serve a life — not the other way around. What follows is the philosophy that makes the numbers meaningful.</p>
+  </div>
+
+  <div class="manifesto-block" onclick="toggleManifesto(this)">
+    <div class="manifesto-num">I — The Premise</div>
+    <div class="manifesto-title">Most people die with the wrong things.</div>
+    <div class="manifesto-body">
+      <p>They die with regrets about what they didn't do, with unspent savings they were afraid to touch, and with decades of delayed living waiting for a retirement that arrived too late, too tired, or not at all.</p>
+      <p>The conventional model is broken. Work 40 years. Accumulate. Retire at 65. Enjoy what's left. But health declines in your 60s. Energy peaks in your 40s and 50s. The window of vibrant, fully-lived life is not at the end — it's now.</p>
+      <p>This plan is a rejection of that model. It is an act of deliberate insubordination against the social script.</p>
+    </div>
+  </div>
+
+  <div class="manifesto-block" onclick="toggleManifesto(this)">
+    <div class="manifesto-num">II — The Formula</div>
+    <div class="manifesto-title">Time × Health × Money. Only one combination matters.</div>
+    <div class="manifesto-body">
+      <p>A rich life requires three things simultaneously: time, health, and enough money. Most people spend the first half of life sacrificing time for money. The second half trying to buy time back with money. And they never quite have all three at once.</p>
+      <p>The goal of this plan is to secure all three before age 50. Not vast wealth — enough. Not unlimited time — free time. Not perfect health — the health of a calisthenics-trained, science-based 47-year-old with 30 good years ahead.</p>
+      <p>The window opens in 2027. The window is finite. Use it.</p>
+    </div>
+  </div>
+
+  <div class="pull-quote">"The goal is not to die rich. The goal is to die having lived."</div>
+
+  <div class="manifesto-block" onclick="toggleManifesto(this)">
+    <div class="manifesto-num">III — On Work</div>
+    <div class="manifesto-title">Work chosen is not work. Work required is a cage.</div>
+    <div class="manifesto-body">
+      <p>The barista FIRE model preserves the option to work without the obligation. A logistics mission in a warehouse, CACES certification in hand, taken because you wanted it — is categorically different from 18 years of showing up because the mortgage required it.</p>
+      <p>Chosen work has dignity. Required work has a price. This plan eliminates the price forever and restores the dignity.</p>
+      <p>If you never want to work another day, you won't have to. If you want the structure and the social energy of occasional missions, they're there. The certification is not a backup career — it's a freedom certificate.</p>
+    </div>
+  </div>
+
+  <div class="manifesto-block" onclick="toggleManifesto(this)">
+    <div class="manifesto-num">IV — The Memory Dividend</div>
+    <div class="manifesto-title">Experiences compound. Objects decay. Money unspent is life unlived.</div>
+    <div class="manifesto-body">
+      <p>Bill Perkins' core insight: a memory, unlike a material purchase, pays dividends for the rest of your life. A trip to Colombia at 50 is experienced in the moment — and then remembered, relived, discussed, dreamed about for 25 more years. That is a 25-year return on a single investment.</p>
+      <p>The optimal moment to make a memory is when you have the health to live it fully, the time to be present for it, and the youth to carry it longest. That moment is not 65. It is now.</p>
+      <p>Spend on experiences early. Spend on depth in your 60s. Spend on comfort and peace in your 70s. Each decade has its own optimal allocation — and saving it all for the last one is the worst possible strategy.</p>
+    </div>
+  </div>
+
+  <div class="manifesto-block" onclick="toggleManifesto(this)">
+    <div class="manifesto-num">V — On Frugality</div>
+    <div class="manifesto-title">€2,000 a month is not deprivation. It is precision.</div>
+    <div class="manifesto-body">
+      <p>The simulation is already underway. Constraining spending now — before the PSE — is not punishment. It is calibration. It answers the question every FIRE plan must answer honestly: is this number real, or is it a fantasy?</p>
+      <p>If €2,000/month in France feels comfortable during the test, it will feel comfortable in retirement. If it feels tight, adjust the plan. The discomfort now is infinitely cheaper than the discomfort of running out of money at 62.</p>
+      <p>The goal is not frugality as an identity. It is frugality as a tool — used to buy freedom, then set down.</p>
+    </div>
+  </div>
+
+  <div class="manifesto-block" onclick="toggleManifesto(this)">
+    <div class="manifesto-num">VI — On Colombia</div>
+    <div class="manifesto-title">A second country is not a backup. It is a superpower.</div>
+    <div class="manifesto-body">
+      <p>Having viable roots in two countries means that no single economic environment can trap you. If France becomes too expensive, too socially turbulent, too cold — in every sense — you can leave. The Colombian assets aren't an emergency fund. They are proof that your life is not hostage to any single place.</p>
+      <p>Knowing you could leave changes how you feel about staying. The choice to remain in France, each day, becomes a genuine choice — not inertia, not necessity. That shift in agency is quietly transformative.</p>
+    </div>
+  </div>
+
+  <div class="pull-quote">"Autonomy is not what you can afford to do. It is what you can afford to walk away from."</div>
+
+  <div class="manifesto-block" onclick="toggleManifesto(this)">
+    <div class="manifesto-num">VII — Die with Zero</div>
+    <div class="manifesto-title">The €20k floor and the deliberate descent.</div>
+    <div class="manifesto-body">
+      <p>The terminal portfolio is not zero because you failed. It is zero because you succeeded. You converted every accumulated euro into the maximum possible life. You did not hoard. You did not defer. You lived in the years that living was most possible.</p>
+      <p>The €20k floor is not a safety net for your heirs. It is dignity for your final years and coverage for your final logistics. Everything above it — every euro — is permission to live more fully, right now.</p>
+      <p>The descent from ~€322k to €20k, spread across 29 years of living, is not decline. It is the shape of a life fully spent.</p>
+    </div>
+  </div>
+
+  <div class="manifesto-block" onclick="toggleManifesto(this)">
+    <div class="manifesto-num">VIII — The Final Act</div>
+    <div class="manifesto-title">The right to end. The freedom to choose.</div>
+    <div class="manifesto-body">
+      <p>The inclusion of Switzerland in this plan is not morbid. It is the final, fullest expression of the same philosophy that runs through every other phase: the belief that the human being has the right to govern their own life — including its end.</p>
+      <p>Knowing the exit exists changes the texture of the decades before it. It removes the terror of slow decline, of loss of control, of a drawn-out ending dictated by biology alone. With that fear removed, the years of health are no longer shadowed by what waits at the end.</p>
+      <p>This is not a plan to die early. It is a plan to live freely — all the way to a chosen close.</p>
+      <p>The plan ends, as it began, with autonomy.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="dwz-philo">
+    <h3>The three buckets — a life in phases</h3>
+    <p>Die with Zero proposes spending not as a flat annual budget but as a series of bucket deployments, each matched to what the body and mind can actually enjoy at that stage of life.</p>
+    <div class="dwz-pillars">
+      <div class="dwz-pillar">
+        <div class="dwz-pillar-title">Ages 47 – 60 · Adventure</div>
+        <div class="dwz-pillar-text">Physical travel. New places. Calisthenics across continents. Chess tournaments. Long stays. The body is strong. Use it.</div>
+      </div>
+      <div class="dwz-pillar">
+        <div class="dwz-pillar-title">Ages 60 – 70 · Depth</div>
+        <div class="dwz-pillar-text">Culture, philosophy, slower richness. Deeper relationships. Longer stays in fewer places. The mind at full power.</div>
+      </div>
+      <div class="dwz-pillar">
+        <div class="dwz-pillar-title">Ages 70 – 75 · Peace</div>
+        <div class="dwz-pillar-text">Comfort, beauty, presence. The €20k buffer. Small joys. Witnessing. The portfolio has done its work.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end philo tab -->
+
+<script>
+  function switchTab(name) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+
+  function togglePhase(header) {
+    const body = header.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    header.classList.toggle('open', !isOpen);
+  }
+
+  function toggleDwz(header) {
+    const body = header.nextElementSibling;
+    const isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : 'block';
+    header.querySelector('.phase-chevron').style.transform = isOpen ? '' : 'rotate(180deg)';
+  }
+
+  function toggleExit(header) {
+    const body = document.getElementById('exit-body');
+    const isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : 'block';
+    header.querySelector('.phase-chevron').style.transform = isOpen ? '' : 'rotate(180deg)';
+  }
+
+  function toggleManifesto(block) {
+    const body = block.querySelector('.manifesto-body');
+    body.classList.toggle('open');
+  }
+
+  // Open Phase 0 by default
+  window.addEventListener('DOMContentLoaded', () => {
+    const first = document.querySelector('.phase-header');
+    if (first) {
+      first.nextElementSibling.classList.add('open');
+      first.classList.add('open');
+    }
+  });
+</script>
+</body>
+</html>
