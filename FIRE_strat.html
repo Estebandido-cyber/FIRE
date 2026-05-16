@@ -7,778 +7,245 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #18181f;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.12);
-    --gold: #c9a84c;
-    --gold2: #e8c97a;
-    --gold-dim: rgba(201,168,76,0.15);
-    --gold-glow: rgba(201,168,76,0.08);
-    --text: #e8e6e0;
-    --text2: #9a9890;
-    --text3: #5a5856;
-    --label: #c8c5bc;
-    --green: #4caf7d;
-    --green-dim: rgba(76,175,125,0.12);
-    --blue: #5b9bd5;
-    --blue-dim: rgba(91,155,213,0.12);
-    --coral: #d4745a;
-    --coral-dim: rgba(212,116,90,0.12);
-    --purple: #9b72cf;
-    --purple-dim: rgba(155,114,207,0.12);
-    --red: #c05050;
-    --red-dim: rgba(192,80,80,0.1);
-    --teal: #4aacb8;
-    --teal-dim: rgba(74,172,184,0.12);
-    --header-h: 80px;
+    --bg:#0a0a0f; --surface:#111118; --surface2:#18181f;
+    --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+    --gold:#c9a84c; --gold2:#e8c97a; --gold-dim:rgba(201,168,76,0.15); --gold-glow:rgba(201,168,76,0.08);
+    --text:#e8e6e0; --text2:#9a9890; --text3:#5a5856; --label:#c8c5bc;
+    --green:#4caf7d; --green-dim:rgba(76,175,125,0.12);
+    --blue:#5b9bd5; --blue-dim:rgba(91,155,213,0.12);
+    --coral:#d4745a; --coral-dim:rgba(212,116,90,0.12);
+    --purple:#9b72cf; --purple-dim:rgba(155,114,207,0.12);
+    --teal:#4aacb8; --teal-dim:rgba(74,172,184,0.12);
+    --header-h:80px;
   }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* ── STICKY HEADER — desktop ── */
+  .header{
+    position:sticky;top:0;z-index:100;height:var(--header-h);
+    background:rgba(10,10,15,0.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    padding:0 2rem;
+    display:grid;
+    grid-template-columns:auto auto 1fr auto auto;
+    align-items:center;gap:1rem;
+  }
+  /* mobile rows — hidden on desktop */
+  .header-row1,.header-row2,.header-row3{display:none;}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+  .atom-btn{background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;opacity:.85;transition:opacity .2s;flex-shrink:0;}
+  .atom-btn:hover{opacity:1;}
+  .header-sep{width:1px;height:36px;background:var(--border2);flex-shrink:0;}
+  .title-block{display:flex;flex-direction:column;gap:2px;}
+  .title-main{display:flex;align-items:baseline;gap:.55rem;line-height:1;}
+  .title-fire{font-family:'Playfair Display',serif;font-weight:600;font-size:1.85rem;color:var(--gold2);letter-spacing:.03em;}
+  .title-strategy{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1rem;color:var(--text2);letter-spacing:.08em;}
+  .title-sub{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text3);letter-spacing:.14em;text-transform:uppercase;}
 
-  /* ── STICKY HEADER ── */
-  .header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    height: var(--header-h);
-    background: rgba(10,10,15,0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-  }
+  /* centred meta */
+  .header-meta{display:flex;gap:1.8rem;align-items:center;justify-content:center;}
+  .meta-item{text-align:center;}
+  .meta-label{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;}
+  .meta-value{font-family:'DM Mono',monospace;font-size:.9rem;color:var(--gold);font-weight:500;margin-top:.1rem;}
 
-  /* atom logo */
-  .atom-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    opacity: 0.85;
-    transition: opacity 0.2s;
-    flex-shrink: 0;
-  }
-  .atom-btn:hover { opacity: 1; }
+  /* flags */
+  .lang-switcher{display:flex;gap:.35rem;align-items:center;justify-content:center;}
+  .flag-btn{background:none;border:2px solid transparent;border-radius:6px;padding:2px 3px;cursor:pointer;font-size:1.45rem;line-height:1;opacity:.4;transition:opacity .18s,border-color .18s,transform .15s;}
+  .flag-btn:hover{opacity:.8;transform:scale(1.1);}
+  .flag-btn.active{opacity:1;border-color:var(--gold);transform:scale(1.08);}
 
-  .header-sep {
-    width: 1px;
-    height: 36px;
-    background: var(--border2);
-    flex-shrink: 0;
-  }
+  /* ── MOBILE HEADER: 3 stacked rows ── */
+  @media(max-width:640px){
+    /* hide the desktop grid layout */
+    .header{
+      height:auto;
+      display:flex;
+      flex-direction:column;
+      padding:0;
+      gap:0;
+    }
+    .header > .atom-btn,
+    .header > div:not(.header-row1):not(.header-row2):not(.header-row3),
+    .header > .header-sep,
+    .header > .header-meta,
+    .header > .lang-switcher { display:none; }
 
-  .title-block {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .title-main {
-    display: flex;
-    align-items: baseline;
-    gap: 0.55rem;
-    line-height: 1;
-  }
-  .title-fire {
-    font-family: 'Playfair Display', serif;
-    font-weight: 600;
-    font-size: 1.85rem;
-    color: var(--gold2);
-    letter-spacing: 0.03em;
-  }
-  .title-strategy {
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    font-size: 1rem;
-    color: var(--text2);
-    letter-spacing: 0.08em;
-  }
-  .title-sub {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--text3);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
+    /* show mobile rows */
+    .header-row1,.header-row2,.header-row3{display:flex;}
 
-  .header-spacer { flex: 1; }
-  .header-meta {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
-  }
-  .meta-item { text-align: right; }
-  .meta-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-  .meta-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.95rem;
-    color: var(--gold);
-    font-weight: 500;
-    margin-top: 0.1rem;
+    .header-row1{
+      align-items:center;gap:.75rem;
+      padding:.65rem 1.2rem;
+      border-bottom:1px solid var(--border);
+    }
+    .header-row2{
+      align-items:center;justify-content:space-around;
+      padding:.5rem 1.2rem;
+      border-bottom:1px solid var(--border);
+      background:rgba(255,255,255,0.02);
+    }
+    .header-row3{
+      align-items:center;justify-content:center;gap:.6rem;
+      padding:.45rem 1.2rem;
+    }
+    .title-fire{font-size:1.4rem;}
+    .title-strategy{font-size:.82rem;}
+    .title-sub{font-size:.5rem;letter-spacing:.1em;}
+    .meta-item{text-align:center;}
+    .meta-label{font-size:.56rem;}
+    .meta-value{font-size:.82rem;}
+    .flag-btn{font-size:1.6rem;padding:3px 5px;}
+    /* content */
+    .tabs{padding:0 1rem;}
+    .tab-btn{padding:.7rem .9rem;font-size:.63rem;letter-spacing:.08em;}
+    .tab-content{padding:1.5rem 1rem 3rem;}
   }
 
   /* ── TABS ── */
-  .tabs {
-    display: flex;
-    padding: 0 2.5rem;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-  }
-  .tab-btn {
-    padding: 0.9rem 1.6rem;
-    background: none;
-    border: none;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    position: relative;
-    top: 1px;
-  }
-  .tab-btn:hover { color: var(--text2); }
-  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tabs{display:flex;padding:0 2.5rem;border-bottom:1px solid var(--border);background:var(--surface);}
+  .tab-btn{padding:.9rem 1.6rem;background:none;border:none;color:var(--text3);font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;position:relative;top:1px;}
+  .tab-btn:hover{color:var(--text2);}
+  .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
 
   /* ── CONTENT ── */
-  .tab-content { display: none; padding: 2.5rem 2.5rem 4rem; }
-  .tab-content.active { display: block; }
+  .tab-content{display:none;padding:2.5rem 2.5rem 4rem;}
+  .tab-content.active{display:block;}
 
   /* ── SECTION TITLE ── */
-  .section-title {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--label);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 1.1rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  .section-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+  .section-title{font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;color:var(--label);letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.1rem;display:flex;align-items:center;gap:1rem;}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
 
-  /* ── PORTFOLIO SNAPSHOT ── */
-  .snapshot-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 3rem;
-  }
-  .snap-cell {
-    background: var(--surface);
-    padding: 1rem 1.2rem;
-    transition: background 0.2s;
-  }
-  .snap-cell:hover { background: var(--surface2); }
-  .snap-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.35rem;
-  }
-  .snap-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 1.05rem;
-    font-weight: 500;
-    color: var(--gold2);
-  }
-  .snap-sub {
-    font-size: 0.65rem;
-    color: var(--text3);
-    margin-top: 0.2rem;
-  }
+  /* ── SNAPSHOT ── */
+  .snapshot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:3rem;}
+  .snap-cell{background:var(--surface);padding:1rem 1.2rem;transition:background .2s;}
+  .snap-cell:hover{background:var(--surface2);}
+  .snap-label{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem;}
+  .snap-value{font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:500;color:var(--gold2);}
+  .snap-sub{font-size:.65rem;color:var(--text3);margin-top:.2rem;}
 
   /* ── TIMELINE ── */
-  .timeline { position: relative; }
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 22px;
-    top: 0; bottom: 0;
-    width: 1px;
-    background: linear-gradient(to bottom, transparent, var(--border2) 5%, var(--border2) 95%, transparent);
-  }
+  .timeline{position:relative;}
+  .timeline::before{content:'';position:absolute;left:22px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--border2) 5%,var(--border2) 95%,transparent);}
+  .phase-block{position:relative;padding-left:60px;margin-bottom:1.2rem;}
+  .phase-dot{position:absolute;left:15px;top:20px;width:15px;height:15px;border-radius:50%;border:2px solid;background:var(--bg);z-index:2;transition:transform .2s;}
+  .phase-block:hover .phase-dot{transform:scale(1.3);}
+  .phase-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s;user-select:none;}
+  .phase-header:hover{border-color:var(--border2);background:var(--surface2);}
+  .phase-header.open{border-radius:8px 8px 0 0;}
+  .phase-num{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text3);letter-spacing:.1em;min-width:55px;}
+  .phase-name{font-family:'Playfair Display',serif;font-size:1rem;flex:1;}
+  .phase-dates{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--text2);}
+  .phase-income{font-family:'DM Mono',monospace;font-size:.72rem;padding:3px 10px;border-radius:20px;}
+  .phase-chevron{font-size:.7rem;color:var(--text3);transition:transform .25s;min-width:12px;}
+  .phase-body{background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;overflow:hidden;max-height:0;transition:max-height .38s ease;}
+  .phase-body.open{max-height:2400px;}
+  .phase-inner{padding:1.2rem 1.4rem 1.4rem;}
+  .phase-desc{font-size:.88rem;color:var(--text2);line-height:1.75;margin-bottom:1.2rem;}
+  .detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--border);border-radius:6px;overflow:hidden;margin-bottom:1rem;}
+  .detail-cell{background:var(--bg);padding:.75rem 1rem;}
+  .detail-label{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem;}
+  .detail-value{font-family:'DM Mono',monospace;font-size:.88rem;color:var(--text);}
+  .action-list{list-style:none;display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;}
+  .action-list li{font-size:.85rem;color:var(--text2);padding-left:1.2rem;position:relative;line-height:1.6;}
+  .action-list li::before{content:'→';position:absolute;left:0;color:var(--text3);font-size:.75rem;}
+  .tag-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem;}
+  .tag{font-family:'DM Mono',monospace;font-size:.62rem;padding:3px 10px;border-radius:20px;border:1px solid;letter-spacing:.05em;}
+  .fallback-box{border-left:2px solid var(--coral);padding:.75rem 1rem;background:var(--coral-dim);border-radius:0 6px 6px 0;margin-top:1rem;}
+  .fallback-title{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--coral);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+  .fallback-text{font-size:.82rem;color:var(--text2);line-height:1.6;}
 
-  .phase-block {
-    position: relative;
-    padding-left: 60px;
-    margin-bottom: 1.2rem;
-  }
-  .phase-dot {
-    position: absolute;
-    left: 15px;
-    top: 20px;
-    width: 15px; height: 15px;
-    border-radius: 50%;
-    border: 2px solid;
-    background: var(--bg);
-    z-index: 2;
-    transition: transform 0.2s;
-  }
-  .phase-block:hover .phase-dot { transform: scale(1.3); }
+  /* spend order */
+  .spend-order{margin-top:1rem;border:1px solid var(--border2);border-radius:6px;overflow:hidden;}
+  .spend-order-title{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--label);text-transform:uppercase;letter-spacing:.1em;padding:.6rem 1rem;background:var(--surface2);border-bottom:1px solid var(--border);}
+  .spend-steps{display:flex;align-items:stretch;flex-wrap:wrap;}
+  .spend-step{flex:1;min-width:90px;padding:.7rem .9rem;background:var(--bg);border-right:1px solid var(--border);}
+  .spend-step:last-child{border-right:none;}
+  .spend-step-num{font-family:'DM Mono',monospace;font-size:.55rem;color:var(--text3);margin-bottom:.25rem;}
+  .spend-step-name{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--gold);font-weight:500;}
+  .spend-step-note{font-size:.72rem;color:var(--text3);margin-top:.2rem;line-height:1.4;}
 
-  .phase-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.2rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    user-select: none;
-  }
-  .phase-header:hover { border-color: var(--border2); background: var(--surface2); }
-  .phase-header.open { border-radius: 8px 8px 0 0; }
+  /* collapsibles */
+  .colombia-wrap,.dwz-section,.exit-section{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:3rem;}
+  .colombia-header,.dwz-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;background:var(--surface2);cursor:pointer;user-select:none;transition:background .2s;}
+  .colombia-header:hover,.dwz-header:hover{background:var(--surface);}
+  .colombia-header.open,.dwz-header.open{border-bottom:1px solid var(--border);}
+  .colombia-title{font-family:'Playfair Display',serif;font-size:1rem;color:var(--green);flex:1;}
+  .dwz-title{font-family:'Playfair Display',serif;font-size:1rem;flex:1;color:var(--text);}
+  .colombia-body,.dwz-body,.exit-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+  .colombia-body.open,.dwz-body.open,.exit-body.open{max-height:2000px;}
+  .colombia-inner,.dwz-inner{padding:1.2rem 1.4rem 1.4rem;}
+  .assets-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--border);border-radius:6px;overflow:hidden;}
+  .asset-card{background:var(--surface2);padding:1rem 1.2rem;}
+  .asset-name{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--text2);font-weight:500;margin-bottom:.2rem;}
+  .asset-value{font-family:'DM Mono',monospace;font-size:1.1rem;color:var(--gold2);font-weight:500;}
+  .asset-role{font-size:.75rem;color:var(--text3);margin-top:.3rem;line-height:1.5;}
+  .asset-holdings{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--text3);margin-top:.3rem;}
+  .dwz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem;}
+  .dwz-card{padding:1rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);}
+  .dwz-card-title{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}
+  .dwz-card-text{font-size:.82rem;color:var(--text2);line-height:1.65;}
+  /* exit */
+  .exit-section{border-color:rgba(155,114,207,.25);}
+  .exit-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;background:var(--purple-dim);cursor:pointer;user-select:none;transition:background .2s;}
+  .exit-header:hover{background:rgba(155,114,207,.18);}
+  .exit-header.open{border-bottom:1px solid rgba(155,114,207,.2);}
+  .exit-title{font-family:'Playfair Display',serif;font-size:1rem;color:var(--purple);flex:1;}
+  .exit-body{background:var(--surface);}
+  .exit-inner{padding:1.4rem;}
+  .exit-detail{background:rgba(0,0,0,.3);border:1px solid rgba(155,114,207,.15);border-radius:6px;padding:1rem 1.2rem;margin-top:1rem;}
+  .exit-detail-label{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--purple);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+  .exit-detail-text{font-size:.82rem;color:var(--text2);line-height:1.7;}
 
-  .phase-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--text3);
-    letter-spacing: 0.1em;
-    min-width: 55px;
-  }
-  .phase-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    flex: 1;
-  }
-  .phase-dates {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--text2);
-  }
-  .phase-income {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    padding: 3px 10px;
-    border-radius: 20px;
-  }
-  .phase-chevron {
-    font-size: 0.7rem;
-    color: var(--text3);
-    transition: transform 0.25s;
-    min-width: 12px;
-  }
-  .phase-header.open .phase-chevron { transform: rotate(180deg); }
+  /* ── PHILO ── */
+  .philo-intro{max-width:640px;margin-bottom:3rem;}
+  .philo-intro p{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text2);line-height:1.85;font-style:italic;}
+  .manifesto-block{margin-bottom:2rem;border-left:2px solid var(--border2);padding-left:1.5rem;cursor:pointer;transition:border-color .2s;}
+  .manifesto-block:hover{border-left-color:var(--gold);}
+  .manifesto-num{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem;}
+  .manifesto-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold2);margin-bottom:.8rem;font-weight:400;}
+  .manifesto-body{font-size:.88rem;color:var(--text2);line-height:1.85;max-height:0;overflow:hidden;transition:max-height .35s ease;}
+  .manifesto-body.open{max-height:1000px;}
+  .manifesto-body p{margin-bottom:.8rem;}
+  .manifesto-body p:last-child{margin-bottom:0;}
+  .pull-quote{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--gold);font-style:italic;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:2rem 0;margin:3rem 0;line-height:1.6;text-align:center;}
+  .dwz-philo{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:2rem;margin-bottom:2rem;}
+  .dwz-philo h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold2);font-weight:400;margin-bottom:1rem;}
+  .dwz-philo>p{font-size:.88rem;color:var(--text2);line-height:1.85;margin-bottom:.8rem;}
+  .dwz-pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-top:1.5rem;}
+  .dwz-pillar{padding:1rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);}
+  .dwz-pillar-title{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}
+  .dwz-pillar-text{font-size:.8rem;color:var(--text2);line-height:1.65;}
 
-  .phase-body {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.38s ease;
-  }
-  .phase-body.open { max-height: 2400px; }
-  .phase-inner { padding: 1.2rem 1.4rem 1.4rem; }
+  hr.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0;}
 
-  .phase-desc {
-    font-size: 0.88rem;
-    color: var(--text2);
-    line-height: 1.75;
-    margin-bottom: 1.2rem;
-  }
+  .c-gold{color:var(--gold);border-color:var(--gold);}
+  .c-green{color:var(--green);border-color:var(--green);}
+  .c-blue{color:var(--blue);border-color:var(--blue);}
+  .c-coral{color:var(--coral);border-color:var(--coral);}
+  .c-purple{color:var(--purple);border-color:var(--purple);}
+  .c-teal{color:var(--teal);border-color:var(--teal);}
+  .dot-gold{border-color:var(--gold);}
+  .dot-green{border-color:var(--green);background:var(--green-dim)!important;}
+  .dot-blue{border-color:var(--blue);background:var(--blue-dim)!important;}
+  .dot-coral{border-color:var(--coral);background:var(--coral-dim)!important;}
+  .dot-teal{border-color:var(--teal);background:var(--teal-dim)!important;}
+  .dot-purple{border-color:var(--purple);background:var(--purple-dim)!important;}
+  .income-gold{background:var(--gold-dim);color:var(--gold);}
+  .income-green{background:var(--green-dim);color:var(--green);}
+  .income-blue{background:var(--blue-dim);color:var(--blue);}
+  .income-coral{background:var(--coral-dim);color:var(--coral);}
+  .income-teal{background:var(--teal-dim);color:var(--teal);}
+  .income-purple{background:var(--purple-dim);color:var(--purple);}
 
-  .detail-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    margin-bottom: 1rem;
-  }
-  .detail-cell {
-    background: var(--bg);
-    padding: 0.75rem 1rem;
-  }
-  .detail-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.25rem;
-  }
-  .detail-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.88rem;
-    color: var(--text);
-  }
-
-  .action-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    margin-bottom: 1rem;
-  }
-  .action-list li {
-    font-size: 0.85rem;
-    color: var(--text2);
-    padding-left: 1.2rem;
-    position: relative;
-    line-height: 1.6;
-  }
-  .action-list li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
-    color: var(--text3);
-    font-size: 0.75rem;
-  }
-
-  .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
-  .tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    padding: 3px 10px;
-    border-radius: 20px;
-    border: 1px solid;
-    letter-spacing: 0.05em;
-  }
-
-  .fallback-box {
-    border-left: 2px solid var(--coral);
-    padding: 0.75rem 1rem;
-    background: var(--coral-dim);
-    border-radius: 0 6px 6px 0;
-    margin-top: 1rem;
-  }
-  .fallback-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--coral);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.4rem;
-  }
-  .fallback-text {
-    font-size: 0.82rem;
-    color: var(--text2);
-    line-height: 1.6;
-  }
-
-  .spend-order {
-    margin-top: 1rem;
-    border: 1px solid var(--border2);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .spend-order-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--label);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 0.6rem 1rem;
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border);
-  }
-  .spend-steps {
-    display: flex;
-    align-items: stretch;
-    flex-wrap: wrap;
-  }
-  .spend-step {
-    flex: 1;
-    min-width: 100px;
-    padding: 0.7rem 0.9rem;
-    background: var(--bg);
-    border-right: 1px solid var(--border);
-    position: relative;
-  }
-  .spend-step:last-child { border-right: none; }
-  .spend-step-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.55rem;
-    color: var(--text3);
-    margin-bottom: 0.25rem;
-  }
-  .spend-step-name {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--gold);
-    font-weight: 500;
-  }
-  .spend-step-note {
-    font-size: 0.72rem;
-    color: var(--text3);
-    margin-top: 0.2rem;
-    line-height: 1.4;
-  }
-
-  /* ── COLLAPSIBLE COLOMBIA ── */
-  .colombia-wrap {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 3rem;
-  }
-  .colombia-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.2rem;
-    background: var(--surface);
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.2s;
-  }
-  .colombia-header:hover { background: var(--surface2); }
-  .colombia-header.open { border-bottom: 1px solid var(--border); }
-  .colombia-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    color: var(--green);
-    flex: 1;
-  }
-  .colombia-body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-  }
-  .colombia-body.open { max-height: 800px; }
-  .colombia-inner {
-    padding: 1.2rem 1.4rem 1.4rem;
-  }
-
-  .assets-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .asset-card {
-    background: var(--surface2);
-    padding: 1rem 1.2rem;
-  }
-  .asset-name {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--text2);
-    font-weight: 500;
-    margin-bottom: 0.2rem;
-  }
-  .asset-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 1.1rem;
-    color: var(--gold2);
-    font-weight: 500;
-  }
-  .asset-role {
-    font-size: 0.75rem;
-    color: var(--text3);
-    margin-top: 0.3rem;
-    line-height: 1.5;
-  }
-  .asset-holdings {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--text3);
-    margin-top: 0.3rem;
-  }
-
-  /* ── DWZ ── */
-  .dwz-section {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 3rem;
-  }
-  .dwz-header {
-    padding: 1rem 1.2rem;
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    cursor: pointer;
-    user-select: none;
-  }
-  .dwz-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    flex: 1;
-    color: var(--text);
-  }
-  .dwz-body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-  }
-  .dwz-body.open { max-height: 1200px; }
-  .dwz-inner {
-    padding: 1.2rem 1.4rem 1.4rem;
-  }
-  .dwz-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  .dwz-card {
-    padding: 1rem;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--bg);
-  }
-  .dwz-card-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-  }
-  .dwz-card-text {
-    font-size: 0.82rem;
-    color: var(--text2);
-    line-height: 1.65;
-  }
-
-  /* ── FINAL EXIT ── */
-  .exit-section {
-    border: 1px solid rgba(155,114,207,0.25);
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 3rem;
-  }
-  .exit-header {
-    padding: 1rem 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    cursor: pointer;
-    user-select: none;
-    background: var(--purple-dim);
-    transition: background 0.2s;
-  }
-  .exit-header:hover { background: rgba(155,114,207,0.18); }
-  .exit-header.open { border-bottom: 1px solid rgba(155,114,207,0.2); }
-  .exit-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    color: var(--purple);
-    flex: 1;
-  }
-  .exit-body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.38s ease;
-    background: var(--surface);
-  }
-  .exit-body.open { max-height: 2000px; }
-  .exit-inner { padding: 1.4rem; }
-  .exit-detail {
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(155,114,207,0.15);
-    border-radius: 6px;
-    padding: 1rem 1.2rem;
-    margin-top: 1rem;
-  }
-  .exit-detail-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--purple);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.4rem;
-  }
-  .exit-detail-text {
-    font-size: 0.82rem;
-    color: var(--text2);
-    line-height: 1.7;
-  }
-
-  /* ── PHILO TAB ── */
-  .philo-intro {
-    max-width: 640px;
-    margin-bottom: 3rem;
-  }
-  .philo-intro p {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    color: var(--text2);
-    line-height: 1.85;
-    font-style: italic;
-  }
-
-  .manifesto-block {
-    margin-bottom: 2rem;
-    border-left: 2px solid var(--border2);
-    padding-left: 1.5rem;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-  .manifesto-block:hover { border-left-color: var(--gold); }
-  .manifesto-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--text3);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-  .manifesto-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    color: var(--gold2);
-    margin-bottom: 0.8rem;
-    font-weight: 400;
-  }
-  .manifesto-body {
-    font-size: 0.88rem;
-    color: var(--text2);
-    line-height: 1.85;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-  }
-  .manifesto-body.open { max-height: 1000px; }
-  .manifesto-body p { margin-bottom: 0.8rem; }
-  .manifesto-body p:last-child { margin-bottom: 0; }
-
-  .pull-quote {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.35rem;
-    color: var(--gold);
-    font-style: italic;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 2rem 0;
-    margin: 3rem 0;
-    line-height: 1.6;
-    text-align: center;
-  }
-
-  .dwz-philo {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
-  .dwz-philo h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    color: var(--gold2);
-    font-weight: 400;
-    margin-bottom: 1rem;
-  }
-  .dwz-philo p {
-    font-size: 0.88rem;
-    color: var(--text2);
-    line-height: 1.85;
-    margin-bottom: 0.8rem;
-  }
-  .dwz-pillars {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
-  .dwz-pillar {
-    padding: 1rem;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--bg);
-  }
-  .dwz-pillar-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--gold);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-  }
-  .dwz-pillar-text {
-    font-size: 0.8rem;
-    color: var(--text2);
-    line-height: 1.65;
-  }
-
-  hr.divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 2.5rem 0;
-  }
-
-  /* color helpers */
-  .c-gold  { color: var(--gold);   border-color: var(--gold); }
-  .c-green { color: var(--green);  border-color: var(--green); }
-  .c-blue  { color: var(--blue);   border-color: var(--blue); }
-  .c-coral { color: var(--coral);  border-color: var(--coral); }
-  .c-purple{ color: var(--purple); border-color: var(--purple); }
-  .c-teal  { color: var(--teal);   border-color: var(--teal); }
-
-  .dot-gold   { border-color: var(--gold); }
-  .dot-green  { border-color: var(--green);  background: var(--green-dim)  !important; }
-  .dot-blue   { border-color: var(--blue);   background: var(--blue-dim)   !important; }
-  .dot-coral  { border-color: var(--coral);  background: var(--coral-dim)  !important; }
-  .dot-purple { border-color: var(--purple); background: var(--purple-dim) !important; }
-  .dot-teal   { border-color: var(--teal);   background: var(--teal-dim)   !important; }
-
-  .income-green  { background: var(--green-dim);  color: var(--green); }
-  .income-blue   { background: var(--blue-dim);   color: var(--blue); }
-  .income-coral  { background: var(--coral-dim);  color: var(--coral); }
-  .income-purple { background: var(--purple-dim); color: var(--purple); }
-  .income-teal   { background: var(--teal-dim);   color: var(--teal); }
-  .income-gold   { background: var(--gold-dim);   color: var(--gold); }
-
-  @media (max-width: 640px) {
-    .header { padding: 0 1rem; }
-    .header-meta { display: none; }
-    .tabs, .tab-content { padding-left: 1rem; padding-right: 1rem; }
-  }
 </style>
 </head>
 <body>
 
 <!-- ══════════ STICKY HEADER ══════════ -->
 <header class="header">
-  <!-- Atom logo → Hub -->
+
+  <!-- ── DESKTOP layout (grid, hidden on mobile) ── -->
   <button class="atom-btn" onclick="window.location.href='index.html'" title="Back to Hub">
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="16" cy="16" r="13.5" stroke="url(#g1)" stroke-width="1.2" fill="none" opacity="0.7"/>
@@ -787,148 +254,131 @@
       <circle cx="16" cy="16" r="2.5" fill="url(#g4)"/>
       <circle cx="16" cy="2.5" r="1.5" fill="white" opacity="0.9"/>
       <defs>
-        <linearGradient id="g1" x1="2.5" y1="2.5" x2="29.5" y2="29.5" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#7dd3fc"/>
-        </linearGradient>
-        <linearGradient id="g2" x1="2.5" y1="2.5" x2="29.5" y2="29.5" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#7dd3fc"/><stop offset="100%" stop-color="#00e5a0"/>
-        </linearGradient>
-        <linearGradient id="g3" x1="2.5" y1="29.5" x2="29.5" y2="2.5" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#ffd166"/><stop offset="100%" stop-color="#a78bfa"/>
-        </linearGradient>
-        <radialGradient id="g4" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#a78bfa"/>
-        </radialGradient>
+        <linearGradient id="g1" x1="2.5" y1="2.5" x2="29.5" y2="29.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#7dd3fc"/></linearGradient>
+        <linearGradient id="g2" x1="2.5" y1="2.5" x2="29.5" y2="29.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7dd3fc"/><stop offset="100%" stop-color="#00e5a0"/></linearGradient>
+        <linearGradient id="g3" x1="2.5" y1="29.5" x2="29.5" y2="2.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#ffd166"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient>
+        <radialGradient id="g4" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#a78bfa"/></radialGradient>
       </defs>
     </svg>
   </button>
-
-  <div class="header-sep"></div>
-
-  <div class="title-block">
-    <div class="title-main">
-      <span class="title-fire">FIRE</span>
-      <span class="title-strategy">Strategy</span>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <div class="header-sep"></div>
+    <div class="title-block">
+      <div class="title-main"><span class="title-fire">FIRE</span><span class="title-strategy" id="title-strategy">Strategy</span></div>
+      <div class="title-sub" id="title-sub">Personal Financial Independence Roadmap · Confidential</div>
     </div>
-    <div class="title-sub">Personal Financial Independence Roadmap · Confidential</div>
   </div>
-
-  <div class="header-spacer"></div>
-
   <div class="header-meta">
-    <div class="meta-item">
-      <div class="meta-label">Age</div>
-      <div class="meta-value">46</div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">Target PSE</div>
-      <div class="meta-value">2027</div>
-    </div>
-    <div class="meta-item">
-      <div class="meta-label">Portfolio</div>
-      <div class="meta-value">~€222k</div>
+    <div class="meta-item"><div class="meta-label" id="meta-age-label">Age</div><div class="meta-value">46</div></div>
+    <div class="meta-item"><div class="meta-label" id="meta-pse-label">Target PSE</div><div class="meta-value">2027</div></div>
+    <div class="meta-item"><div class="meta-label" id="meta-port-label">Portfolio</div><div class="meta-value">~€222k</div></div>
+  </div>
+  <div class="header-sep"></div>
+  <div class="lang-switcher">
+    <button class="flag-btn active" id="flag-en" onclick="setLang('en')" title="English">🇺🇸</button>
+    <button class="flag-btn" id="flag-es" onclick="setLang('es')" title="Español">🇨🇴</button>
+    <button class="flag-btn" id="flag-fr" onclick="setLang('fr')" title="Français">🇫🇷</button>
+  </div>
+
+  <!-- ── MOBILE layout: 3 rows ── -->
+  <!-- Row 1: atom + title -->
+  <div class="header-row1">
+    <button class="atom-btn" onclick="window.location.href='index.html'" title="Back to Hub">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="13.5" stroke="url(#g1m)" stroke-width="1.2" fill="none" opacity="0.7"/>
+        <ellipse cx="16" cy="16" rx="13.5" ry="5.5" stroke="url(#g2m)" stroke-width="1" fill="none" opacity="0.55" transform="rotate(-35 16 16)"/>
+        <ellipse cx="16" cy="16" rx="13.5" ry="5.5" stroke="url(#g3m)" stroke-width="1" fill="none" opacity="0.45" transform="rotate(35 16 16)"/>
+        <circle cx="16" cy="16" r="2.5" fill="url(#g4m)"/>
+        <circle cx="16" cy="2.5" r="1.5" fill="white" opacity="0.9"/>
+        <defs>
+          <linearGradient id="g1m" x1="2.5" y1="2.5" x2="29.5" y2="29.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#7dd3fc"/></linearGradient>
+          <linearGradient id="g2m" x1="2.5" y1="2.5" x2="29.5" y2="29.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7dd3fc"/><stop offset="100%" stop-color="#00e5a0"/></linearGradient>
+          <linearGradient id="g3m" x1="2.5" y1="29.5" x2="29.5" y2="2.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#ffd166"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient>
+          <radialGradient id="g4m" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#a78bfa"/></radialGradient>
+        </defs>
+      </svg>
+    </button>
+    <div style="width:1px;height:28px;background:var(--border2);flex-shrink:0;"></div>
+    <div class="title-block">
+      <div class="title-main"><span class="title-fire">FIRE</span><span class="title-strategy">Strategy</span></div>
+      <div class="title-sub">Personal Financial Independence Roadmap · Confidential</div>
     </div>
   </div>
+
+  <!-- Row 2: meta cards -->
+  <div class="header-row2">
+    <div class="meta-item"><div class="meta-label">Age</div><div class="meta-value">46</div></div>
+    <div class="meta-item"><div class="meta-label">Target PSE</div><div class="meta-value">2027</div></div>
+    <div class="meta-item"><div class="meta-label">Portfolio</div><div class="meta-value">~€222k</div></div>
+  </div>
+
+  <!-- Row 3: flags -->
+  <div class="header-row3">
+    <button class="flag-btn active" id="flag-en-m" onclick="setLang('en')" title="English">🇺🇸</button>
+    <button class="flag-btn" id="flag-es-m" onclick="setLang('es')" title="Español">🇨🇴</button>
+    <button class="flag-btn" id="flag-fr-m" onclick="setLang('fr')" title="Français">🇫🇷</button>
+  </div>
+
 </header>
 
 <!-- ══════════ TABS ══════════ -->
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('financial', this)">⬡ Financial Plan</button>
-  <button class="tab-btn" onclick="switchTab('philo', this)">◇ Life Manifesto</button>
+  <button class="tab-btn active" id="tab-btn-financial" onclick="switchTab('financial',this)">⬡ Financial Plan</button>
+  <button class="tab-btn" id="tab-btn-philo" onclick="switchTab('philo',this)">◇ Life Manifesto</button>
 </div>
 
 
-<!-- ══════════════════════════════ FINANCIAL TAB ══════════════════════════════ -->
+<!-- ══════════════════ FINANCIAL TAB ══════════════════ -->
 <div id="tab-financial" class="tab-content active">
 
-  <div class="section-title">Portfolio snapshot · 2025</div>
+  <div class="section-title" id="sec-snapshot">Portfolio snapshot · 2025</div>
   <div class="snapshot-grid">
-    <div class="snap-cell">
-      <div class="snap-label">PEA</div>
-      <div class="snap-value">€50k</div>
-      <div class="snap-sub">WPEA MSCI World</div>
-    </div>
-    <div class="snap-cell">
-      <div class="snap-label">PEE</div>
-      <div class="snap-value">€95k</div>
-      <div class="snap-sub">Natixis · mostly unlocked</div>
-    </div>
-    <div class="snap-cell">
-      <div class="snap-label">CTO — ETFs</div>
-      <div class="snap-value">€38k</div>
-      <div class="snap-sub">VUSA.AS · EUNL.DE</div>
-    </div>
-    <div class="snap-cell">
-      <div class="snap-label">CTO — Stocks</div>
-      <div class="snap-value">€17k</div>
-      <div class="snap-sub">AAPL · AMD</div>
-    </div>
-    <div class="snap-cell">
-      <div class="snap-label">PERE</div>
-      <div class="snap-value">€15k</div>
-      <div class="snap-sub">Retirement plan</div>
-    </div>
-    <div class="snap-cell">
-      <div class="snap-label">PERO</div>
-      <div class="snap-value">€6k</div>
-      <div class="snap-sub">Employer plan</div>
-    </div>
-    <div class="snap-cell">
-      <div class="snap-label">Assurance Vie</div>
-      <div class="snap-value">€1k</div>
-      <div class="snap-sub">Boursobank · building</div>
-    </div>
-    <div class="snap-cell" style="background:var(--gold-glow)">
-      <div class="snap-label">🇫🇷 Total France</div>
-      <div class="snap-value" style="font-size:1.15rem">~€222k</div>
-      <div class="snap-sub">All French wrappers</div>
-    </div>
-    <div class="snap-cell">
-      <div class="snap-label">🇨🇴 Colombia</div>
-      <div class="snap-value">~€156k</div>
-      <div class="snap-sub">Fondo + Heritage + Appt</div>
-    </div>
-    <div class="snap-cell" style="background:var(--gold-glow)">
-      <div class="snap-label">Grand total</div>
-      <div class="snap-value" style="font-size:1.15rem">~€378k</div>
-      <div class="snap-sub">All assets combined</div>
-    </div>
+    <div class="snap-cell"><div class="snap-label">PEA</div><div class="snap-value">€50k</div><div class="snap-sub">WPEA MSCI World</div></div>
+    <div class="snap-cell"><div class="snap-label">PEE</div><div class="snap-value">€95k</div><div class="snap-sub" id="snap-pee">Natixis · mostly unlocked</div></div>
+    <div class="snap-cell"><div class="snap-label">CTO — ETFs</div><div class="snap-value">€38k</div><div class="snap-sub">VUSA.AS · EUNL.DE</div></div>
+    <div class="snap-cell"><div class="snap-label">CTO — Stocks</div><div class="snap-value">€17k</div><div class="snap-sub">AAPL · AMD</div></div>
+    <div class="snap-cell"><div class="snap-label">PERE</div><div class="snap-value">€15k</div><div class="snap-sub" id="snap-pere">Retirement plan</div></div>
+    <div class="snap-cell"><div class="snap-label">PERO</div><div class="snap-value">€6k</div><div class="snap-sub" id="snap-pero">Employer plan</div></div>
+    <div class="snap-cell"><div class="snap-label">Assurance Vie</div><div class="snap-value">€1k</div><div class="snap-sub" id="snap-av">Boursobank · building</div></div>
+    <div class="snap-cell" style="background:var(--gold-glow)"><div class="snap-label" id="snap-fr-label">🇫🇷 Total France</div><div class="snap-value" style="font-size:1.15rem">~€222k</div><div class="snap-sub" id="snap-fr-sub">All French wrappers</div></div>
+    <div class="snap-cell"><div class="snap-label" id="snap-co-label">🇨🇴 Colombia</div><div class="snap-value">~€156k</div><div class="snap-sub" id="snap-co-sub">Fondo + Heritage + Appt</div></div>
+    <div class="snap-cell" style="background:var(--gold-glow)"><div class="snap-label" id="snap-grand-label">Grand total</div><div class="snap-value" style="font-size:1.15rem">~€378k</div><div class="snap-sub" id="snap-grand-sub">All assets combined</div></div>
   </div>
 
-  <div class="section-title">Timeline · Phase by phase</div>
+  <div class="section-title" id="sec-timeline">Timeline · Phase by phase</div>
   <div class="timeline">
 
     <!-- PHASE 0 -->
     <div class="phase-block">
       <div class="phase-dot dot-gold"></div>
       <div class="phase-header open" onclick="togglePhase(this)">
-        <span class="phase-num">Phase 0</span>
-        <span class="phase-name c-gold">The Accumulation Sprint</span>
-        <span class="phase-dates">2025 – 2027</span>
-        <span class="phase-income income-gold">Full salary</span>
+        <span class="phase-num" id="p0-num">Phase 0</span>
+        <span class="phase-name c-gold" id="p0-name">The Accumulation Sprint</span>
+        <span class="phase-dates" id="p0-dates">2025 – 2027</span>
+        <span class="phase-income income-gold" id="p0-income">Full salary</span>
         <span class="phase-chevron" style="transform:rotate(180deg)">▼</span>
       </div>
       <div class="phase-body open">
         <div class="phase-inner">
-          <p class="phase-desc">Still employed. Every euro of income is either saved or invested. The goal is to maximize all wrappers before the PSE window opens, simulate the retirement lifestyle now to validate the numbers, and build the psychological muscle for the transition.</p>
+          <p class="phase-desc" id="p0-desc">Still employed. Every euro of income is either saved or invested. The goal is to maximize all wrappers before the PSE window opens, simulate the retirement lifestyle now to validate the numbers, and build the psychological muscle for the transition.</p>
           <div class="detail-grid">
-            <div class="detail-cell"><div class="detail-label">Income</div><div class="detail-value">Full salary</div></div>
-            <div class="detail-cell"><div class="detail-label">Target portfolio at PSE exit</div><div class="detail-value">~€300k France</div></div>
-            <div class="detail-cell"><div class="detail-label">Seniority at PSE</div><div class="detail-value">~18 years</div></div>
-            <div class="detail-cell"><div class="detail-label">Est. severance</div><div class="detail-value">~€80k</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p0-d1l">Income</div><div class="detail-value" id="p0-d1v">Full salary</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p0-d2l">Target portfolio at PSE exit</div><div class="detail-value" id="p0-d2v">~€300k France</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p0-d3l">Seniority at PSE</div><div class="detail-value" id="p0-d3v">~18 years</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p0-d4l">Est. severance</div><div class="detail-value" id="p0-d4v">~€80k</div></div>
           </div>
           <ul class="action-list">
-            <li>Drain unlocked PEE tranches systematically → reinvest into PEA (priority: PEA €150k ceiling is irreplaceable)</li>
-            <li>Build Assurance Vie on Boursobank: fonds euros floor as capital protection base</li>
-            <li>Keep Livret A + LDDS maxed as liquidity buffer</li>
-            <li>Monitor PSE calendar at work — target 2027, fallback 2028</li>
-            <li>Simulate €2k/month lifestyle now — validate it is genuinely comfortable before committing</li>
-            <li>Watch AI restructuring at company for opportunities or acceleration of timeline</li>
+            <li id="p0-a1">Drain unlocked PEE tranches systematically → reinvest into PEA (priority: PEA €150k ceiling is irreplaceable)</li>
+            <li id="p0-a2">Build Assurance Vie on Boursobank: fonds euros floor as capital protection base</li>
+            <li id="p0-a3">Keep Livret A + LDDS maxed as liquidity buffer</li>
+            <li id="p0-a4">Monitor PSE calendar at work — target 2027, fallback 2028</li>
+            <li id="p0-a5">Simulate €2k/month lifestyle now — validate it is genuinely comfortable before committing</li>
+            <li id="p0-a6">Watch AI restructuring at company for opportunities or acceleration of timeline</li>
           </ul>
           <div class="tag-row">
-            <span class="tag c-gold">PEE → PEA pipeline</span>
-            <span class="tag c-gold">AV clock starts 2025</span>
-            <span class="tag c-gold">Frugality simulation</span>
+            <span class="tag c-gold" id="p0-t1">PEE → PEA pipeline</span>
+            <span class="tag c-gold" id="p0-t2">AV clock starts 2025</span>
+            <span class="tag c-gold" id="p0-t3">Frugality simulation</span>
           </div>
         </div>
       </div>
@@ -938,34 +388,34 @@
     <div class="phase-block">
       <div class="phase-dot dot-green"></div>
       <div class="phase-header" onclick="togglePhase(this)">
-        <span class="phase-num">Phase 1</span>
-        <span class="phase-name c-green">Congé de Reclassement</span>
-        <span class="phase-dates">2027 – 2028 (~9–12 months)</span>
-        <span class="phase-income income-green">Near-full salary</span>
+        <span class="phase-num" id="p1-num">Phase 1</span>
+        <span class="phase-name c-green" id="p1-name">Congé de Reclassement</span>
+        <span class="phase-dates" id="p1-dates">2027 – 2028 (~9–12 months)</span>
+        <span class="phase-income income-green" id="p1-income">Near-full salary</span>
         <span class="phase-chevron">▼</span>
       </div>
       <div class="phase-body">
         <div class="phase-inner">
-          <p class="phase-desc">Still technically an employee. Paid at near-full salary while formally in a career transition program — the company funds both the income and the reconversion training. This is the golden decompression year. No portfolio drawdown. Use it wisely.</p>
+          <p class="phase-desc" id="p1-desc">Still technically an employee. Paid at near-full salary while formally in a career transition program — the company funds both the income and the reconversion training. This is the golden decompression year. No portfolio drawdown. Use it wisely.</p>
           <div class="detail-grid">
-            <div class="detail-cell"><div class="detail-label">Income</div><div class="detail-value">~Full salary</div></div>
-            <div class="detail-cell"><div class="detail-label">Duration</div><div class="detail-value">9 – 12 months</div></div>
-            <div class="detail-cell"><div class="detail-label">Portfolio action</div><div class="detail-value">Untouched</div></div>
-            <div class="detail-cell"><div class="detail-label">Training budget</div><div class="detail-value">Company-funded + CPF ~€5k</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p1-d1l">Income</div><div class="detail-value" id="p1-d1v">~Full salary</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p1-d2l">Duration</div><div class="detail-value" id="p1-d2v">9 – 12 months</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p1-d3l">Portfolio action</div><div class="detail-value" id="p1-d3v">Untouched</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p1-d4l">Training budget</div><div class="detail-value" id="p1-d4v">Company-funded + CPF ~€5k</div></div>
           </div>
           <ul class="action-list">
-            <li>Complete CACES R489 (forklift) certification — satisfies mandatory reconversion activity requirement</li>
-            <li>Add 2 additional certifications (vehicle, machine, or logistics-related) using CPF balance (~€5k)</li>
-            <li>Company funding + CPF covers the full training program</li>
-            <li>Decompress from 18 years of corporate life — no rush, no hustle</li>
-            <li>Travel light, rest deeply, rediscover what free time actually feels like</li>
-            <li>Finalize all administrative transitions: mutuelle, bank status, tax declarations</li>
+            <li id="p1-a1">Complete CACES R489 (forklift) certification — satisfies mandatory reconversion activity requirement</li>
+            <li id="p1-a2">Add 2 additional certifications (vehicle, machine, or logistics-related) using CPF balance (~€5k)</li>
+            <li id="p1-a3">Company funding + CPF covers the full training program</li>
+            <li id="p1-a4">Decompress from 18 years of corporate life — no rush, no hustle</li>
+            <li id="p1-a5">Travel light, rest deeply, rediscover what free time actually feels like</li>
+            <li id="p1-a6">Finalize all administrative transitions: mutuelle, bank status, tax declarations</li>
           </ul>
           <div class="tag-row">
-            <span class="tag c-green">CACES R489</span>
-            <span class="tag c-green">CPF deployed</span>
-            <span class="tag c-green">Company-funded training</span>
-            <span class="tag c-green">Decompression year</span>
+            <span class="tag c-green" id="p1-t1">CACES R489</span>
+            <span class="tag c-green" id="p1-t2">CPF deployed</span>
+            <span class="tag c-green" id="p1-t3">Company-funded training</span>
+            <span class="tag c-green" id="p1-t4">Decompression year</span>
           </div>
         </div>
       </div>
@@ -975,36 +425,36 @@
     <div class="phase-block">
       <div class="phase-dot dot-blue"></div>
       <div class="phase-header" onclick="togglePhase(this)">
-        <span class="phase-num">Phase 2</span>
-        <span class="phase-name c-blue">ARE — Chômage</span>
-        <span class="phase-dates">2028 – 2029 (~18 months)</span>
-        <span class="phase-income income-blue">~€3.2k → €1.6k/mo</span>
+        <span class="phase-num" id="p2-num">Phase 2</span>
+        <span class="phase-name c-blue" id="p2-name">ARE — Chômage</span>
+        <span class="phase-dates" id="p2-dates">2028 – 2029 (~18 months)</span>
+        <span class="phase-income income-blue" id="p2-income">~€3.2k → €1.6k/mo</span>
         <span class="phase-chevron">▼</span>
       </div>
       <div class="phase-body">
         <div class="phase-inner">
-          <p class="phase-desc">Unemployment allocation kicks in. Significant income replacement after 18 years of contributions — the system doing its job. Portfolio stays untouched. Optional barista work is possible without losing ARE rights, provided income stays within France Travail thresholds.</p>
+          <p class="phase-desc" id="p2-desc">Unemployment allocation kicks in. Significant income replacement after 18 years of contributions — the system doing its job. Portfolio stays untouched. Optional barista work is possible without losing ARE rights, provided income stays within France Travail thresholds.</p>
           <div class="detail-grid">
-            <div class="detail-cell"><div class="detail-label">Year 1 ARE</div><div class="detail-value">~€3,200/mo</div></div>
-            <div class="detail-cell"><div class="detail-label">Final 6 months</div><div class="detail-value">~€1,600/mo</div></div>
-            <div class="detail-cell"><div class="detail-label">Duration</div><div class="detail-value">~18 months total</div></div>
-            <div class="detail-cell"><div class="detail-label">Target spend</div><div class="detail-value">€2,000/mo</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p2-d1l">Year 1 ARE</div><div class="detail-value" id="p2-d1v">~€3,200/mo</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p2-d2l">Final 6 months</div><div class="detail-value" id="p2-d2v">~€1,600/mo</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p2-d3l">Duration</div><div class="detail-value" id="p2-d3v">~18 months total</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p2-d4l">Target spend</div><div class="detail-value" id="p2-d4v">€2,000/mo</div></div>
           </div>
           <ul class="action-list">
-            <li>Year 1: ARE comfortably covers €2k/month lifestyle — buffer any surplus into Livret A</li>
-            <li>Year 1.5: ARE drops to ~€1,600 — small lifestyle adjustment or light barista missions fill the gap</li>
-            <li>Cumul emploi-chômage rules (France Travail) allow partial work without full ARE suspension</li>
-            <li>Portfolio stays fully invested and compounding throughout this phase</li>
-            <li>Begin activating Phase 3 barista network and logistics contacts toward end of ARE</li>
+            <li id="p2-a1">Year 1: ARE comfortably covers €2k/month lifestyle — buffer any surplus into Livret A</li>
+            <li id="p2-a2">Year 1.5: ARE drops to ~€1,600 — small lifestyle adjustment or light barista missions fill the gap</li>
+            <li id="p2-a3">Cumul emploi-chômage rules (France Travail) allow partial work without full ARE suspension</li>
+            <li id="p2-a4">Portfolio stays fully invested and compounding throughout this phase</li>
+            <li id="p2-a5">Begin activating Phase 3 barista network and logistics contacts toward end of ARE</li>
           </ul>
           <div class="fallback-box">
-            <div class="fallback-title">⚠ Fallback</div>
-            <div class="fallback-text">If ARE income drops uncomfortably in months 13–18, activate barista missions early. CACES certifications are ready. Light logistics work (1–2 days/week) can bridge the gap under France Travail cumul rules without losing ARE entirely.</div>
+            <div class="fallback-title" id="p2-fbt">⚠ Fallback</div>
+            <div class="fallback-text" id="p2-fb">If ARE income drops uncomfortably in months 13–18, activate barista missions early. CACES certifications are ready. Light logistics work (1–2 days/week) can bridge the gap under France Travail cumul rules without losing ARE entirely.</div>
           </div>
           <div class="tag-row">
-            <span class="tag c-blue">ARE via France Travail</span>
-            <span class="tag c-blue">Portfolio untouched</span>
-            <span class="tag c-blue">Cumul emploi-chômage</span>
+            <span class="tag c-blue" id="p2-t1">ARE via France Travail</span>
+            <span class="tag c-blue" id="p2-t2">Portfolio untouched</span>
+            <span class="tag c-blue" id="p2-t3">Cumul emploi-chômage</span>
           </div>
         </div>
       </div>
@@ -1014,72 +464,48 @@
     <div class="phase-block">
       <div class="phase-dot dot-coral"></div>
       <div class="phase-header" onclick="togglePhase(this)">
-        <span class="phase-num">Phase 3</span>
-        <span class="phase-name c-coral">Barista FIRE</span>
-        <span class="phase-dates">2030 – 2040 (ages 50 – 60)</span>
-        <span class="phase-income income-coral">Missions + portfolio drawdown</span>
+        <span class="phase-num" id="p3-num">Phase 3</span>
+        <span class="phase-name c-coral" id="p3-name">Barista FIRE</span>
+        <span class="phase-dates" id="p3-dates">2030 – 2040 (ages 50 – 60)</span>
+        <span class="phase-income income-coral" id="p3-income">Missions + portfolio drawdown</span>
         <span class="phase-chevron">▼</span>
       </div>
       <div class="phase-body">
         <div class="phase-inner">
-          <p class="phase-desc">The bridge decade. Portfolio drawdown begins — barista missions complement the withdrawals rather than replace them. Chosen, occasional logistics work reduces the drawdown rate and extends portfolio longevity. The spending order is disciplined: tap wrappers in the optimal tax sequence.</p>
+          <p class="phase-desc" id="p3-desc">The bridge decade. Portfolio drawdown begins — barista missions complement the withdrawals rather than replace them. Chosen, occasional logistics work reduces the drawdown rate and extends portfolio longevity. The spending order is disciplined: tap wrappers in the optimal tax sequence.</p>
           <div class="detail-grid">
-            <div class="detail-cell"><div class="detail-label">Work type</div><div class="detail-value">Logistics / forklift missions</div></div>
-            <div class="detail-cell"><div class="detail-label">Mission income</div><div class="detail-value">€1,000–€2,000/mo</div></div>
-            <div class="detail-cell"><div class="detail-label">Portfolio role</div><div class="detail-value">Gradual drawdown begins</div></div>
-            <div class="detail-cell"><div class="detail-label">AV maturity</div><div class="detail-value">~2033 (8-yr window)</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p3-d1l">Work type</div><div class="detail-value" id="p3-d1v">Logistics / forklift missions</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p3-d2l">Mission income</div><div class="detail-value" id="p3-d2v">€1,000–€2,000/mo</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p3-d3l">Portfolio role</div><div class="detail-value" id="p3-d3v">Gradual drawdown begins</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p3-d4l">AV maturity</div><div class="detail-value" id="p3-d4v">~2033 (8-yr window)</div></div>
           </div>
           <ul class="action-list">
-            <li>Work only when desired — missions supplement portfolio withdrawals, not replace them</li>
-            <li>AV 8-year window matures ~2033: begins generating tax-optimized withdrawals if needed</li>
-            <li>CTO managed for progressive capital gains harvesting within annual tax envelope</li>
-            <li>PERE accessible from age 60 — plan activation toward end of this phase</li>
-            <li>This is the decade of living: travel, chess, fitness, philosophy, free time</li>
+            <li id="p3-a1">Work only when desired — missions supplement portfolio withdrawals, not replace them</li>
+            <li id="p3-a2">AV 8-year window matures ~2033: begins generating tax-optimized withdrawals if needed</li>
+            <li id="p3-a3">CTO managed for progressive capital gains harvesting within annual tax envelope</li>
+            <li id="p3-a4">PERE accessible from age 60 — plan activation toward end of this phase</li>
+            <li id="p3-a5">This is the decade of living: travel, chess, fitness, philosophy, free time</li>
           </ul>
           <div class="spend-order">
-            <div class="spend-order-title">Withdrawal spending order</div>
+            <div class="spend-order-title" id="p3-so-title">Withdrawal spending order</div>
             <div class="spend-steps">
-              <div class="spend-step">
-                <div class="spend-step-num">1st</div>
-                <div class="spend-step-name">Cash</div>
-                <div class="spend-step-note">Spend down buffer, keep a small reserve</div>
-              </div>
-              <div class="spend-step">
-                <div class="spend-step-num">2nd</div>
-                <div class="spend-step-name">Livrets</div>
-                <div class="spend-step-note">Drain to ~€1–2k floor</div>
-              </div>
-              <div class="spend-step">
-                <div class="spend-step-num">3rd</div>
-                <div class="spend-step-name">CTO</div>
-                <div class="spend-step-note">Before PEA — no tax shelter to preserve</div>
-              </div>
-              <div class="spend-step">
-                <div class="spend-step-num">4th</div>
-                <div class="spend-step-name">PEA</div>
-                <div class="spend-step-note">Protect as long as possible — best tax wrapper</div>
-              </div>
-              <div class="spend-step">
-                <div class="spend-step-num">5th</div>
-                <div class="spend-step-name">AV / PERO / PERE</div>
-                <div class="spend-step-note">Tax-optimized, after AV 8-yr window</div>
-              </div>
-              <div class="spend-step">
-                <div class="spend-step-num">6th</div>
-                <div class="spend-step-name">Colombia</div>
-                <div class="spend-step-note">Fondo first, relocation if needed</div>
-              </div>
+              <div class="spend-step"><div class="spend-step-num" id="p3-s1n">1st</div><div class="spend-step-name" id="p3-s1name">Cash</div><div class="spend-step-note" id="p3-s1note">Spend down buffer, keep a small reserve</div></div>
+              <div class="spend-step"><div class="spend-step-num" id="p3-s2n">2nd</div><div class="spend-step-name" id="p3-s2name">Livrets</div><div class="spend-step-note" id="p3-s2note">Drain to ~€1–2k floor</div></div>
+              <div class="spend-step"><div class="spend-step-num" id="p3-s3n">3rd</div><div class="spend-step-name" id="p3-s3name">CTO</div><div class="spend-step-note" id="p3-s3note">Before PEA — no tax shelter to preserve</div></div>
+              <div class="spend-step"><div class="spend-step-num" id="p3-s4n">4th</div><div class="spend-step-name" id="p3-s4name">PEA</div><div class="spend-step-note" id="p3-s4note">Protect as long as possible — best tax wrapper</div></div>
+              <div class="spend-step"><div class="spend-step-num" id="p3-s5n">5th</div><div class="spend-step-name" id="p3-s5name">AV / PERO / PERE</div><div class="spend-step-note" id="p3-s5note">Tax-optimized, after AV 8-yr window</div></div>
+              <div class="spend-step"><div class="spend-step-num" id="p3-s6n">6th</div><div class="spend-step-name" id="p3-s6name">Colombia</div><div class="spend-step-note" id="p3-s6note">Fondo first, relocation if needed</div></div>
             </div>
           </div>
           <div class="fallback-box">
-            <div class="fallback-title">⚠ Fallback</div>
-            <div class="fallback-text">If markets crash or portfolio drops below €150k, increase mission frequency temporarily. Colombia relocation activates here — €1,800/mo vs €2,000 in France buys meaningful additional runway on the same portfolio.</div>
+            <div class="fallback-title" id="p3-fbt">⚠ Fallback</div>
+            <div class="fallback-text" id="p3-fb">If markets crash or portfolio drops below €150k, increase mission frequency temporarily. Colombia relocation activates here — €1,800/mo vs €2,000 in France buys meaningful additional runway on the same portfolio.</div>
           </div>
           <div class="tag-row">
-            <span class="tag c-coral">Drawdown begins</span>
-            <span class="tag c-coral">CTO before PEA</span>
-            <span class="tag c-coral">AV matures 2033</span>
-            <span class="tag c-coral">Chosen work only</span>
+            <span class="tag c-coral" id="p3-t1">Drawdown begins</span>
+            <span class="tag c-coral" id="p3-t2">CTO before PEA</span>
+            <span class="tag c-coral" id="p3-t3">AV matures 2033</span>
+            <span class="tag c-coral" id="p3-t4">Chosen work only</span>
           </div>
         </div>
       </div>
@@ -1089,37 +515,37 @@
     <div class="phase-block">
       <div class="phase-dot dot-teal"></div>
       <div class="phase-header" onclick="togglePhase(this)">
-        <span class="phase-num">Phase 4</span>
-        <span class="phase-name c-teal">Big Drawdown</span>
-        <span class="phase-dates">2040 – 2051 (ages 60 – 64)</span>
-        <span class="phase-income income-teal">Portfolio + optional missions</span>
+        <span class="phase-num" id="p4-num">Phase 4</span>
+        <span class="phase-name c-teal" id="p4-name">Big Drawdown</span>
+        <span class="phase-dates" id="p4-dates">2040 – 2051 (ages 60 – 64)</span>
+        <span class="phase-income income-teal" id="p4-income">Portfolio + optional missions</span>
         <span class="phase-chevron">▼</span>
       </div>
       <div class="phase-body">
         <div class="phase-inner">
-          <p class="phase-desc">Primary income is the portfolio. Structured, tax-optimized withdrawals following the same spending order — CTO first, then PEA, then AV/PERE/PERO. Barista missions remain available as an emergency lever for market crashes or unexpected needs. PERE unlocked from age 60.</p>
+          <p class="phase-desc" id="p4-desc">Primary income is the portfolio. Structured, tax-optimized withdrawals following the same spending order — CTO first, then PEA, then AV/PERE/PERO. Barista missions remain available as an emergency lever for market crashes or unexpected needs. PERE unlocked from age 60.</p>
           <div class="detail-grid">
-            <div class="detail-cell"><div class="detail-label">Primary income</div><div class="detail-value">Portfolio drawdown</div></div>
-            <div class="detail-cell"><div class="detail-label">Target withdrawal</div><div class="detail-value">€2,000/mo</div></div>
-            <div class="detail-cell"><div class="detail-label">PERE access</div><div class="detail-value">From age 60</div></div>
-            <div class="detail-cell"><div class="detail-label">AV status</div><div class="detail-value">Fully tax-optimized</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p4-d1l">Primary income</div><div class="detail-value" id="p4-d1v">Portfolio drawdown</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p4-d2l">Target withdrawal</div><div class="detail-value" id="p4-d2v">€2,000/mo</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p4-d3l">PERE access</div><div class="detail-value" id="p4-d3v">From age 60</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p4-d4l">AV status</div><div class="detail-value" id="p4-d4v">Fully tax-optimized</div></div>
           </div>
           <ul class="action-list">
-            <li>CTO first: sell ETFs and stocks progressively, managing annual capital gains tax envelope</li>
-            <li>PEA second: withdrawals taxed only at social charges (17.2%) — no income tax component</li>
-            <li>AV: withdraw up to €4,600/yr (single) tax-free above annual returns after 8-yr threshold</li>
-            <li>PERE unlocked at 60 — liquidate progressively within tax envelope</li>
-            <li>Barista missions on standby: activate if portfolio drops below €50k or sequence-of-returns risk materializes</li>
+            <li id="p4-a1">CTO first: sell ETFs and stocks progressively, managing annual capital gains tax envelope</li>
+            <li id="p4-a2">PEA second: withdrawals taxed only at social charges (17.2%) — no income tax component</li>
+            <li id="p4-a3">AV: withdraw up to €4,600/yr (single) tax-free above annual returns after 8-yr threshold</li>
+            <li id="p4-a4">PERE unlocked at 60 — liquidate progressively within tax envelope</li>
+            <li id="p4-a5">Barista missions on standby: activate if portfolio drops below €50k or sequence-of-returns risk materializes</li>
           </ul>
           <div class="fallback-box">
-            <div class="fallback-title">⚠ Fallback triggers</div>
-            <div class="fallback-text">Portfolio below €50k too early → Colombia relocation activates (€1,800/mo lifestyle). Market crash → resume light logistics missions. Partner separation → Colombia option activates independently as lifestyle reset and cost reduction.</div>
+            <div class="fallback-title" id="p4-fbt">⚠ Fallback triggers</div>
+            <div class="fallback-text" id="p4-fb">Portfolio below €50k too early → Colombia relocation activates (€1,800/mo lifestyle). Market crash → resume light logistics missions. Partner separation → Colombia option activates independently as lifestyle reset and cost reduction.</div>
           </div>
           <div class="tag-row">
-            <span class="tag c-teal">CTO first</span>
-            <span class="tag c-teal">PEA — social charges only</span>
-            <span class="tag c-teal">PERE from 60</span>
-            <span class="tag c-teal">Barista standby</span>
+            <span class="tag c-teal" id="p4-t1">CTO first</span>
+            <span class="tag c-teal" id="p4-t2">PEA — social charges only</span>
+            <span class="tag c-teal" id="p4-t3">PERE from 60</span>
+            <span class="tag c-teal" id="p4-t4">Barista standby</span>
           </div>
         </div>
       </div>
@@ -1129,151 +555,109 @@
     <div class="phase-block">
       <div class="phase-dot dot-purple"></div>
       <div class="phase-header" onclick="togglePhase(this)">
-        <span class="phase-num">Phase 5</span>
-        <span class="phase-name c-purple">French State Pension</span>
-        <span class="phase-dates">From 2051 (age 64+)</span>
-        <span class="phase-income income-purple">Pension + portfolio floor</span>
+        <span class="phase-num" id="p5-num">Phase 5</span>
+        <span class="phase-name c-purple" id="p5-name">French State Pension</span>
+        <span class="phase-dates" id="p5-dates">From 2051 (age 64+)</span>
+        <span class="phase-income income-purple" id="p5-income">Pension + portfolio floor</span>
         <span class="phase-chevron">▼</span>
       </div>
       <div class="phase-body">
         <div class="phase-inner">
-          <p class="phase-desc">The pension kicks in and dramatically reduces portfolio drawdown pressure. Remaining capital becomes an experience fund. The target portfolio floor at age 75 is €20k — after that, zero. The plan is complete.</p>
+          <p class="phase-desc" id="p5-desc">The pension kicks in and dramatically reduces portfolio drawdown pressure. Remaining capital becomes an experience fund. The target portfolio floor at age 75 is €20k — after that, zero. The plan is complete.</p>
           <div class="detail-grid">
-            <div class="detail-cell"><div class="detail-label">Standard pension age</div><div class="detail-value">64 (current law)</div></div>
-            <div class="detail-cell"><div class="detail-label">Risk: delayed to</div><div class="detail-value">67 if trimestres short</div></div>
-            <div class="detail-cell"><div class="detail-label">Portfolio floor at 75</div><div class="detail-value">~€20k</div></div>
-            <div class="detail-cell"><div class="detail-label">Die with Zero target</div><div class="detail-value">~€0 at 75+</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p5-d1l">Standard pension age</div><div class="detail-value" id="p5-d1v">64 (current law)</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p5-d2l">Risk: delayed to</div><div class="detail-value" id="p5-d2v">67 if trimestres short</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p5-d3l">Portfolio floor at 75</div><div class="detail-value" id="p5-d3v">~€20k</div></div>
+            <div class="detail-cell"><div class="detail-label" id="p5-d4l">Die with Zero target</div><div class="detail-value" id="p5-d4v">~€0 at 75+</div></div>
           </div>
           <ul class="action-list">
-            <li>Pension income covers core living — drawdown rate drops significantly</li>
-            <li>Remaining capital deployed on experiences: travel, generosity, life quality</li>
-            <li>Ratchet down portfolio intentionally toward the €20k floor at 75</li>
-            <li>No legacy wealth target — memories are the dividend</li>
+            <li id="p5-a1">Pension income covers core living — drawdown rate drops significantly</li>
+            <li id="p5-a2">Remaining capital deployed on experiences: travel, generosity, life quality</li>
+            <li id="p5-a3">Ratchet down portfolio intentionally toward the €20k floor at 75</li>
+            <li id="p5-a4">No legacy wealth target — memories are the dividend</li>
           </ul>
-          <div class="fallback-box" style="border-left-color: var(--purple); background: var(--purple-dim)">
-            <div class="fallback-title" style="color:var(--purple)">⚠ Pension risk — delayed to 67</div>
-            <div class="fallback-text">Leaving full-time employment at 47 means ~17 missing years of cotisation trimestres. If the total trimestres count falls short of the full-rate threshold, the pension may not be accessible until age 67 instead of 64. This creates a 3-year gap (ages 64–67) that must be covered by the portfolio alone. Factor this into late-Phase 4 drawdown modeling.</div>
+          <div class="fallback-box" style="border-left-color:var(--purple);background:var(--purple-dim)">
+            <div class="fallback-title" style="color:var(--purple)" id="p5-fbt">⚠ Pension risk — delayed to 67</div>
+            <div class="fallback-text" id="p5-fb">Leaving full-time employment at 47 means ~17 missing years of cotisation trimestres. If the total trimestres count falls short of the full-rate threshold, the pension may not be accessible until age 67 instead of 64. This creates a 3-year gap (ages 64–67) that must be covered by the portfolio alone. Factor this into late-Phase 4 drawdown modeling.</div>
           </div>
           <div class="tag-row">
-            <span class="tag c-purple">Pension base income</span>
-            <span class="tag c-purple">Experience fund</span>
-            <span class="tag c-purple">€20k floor at 75</span>
-            <span class="tag" style="color:var(--coral); border-color:var(--coral)">Risk: age 67 if trimestres short</span>
+            <span class="tag c-purple" id="p5-t1">Pension base income</span>
+            <span class="tag c-purple" id="p5-t2">Experience fund</span>
+            <span class="tag c-purple" id="p5-t3">€20k floor at 75</span>
+            <span class="tag" style="color:var(--coral);border-color:var(--coral)" id="p5-t4">Risk: age 67 if trimestres short</span>
           </div>
         </div>
       </div>
     </div>
 
   </div><!-- end timeline -->
-
   <hr class="divider">
 
   <!-- DWZ -->
-  <div class="section-title">Die with Zero — framework</div>
+  <div class="section-title" id="sec-dwz">Die with Zero — framework</div>
   <div class="dwz-section">
-    <div class="dwz-header" onclick="toggleGeneric(this, 'dwz-body-main')">
-      <span class="dwz-title">Die with (Almost) Zero — the philosophy in numbers</span>
-      <span class="phase-dates">Ages 46 → 75+</span>
+    <div class="dwz-header" onclick="toggleGeneric(this,'dwz-body-main')">
+      <span class="dwz-title" id="dwz-header-title">Die with (Almost) Zero — the philosophy in numbers</span>
+      <span class="phase-dates" id="dwz-header-dates">Ages 46 → 75+</span>
       <span class="phase-chevron c-gold">▼</span>
     </div>
     <div class="dwz-body" id="dwz-body-main">
       <div class="dwz-inner">
-        <p class="phase-desc">Die with Zero is not recklessness — it is precision. The goal is to convert every euro of capital into the maximum possible life experience before death. Hoarding wealth you never use is a form of waste. The optimal trajectory is a deliberate, planned descent to zero.</p>
+        <p class="phase-desc" id="dwz-desc">Die with Zero is not recklessness — it is precision. The goal is to convert every euro of capital into the maximum possible life experience before death. Hoarding wealth you never use is a form of waste. The optimal trajectory is a deliberate, planned descent to zero.</p>
         <div class="dwz-grid">
-          <div class="dwz-card">
-            <div class="dwz-card-title">Memory dividend</div>
-            <div class="dwz-card-text">Experiences compound in memory. A trip at 50 is enjoyed in the moment and relived for 25 years. A trip at 75 is enjoyed once. Spend on experiences early — the return on memory is highest when health and energy are still full.</div>
-          </div>
-          <div class="dwz-card">
-            <div class="dwz-card-title">Health × money × time</div>
-            <div class="dwz-card-text">The three resources of a rich life. The optimal zone — high health, enough money, free time — is the window this plan is designed to maximize. You enter it at 47. Most people never enter it at all.</div>
-          </div>
-          <div class="dwz-card">
-            <div class="dwz-card-title">The €20k floor</div>
-            <div class="dwz-card-text">Not a nest egg to be guarded — a safety buffer for the final years. Covers emergency care, final logistics, and dignity. Everything above this threshold is to be used. Intentionally. Joyfully.</div>
-          </div>
-          <div class="dwz-card">
-            <div class="dwz-card-title">Bucket timing</div>
-            <div class="dwz-card-text">47–60: adventure bucket — travel, physical, novelty. 60–70: depth bucket — culture, relationships, slower richness. 70–75: comfort bucket — peace, beauty, presence. Each decade has its own spending logic.</div>
-          </div>
+          <div class="dwz-card"><div class="dwz-card-title" id="dwz-c1t">Memory dividend</div><div class="dwz-card-text" id="dwz-c1">Experiences compound in memory. A trip at 50 is enjoyed in the moment and relived for 25 years. A trip at 75 is enjoyed once. Spend on experiences early — the return on memory is highest when health and energy are still full.</div></div>
+          <div class="dwz-card"><div class="dwz-card-title" id="dwz-c2t">Health × money × time</div><div class="dwz-card-text" id="dwz-c2">The three resources of a rich life. The optimal zone — high health, enough money, free time — is the window this plan is designed to maximize. You enter it at 47. Most people never enter it at all.</div></div>
+          <div class="dwz-card"><div class="dwz-card-title" id="dwz-c3t">The €20k floor</div><div class="dwz-card-text" id="dwz-c3">Not a nest egg to be guarded — a safety buffer for the final years. Covers emergency care, final logistics, and dignity. Everything above this threshold is to be used. Intentionally. Joyfully.</div></div>
+          <div class="dwz-card"><div class="dwz-card-title" id="dwz-c4t">Bucket timing</div><div class="dwz-card-text" id="dwz-c4">47–60: adventure bucket — travel, physical, novelty. 60–70: depth bucket — culture, relationships, slower richness. 70–75: comfort bucket — peace, beauty, presence. Each decade has its own spending logic.</div></div>
         </div>
       </div>
     </div>
   </div>
-
   <hr class="divider">
 
   <!-- COLOMBIA -->
-  <div class="section-title">Colombia — always-available fallback</div>
+  <div class="section-title" id="sec-colombia">Colombia — always-available fallback</div>
   <div class="colombia-wrap">
-    <div class="colombia-header" onclick="toggleGeneric(this, 'colombia-body-main')">
-      <span class="colombia-title">Colombian assets &amp; relocation option</span>
-      <span class="phase-dates" style="color:var(--green)">~€156k equivalent · Always available</span>
+    <div class="colombia-header" onclick="toggleGeneric(this,'colombia-body-main')">
+      <span class="colombia-title" id="col-header-title">Colombian assets &amp; relocation option</span>
+      <span class="phase-dates" style="color:var(--green)" id="col-header-meta">~€156k equivalent · Always available</span>
       <span class="phase-chevron c-green">▼</span>
     </div>
     <div class="colombia-body" id="colombia-body-main">
       <div class="colombia-inner">
-        <p class="phase-desc" style="margin-bottom:1.2rem">A parallel financial universe. Colombian assets can sustain a €1,800/mo lifestyle independently of the French portfolio. The relocation option is always available — not just as a crisis move but as a genuine life choice that also happens to extend financial runway significantly.</p>
+        <p class="phase-desc" id="col-desc">A parallel financial universe. Colombian assets can sustain a €1,800/mo lifestyle independently of the French portfolio. The relocation option is always available — not just as a crisis move but as a genuine life choice that also happens to extend financial runway significantly.</p>
         <div class="assets-grid">
-          <div class="asset-card">
-            <div class="asset-name">Fondo de Inversión BBVA</div>
-            <div class="asset-value">~€34k</div>
-            <div class="asset-role">140M COP. Investment fund, accessible under Colombian rules.</div>
-          </div>
-          <div class="asset-card">
-            <div class="asset-name">Heritage / inheritance</div>
-            <div class="asset-value">~€73k</div>
-            <div class="asset-role">300M COP. Family inheritance asset. Contingency reserve — not modeled in primary plan.</div>
-          </div>
-          <div class="asset-card">
-            <div class="asset-name">Apartment — your half</div>
-            <div class="asset-value">~€49k</div>
-            <div class="asset-role">200M COP. Shared property. If liquidated adds ~€49k to usable capital. Also available as housing post-relocation.</div>
-          </div>
-          <div class="asset-card" style="background:var(--green-dim); border-left:2px solid var(--green)">
-            <div class="asset-name" style="color:var(--green)">Colombia total</div>
-            <div class="asset-value" style="color:var(--green)">~€156k</div>
-            <div class="asset-role">Combined at current EUR/COP rates. Lifestyle: €1,800/mo vs €2,000 in France.</div>
-            <div class="asset-holdings">Trigger: France portfolio &lt; €50k · or · partner separation</div>
+          <div class="asset-card"><div class="asset-name" id="col-a1n">Fondo de Inversión BBVA</div><div class="asset-value" id="col-a1v">~€34k</div><div class="asset-role" id="col-a1r">140M COP. Investment fund, accessible under Colombian rules.</div></div>
+          <div class="asset-card"><div class="asset-name" id="col-a2n">Heritage / inheritance</div><div class="asset-value" id="col-a2v">~€73k</div><div class="asset-role" id="col-a2r">300M COP. Family inheritance asset. Contingency reserve — not modeled in primary plan.</div></div>
+          <div class="asset-card"><div class="asset-name" id="col-a3n">Apartment — your half</div><div class="asset-value" id="col-a3v">~€49k</div><div class="asset-role" id="col-a3r">200M COP. Shared property. If liquidated adds ~€49k to usable capital. Also available as housing post-relocation.</div></div>
+          <div class="asset-card" style="background:var(--green-dim);border-left:2px solid var(--green)">
+            <div class="asset-name" id="col-a4n" style="color:var(--green)">Colombia total</div>
+            <div class="asset-value" id="col-a4v" style="color:var(--green)">~€156k</div>
+            <div class="asset-role" id="col-a4r">Combined at current EUR/COP rates. Lifestyle: €1,800/mo vs €2,000 in France.</div>
+            <div class="asset-holdings" id="col-trigger">Trigger: France portfolio &lt; €50k · or · partner separation</div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
   <hr class="divider">
 
   <!-- FINAL EXIT -->
-  <div class="section-title">Final act — on your own terms</div>
+  <div class="section-title" id="sec-exit">Final act — on your own terms</div>
   <div class="exit-section">
-    <div class="exit-header" onclick="toggleGeneric(this, 'exit-body-main')">
-      <span class="exit-title">The Final Exit — Switzerland</span>
-      <span class="phase-dates" style="color:var(--purple)">Planned · Timing TBD</span>
+    <div class="exit-header" onclick="toggleGeneric(this,'exit-body-main')">
+      <span class="exit-title" id="exit-header-title">The Final Exit — Switzerland</span>
+      <span class="phase-dates" style="color:var(--purple)" id="exit-header-meta">Planned · Timing TBD</span>
       <span class="phase-chevron c-purple">▼</span>
     </div>
     <div class="exit-body" id="exit-body-main">
       <div class="exit-inner">
-        <p class="phase-desc">The plan includes a conscious, dignified conclusion in Switzerland — not a medical emergency, not a decision made under distress, but a considered and prepared final act. This is the ultimate expression of autonomy: choosing the terms of one's own exit.</p>
-        <div class="exit-detail">
-          <div class="exit-detail-label">Organizations</div>
-          <div class="exit-detail-text">The two principal Swiss organizations are <strong style="color:var(--text)">Dignitas</strong> (Forch, Zurich canton) and <strong style="color:var(--text)">Exit International</strong>. Dignitas is the primary option for non-Swiss residents. Website: dignitas.ch — membership and consultation process should begin well in advance, while full mental competence is unquestionable.</div>
-        </div>
-        <div class="exit-detail">
-          <div class="exit-detail-label">Process &amp; timeline</div>
-          <div class="exit-detail-text">Dignitas requires: annual membership (~CHF 80/yr), a formal written request with full medical documentation, evaluation by independent Swiss physicians, and a consistent demonstration of wish over time. From first contact to final approval: typically 6–18 months. This is not a crisis service — it requires deliberate planning and documented competence.</div>
-        </div>
-        <div class="exit-detail">
-          <div class="exit-detail-label">Cost</div>
-          <div class="exit-detail-text">Total cost including travel, accommodation, physician fees, and the procedure: approximately CHF 10,000–15,000 (~€10k–€16k). Reserve this as a dedicated line item within or alongside the €20k terminal buffer.</div>
-        </div>
-        <div class="exit-detail">
-          <div class="exit-detail-label">Legal status</div>
-          <div class="exit-detail-text">Assisted dying is legal in Switzerland for non-residents meeting the criteria. French law is evolving but Switzerland remains the most reliable option for full autonomy. No criminal liability for accompanying persons under Swiss law.</div>
-        </div>
-        <div class="exit-detail">
-          <div class="exit-detail-label">Philosophical framing</div>
-          <div class="exit-detail-text">This is not a footnote. It is the capstone. A life lived with full autonomy — financial, temporal, relational — should end with the same principle. Knowing the exit exists removes the fear of slow decline and gives permission to spend fully, live fully, and choose the moment.</div>
-        </div>
+        <p class="phase-desc" id="exit-desc">The plan includes a conscious, dignified conclusion in Switzerland — not a medical emergency, not a decision made under distress, but a considered and prepared final act. This is the ultimate expression of autonomy: choosing the terms of one's own exit.</p>
+        <div class="exit-detail"><div class="exit-detail-label" id="exit-d1l">Organizations</div><div class="exit-detail-text" id="exit-d1">The two principal Swiss organizations are <strong style="color:var(--text)">Dignitas</strong> (Forch, Zurich canton) and <strong style="color:var(--text)">Exit International</strong>. Dignitas is the primary option for non-Swiss residents. Website: dignitas.ch — membership and consultation process should begin well in advance, while full mental competence is unquestionable.</div></div>
+        <div class="exit-detail"><div class="exit-detail-label" id="exit-d2l">Process &amp; timeline</div><div class="exit-detail-text" id="exit-d2">Dignitas requires: annual membership (~CHF 80/yr), a formal written request with full medical documentation, evaluation by independent Swiss physicians, and a consistent demonstration of wish over time. From first contact to final approval: typically 6–18 months. This is not a crisis service — it requires deliberate planning and documented competence.</div></div>
+        <div class="exit-detail"><div class="exit-detail-label" id="exit-d3l">Cost</div><div class="exit-detail-text" id="exit-d3">Total cost including travel, accommodation, physician fees, and the procedure: approximately CHF 10,000–15,000 (~€10k–€16k). Reserve this as a dedicated line item within or alongside the €20k terminal buffer.</div></div>
+        <div class="exit-detail"><div class="exit-detail-label" id="exit-d4l">Legal status</div><div class="exit-detail-text" id="exit-d4">Assisted dying is legal in Switzerland for non-residents meeting the criteria. French law is evolving but Switzerland remains the most reliable option for full autonomy. No criminal liability for accompanying persons under Swiss law.</div></div>
+        <div class="exit-detail"><div class="exit-detail-label" id="exit-d5l">Philosophical framing</div><div class="exit-detail-text" id="exit-d5">This is not a footnote. It is the capstone. A life lived with full autonomy — financial, temporal, relational — should end with the same principle. Knowing the exit exists removes the fear of slow decline and gives permission to spend fully, live fully, and choose the moment.</div></div>
       </div>
     </div>
   </div>
@@ -1281,145 +665,614 @@
 </div><!-- end financial tab -->
 
 
-<!-- ══════════════════════════════ PHILO TAB ══════════════════════════════ -->
+<!-- ══════════════════ PHILO TAB ══════════════════ -->
 <div id="tab-philo" class="tab-content">
 
-  <div class="philo-intro">
-    <p>This is not a financial plan. The numbers exist to serve a life — not the other way around. What follows is the philosophy that makes the numbers meaningful.</p>
-  </div>
+  <div class="philo-intro"><p id="philo-intro">This is not a financial plan. The numbers exist to serve a life — not the other way around. What follows is the philosophy that makes the numbers meaningful.</p></div>
 
   <div class="manifesto-block" onclick="toggleManifesto(this)">
-    <div class="manifesto-num">I — The Premise</div>
-    <div class="manifesto-title">Most people die with the wrong things.</div>
+    <div class="manifesto-num" id="m1-num">I — The Premise</div>
+    <div class="manifesto-title" id="m1-title">Most people die with the wrong things.</div>
     <div class="manifesto-body">
-      <p>They die with regrets about what they didn't do, with unspent savings they were afraid to touch, and with decades of delayed living waiting for a retirement that arrived too late, too tired, or not at all.</p>
-      <p>The conventional model is broken. Work 40 years. Accumulate. Retire at 65. Enjoy what's left. But health declines in your 60s. Energy peaks in your 40s and 50s. The window of vibrant, fully-lived life is not at the end — it's now.</p>
-      <p>This plan is a rejection of that model. It is an act of deliberate insubordination against the social script.</p>
+      <p id="m1-p1">They die with regrets about what they didn't do, with unspent savings they were afraid to touch, and with decades of delayed living waiting for a retirement that arrived too late, too tired, or not at all.</p>
+      <p id="m1-p2">The conventional model is broken. Work 40 years. Accumulate. Retire at 65. Enjoy what's left. But health declines in your 60s. Energy peaks in your 40s and 50s. The window of vibrant, fully-lived life is not at the end — it's now.</p>
+      <p id="m1-p3">This plan is a rejection of that model. It is an act of deliberate insubordination against the social script.</p>
     </div>
   </div>
 
   <div class="manifesto-block" onclick="toggleManifesto(this)">
-    <div class="manifesto-num">II — The Formula</div>
-    <div class="manifesto-title">Time × Health × Money. Only one combination matters.</div>
+    <div class="manifesto-num" id="m2-num">II — The Formula</div>
+    <div class="manifesto-title" id="m2-title">Time × Health × Money. Only one combination matters.</div>
     <div class="manifesto-body">
-      <p>A rich life requires three things simultaneously: time, health, and enough money. Most people spend the first half of life sacrificing time for money. The second half trying to buy time back with money. And they never quite have all three at once.</p>
-      <p>The goal of this plan is to secure all three before age 50. Not vast wealth — enough. Not unlimited time — free time. Not perfect health — the health of a calisthenics-trained, science-based 47-year-old with 30 good years ahead.</p>
-      <p>The window opens in 2027. The window is finite. Use it.</p>
+      <p id="m2-p1">A rich life requires three things simultaneously: time, health, and enough money. Most people spend the first half of life sacrificing time for money. The second half trying to buy time back with money. And they never quite have all three at once.</p>
+      <p id="m2-p2">The goal of this plan is to secure all three before age 50. Not vast wealth — enough. Not unlimited time — free time. Not perfect health — the health of a calisthenics-trained, science-based 47-year-old with 30 good years ahead.</p>
+      <p id="m2-p3">The window opens in 2027. The window is finite. Use it.</p>
     </div>
   </div>
 
-  <div class="pull-quote">"The goal is not to die rich. The goal is to die having lived."</div>
+  <div class="pull-quote" id="pull1">"The goal is not to die rich. The goal is to die having lived."</div>
 
   <div class="manifesto-block" onclick="toggleManifesto(this)">
-    <div class="manifesto-num">III — On Work</div>
-    <div class="manifesto-title">Work chosen is not work. Work required is a cage.</div>
+    <div class="manifesto-num" id="m3-num">III — On Work</div>
+    <div class="manifesto-title" id="m3-title">Work chosen is not work. Work required is a cage.</div>
     <div class="manifesto-body">
-      <p>The barista FIRE model preserves the option to work without the obligation. A logistics mission in a warehouse, CACES certification in hand, taken because you wanted it — is categorically different from 18 years of showing up because the mortgage required it.</p>
-      <p>Chosen work has dignity. Required work has a price. This plan eliminates the price forever and restores the dignity.</p>
-      <p>If you never want to work another day, you won't have to. If you want the structure and the social energy of occasional missions, they're there. The certification is not a backup career — it's a freedom certificate.</p>
-    </div>
-  </div>
-
-  <div class="manifesto-block" onclick="toggleManifesto(this)">
-    <div class="manifesto-num">IV — The Memory Dividend</div>
-    <div class="manifesto-title">Experiences compound. Objects decay. Money unspent is life unlived.</div>
-    <div class="manifesto-body">
-      <p>Bill Perkins' core insight: a memory, unlike a material purchase, pays dividends for the rest of your life. A trip to Colombia at 50 is experienced in the moment — and then remembered, relived, discussed, dreamed about for 25 more years. That is a 25-year return on a single investment.</p>
-      <p>The optimal moment to make a memory is when you have the health to live it fully, the time to be present for it, and the youth to carry it longest. That moment is not 65. It is now.</p>
-      <p>Spend on experiences early. Spend on depth in your 60s. Spend on comfort and peace in your 70s. Each decade has its own optimal allocation — and saving it all for the last one is the worst possible strategy.</p>
+      <p id="m3-p1">The barista FIRE model preserves the option to work without the obligation. A logistics mission in a warehouse, CACES certification in hand, taken because you wanted it — is categorically different from 18 years of showing up because the mortgage required it.</p>
+      <p id="m3-p2">Chosen work has dignity. Required work has a price. This plan eliminates the price forever and restores the dignity.</p>
+      <p id="m3-p3">If you never want to work another day, you won't have to. If you want the structure and the social energy of occasional missions, they're there. The certification is not a backup career — it's a freedom certificate.</p>
     </div>
   </div>
 
   <div class="manifesto-block" onclick="toggleManifesto(this)">
-    <div class="manifesto-num">V — On Frugality</div>
-    <div class="manifesto-title">€2,000 a month is not deprivation. It is precision.</div>
+    <div class="manifesto-num" id="m4-num">IV — The Memory Dividend</div>
+    <div class="manifesto-title" id="m4-title">Experiences compound. Objects decay. Money unspent is life unlived.</div>
     <div class="manifesto-body">
-      <p>The simulation is already underway. Constraining spending now — before the PSE — is not punishment. It is calibration. It answers the question every FIRE plan must answer honestly: is this number real, or is it a fantasy?</p>
-      <p>If €2,000/month in France feels comfortable during the test, it will feel comfortable in retirement. If it feels tight, adjust the plan. The discomfort now is infinitely cheaper than the discomfort of running out of money at 62.</p>
-      <p>The goal is not frugality as an identity. It is frugality as a tool — used to buy freedom, then set down.</p>
+      <p id="m4-p1">Bill Perkins' core insight: a memory, unlike a material purchase, pays dividends for the rest of your life. A trip to Colombia at 50 is experienced in the moment — and then remembered, relived, discussed, dreamed about for 25 more years. That is a 25-year return on a single investment.</p>
+      <p id="m4-p2">The optimal moment to make a memory is when you have the health to live it fully, the time to be present for it, and the youth to carry it longest. That moment is not 65. It is now.</p>
+      <p id="m4-p3">Spend on experiences early. Spend on depth in your 60s. Spend on comfort and peace in your 70s. Each decade has its own optimal allocation — and saving it all for the last one is the worst possible strategy.</p>
     </div>
   </div>
 
   <div class="manifesto-block" onclick="toggleManifesto(this)">
-    <div class="manifesto-num">VI — On Colombia</div>
-    <div class="manifesto-title">A second country is not a backup. It is a superpower.</div>
+    <div class="manifesto-num" id="m5-num">V — On Frugality</div>
+    <div class="manifesto-title" id="m5-title">€2,000 a month is not deprivation. It is precision.</div>
     <div class="manifesto-body">
-      <p>Having viable roots in two countries means that no single economic environment can trap you. If France becomes too expensive, too socially turbulent, too cold — in every sense — you can leave. The Colombian assets aren't an emergency fund. They are proof that your life is not hostage to any single place.</p>
-      <p>Knowing you could leave changes how you feel about staying. The choice to remain in France, each day, becomes a genuine choice — not inertia, not necessity. That shift in agency is quietly transformative.</p>
-    </div>
-  </div>
-
-  <div class="pull-quote">"Autonomy is not what you can afford to do. It is what you can afford to walk away from."</div>
-
-  <div class="manifesto-block" onclick="toggleManifesto(this)">
-    <div class="manifesto-num">VII — Die with Zero</div>
-    <div class="manifesto-title">The €20k floor and the deliberate descent.</div>
-    <div class="manifesto-body">
-      <p>The terminal portfolio is not zero because you failed. It is zero because you succeeded. You converted every accumulated euro into the maximum possible life. You did not hoard. You did not defer. You lived in the years that living was most possible.</p>
-      <p>The €20k floor is not a safety net for heirs. It is dignity for the final years and coverage for the final logistics. Everything above it — every euro — is permission to live more fully, right now.</p>
-      <p>The descent from ~€378k to €20k, spread across 29 years of living, is not decline. It is the shape of a life fully spent.</p>
+      <p id="m5-p1">The simulation is already underway. Constraining spending now — before the PSE — is not punishment. It is calibration. It answers the question every FIRE plan must answer honestly: is this number real, or is it a fantasy?</p>
+      <p id="m5-p2">If €2,000/month in France feels comfortable during the test, it will feel comfortable in retirement. If it feels tight, adjust the plan. The discomfort now is infinitely cheaper than the discomfort of running out of money at 62.</p>
+      <p id="m5-p3">The goal is not frugality as an identity. It is frugality as a tool — used to buy freedom, then set down.</p>
     </div>
   </div>
 
   <div class="manifesto-block" onclick="toggleManifesto(this)">
-    <div class="manifesto-num">VIII — The Final Act</div>
-    <div class="manifesto-title">The right to end. The freedom to choose.</div>
+    <div class="manifesto-num" id="m6-num">VI — On Colombia</div>
+    <div class="manifesto-title" id="m6-title">A second country is not a backup. It is a superpower.</div>
     <div class="manifesto-body">
-      <p>The inclusion of Switzerland in this plan is not morbid. It is the final, fullest expression of the same philosophy that runs through every other phase: the belief that a person has the right to govern their own life — including its end.</p>
-      <p>Knowing the exit exists changes the texture of the decades before it. It removes the terror of slow decline, of loss of control, of a drawn-out ending dictated by biology alone. With that fear removed, the years of health are no longer shadowed by what waits at the end.</p>
-      <p>This is not a plan to die early. It is a plan to live freely — all the way to a chosen close.</p>
-      <p>The plan ends, as it began, with autonomy.</p>
+      <p id="m6-p1">Having viable roots in two countries means that no single economic environment can trap you. If France becomes too expensive, too socially turbulent, too cold — in every sense — you can leave. The Colombian assets aren't an emergency fund. They are proof that your life is not hostage to any single place.</p>
+      <p id="m6-p2">Knowing you could leave changes how you feel about staying. The choice to remain in France, each day, becomes a genuine choice — not inertia, not necessity. That shift in agency is quietly transformative.</p>
+    </div>
+  </div>
+
+  <div class="pull-quote" id="pull2">"Autonomy is not what you can afford to do. It is what you can afford to walk away from."</div>
+
+  <div class="manifesto-block" onclick="toggleManifesto(this)">
+    <div class="manifesto-num" id="m7-num">VII — Die with Zero</div>
+    <div class="manifesto-title" id="m7-title">The €20k floor and the deliberate descent.</div>
+    <div class="manifesto-body">
+      <p id="m7-p1">The terminal portfolio is not zero because you failed. It is zero because you succeeded. You converted every accumulated euro into the maximum possible life. You did not hoard. You did not defer. You lived in the years that living was most possible.</p>
+      <p id="m7-p2">The €20k floor is not a safety net for heirs. It is dignity for the final years and coverage for the final logistics. Everything above it — every euro — is permission to live more fully, right now.</p>
+      <p id="m7-p3">The descent from ~€378k to €20k, spread across 29 years of living, is not decline. It is the shape of a life fully spent.</p>
+    </div>
+  </div>
+
+  <div class="manifesto-block" onclick="toggleManifesto(this)">
+    <div class="manifesto-num" id="m8-num">VIII — The Final Act</div>
+    <div class="manifesto-title" id="m8-title">The right to end. The freedom to choose.</div>
+    <div class="manifesto-body">
+      <p id="m8-p1">The inclusion of Switzerland in this plan is not morbid. It is the final, fullest expression of the same philosophy that runs through every other phase: the belief that a person has the right to govern their own life — including its end.</p>
+      <p id="m8-p2">Knowing the exit exists changes the texture of the decades before it. It removes the terror of slow decline, of loss of control, of a drawn-out ending dictated by biology alone. With that fear removed, the years of health are no longer shadowed by what waits at the end.</p>
+      <p id="m8-p3">This is not a plan to die early. It is a plan to live freely — all the way to a chosen close.</p>
+      <p id="m8-p4">The plan ends, as it began, with autonomy.</p>
     </div>
   </div>
 
   <hr class="divider">
 
   <div class="dwz-philo">
-    <h3>The three buckets — a life in phases</h3>
-    <p>Die with Zero proposes spending not as a flat annual budget but as a series of bucket deployments, each matched to what the body and mind can actually enjoy at that stage of life.</p>
+    <h3 id="buckets-title">The three buckets — a life in phases</h3>
+    <p id="buckets-intro">Die with Zero proposes spending not as a flat annual budget but as a series of bucket deployments, each matched to what the body and mind can actually enjoy at that stage of life.</p>
     <div class="dwz-pillars">
-      <div class="dwz-pillar">
-        <div class="dwz-pillar-title">Ages 47 – 60 · Adventure</div>
-        <div class="dwz-pillar-text">Physical travel. New places. Calisthenics across continents. Chess tournaments. Long stays. The body is strong. Use it.</div>
-      </div>
-      <div class="dwz-pillar">
-        <div class="dwz-pillar-title">Ages 60 – 70 · Depth</div>
-        <div class="dwz-pillar-text">Culture, philosophy, slower richness. Deeper relationships. Longer stays in fewer places. The mind at full power.</div>
-      </div>
-      <div class="dwz-pillar">
-        <div class="dwz-pillar-title">Ages 70 – 75 · Peace</div>
-        <div class="dwz-pillar-text">Comfort, beauty, presence. The €20k buffer. Small joys. Witnessing. The portfolio has done its work.</div>
-      </div>
+      <div class="dwz-pillar"><div class="dwz-pillar-title" id="b1-title">Ages 47 – 60 · Adventure</div><div class="dwz-pillar-text" id="b1-text">Physical travel. New places. Calisthenics across continents. Chess tournaments. Long stays. The body is strong. Use it.</div></div>
+      <div class="dwz-pillar"><div class="dwz-pillar-title" id="b2-title">Ages 60 – 70 · Depth</div><div class="dwz-pillar-text" id="b2-text">Culture, philosophy, slower richness. Deeper relationships. Longer stays in fewer places. The mind at full power.</div></div>
+      <div class="dwz-pillar"><div class="dwz-pillar-title" id="b3-title">Ages 70 – 75 · Peace</div><div class="dwz-pillar-text" id="b3-text">Comfort, beauty, presence. The €20k buffer. Small joys. Witnessing. The portfolio has done its work.</div></div>
     </div>
   </div>
 
 </div><!-- end philo tab -->
 
 <script>
-function switchTab(name, btn) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
+/* ── TRANSLATIONS ── */
+const T = {
+  en:{
+    title_strategy:"Strategy",title_sub:"Personal Financial Independence Roadmap · Confidential",
+    meta_age:"Age",meta_pse:"Target PSE",meta_port:"Portfolio",
+    tab_fin:"⬡ Financial Plan",tab_phi:"◇ Life Manifesto",
+    sec_snapshot:"Portfolio snapshot · 2025",sec_timeline:"Timeline · Phase by phase",
+    sec_dwz:"Die with Zero — framework",sec_colombia:"Colombia — always-available fallback",sec_exit:"Final act — on your own terms",
+    snap_pee:"Natixis · mostly unlocked",snap_pere:"Retirement plan",snap_pero:"Employer plan",snap_av:"Boursobank · building",
+    snap_fr:"🇫🇷 Total France",snap_fr_sub:"All French wrappers",snap_co:"🇨🇴 Colombia",snap_co_sub:"Fondo + Heritage + Appt",snap_grand:"Grand total",snap_grand_sub:"All assets combined",
+    p0_num:"Phase 0",p0_name:"The Accumulation Sprint",p0_dates:"2025 – 2027",p0_income:"Full salary",
+    p0_desc:"Still employed. Every euro of income is either saved or invested. The goal is to maximize all wrappers before the PSE window opens, simulate the retirement lifestyle now to validate the numbers, and build the psychological muscle for the transition.",
+    p0_d1l:"Income",p0_d1v:"Full salary",p0_d2l:"Target portfolio at PSE exit",p0_d2v:"~€300k France",p0_d3l:"Seniority at PSE",p0_d3v:"~18 years",p0_d4l:"Est. severance",p0_d4v:"~€80k",
+    p0_a1:"Drain unlocked PEE tranches systematically → reinvest into PEA (priority: PEA €150k ceiling is irreplaceable)",
+    p0_a2:"Build Assurance Vie on Boursobank: fonds euros floor as capital protection base",
+    p0_a3:"Keep Livret A + LDDS maxed as liquidity buffer",
+    p0_a4:"Monitor PSE calendar at work — target 2027, fallback 2028",
+    p0_a5:"Simulate €2k/month lifestyle now — validate it is genuinely comfortable before committing",
+    p0_a6:"Watch AI restructuring at company for opportunities or acceleration of timeline",
+    p0_t1:"PEE → PEA pipeline",p0_t2:"AV clock starts 2025",p0_t3:"Frugality simulation",
+    p1_num:"Phase 1",p1_name:"Congé de Reclassement",p1_dates:"2027 – 2028 (~9–12 months)",p1_income:"Near-full salary",
+    p1_desc:"Still technically an employee. Paid at near-full salary while formally in a career transition program — the company funds both the income and the reconversion training. This is the golden decompression year. No portfolio drawdown. Use it wisely.",
+    p1_d1l:"Income",p1_d1v:"~Full salary",p1_d2l:"Duration",p1_d2v:"9 – 12 months",p1_d3l:"Portfolio action",p1_d3v:"Untouched",p1_d4l:"Training budget",p1_d4v:"Company-funded + CPF ~€5k",
+    p1_a1:"Complete CACES R489 (forklift) certification — satisfies mandatory reconversion activity requirement",
+    p1_a2:"Add 2 additional certifications (vehicle, machine, or logistics-related) using CPF balance (~€5k)",
+    p1_a3:"Company funding + CPF covers the full training program",
+    p1_a4:"Decompress from 18 years of corporate life — no rush, no hustle",
+    p1_a5:"Travel light, rest deeply, rediscover what free time actually feels like",
+    p1_a6:"Finalize all administrative transitions: mutuelle, bank status, tax declarations",
+    p1_t1:"CACES R489",p1_t2:"CPF deployed",p1_t3:"Company-funded training",p1_t4:"Decompression year",
+    p2_num:"Phase 2",p2_name:"ARE — Chômage",p2_dates:"2028 – 2029 (~18 months)",p2_income:"~€3.2k → €1.6k/mo",
+    p2_desc:"Unemployment allocation kicks in. Significant income replacement after 18 years of contributions — the system doing its job. Portfolio stays untouched. Optional barista work is possible without losing ARE rights, provided income stays within France Travail thresholds.",
+    p2_d1l:"Year 1 ARE",p2_d1v:"~€3,200/mo",p2_d2l:"Final 6 months",p2_d2v:"~€1,600/mo",p2_d3l:"Duration",p2_d3v:"~18 months total",p2_d4l:"Target spend",p2_d4v:"€2,000/mo",
+    p2_a1:"Year 1: ARE comfortably covers €2k/month lifestyle — buffer any surplus into Livret A",
+    p2_a2:"Year 1.5: ARE drops to ~€1,600 — small lifestyle adjustment or light barista missions fill the gap",
+    p2_a3:"Cumul emploi-chômage rules (France Travail) allow partial work without full ARE suspension",
+    p2_a4:"Portfolio stays fully invested and compounding throughout this phase",
+    p2_a5:"Begin activating Phase 3 barista network and logistics contacts toward end of ARE",
+    p2_fbt:"⚠ Fallback",p2_fb:"If ARE income drops uncomfortably in months 13–18, activate barista missions early. CACES certifications are ready. Light logistics work (1–2 days/week) can bridge the gap under France Travail cumul rules without losing ARE entirely.",
+    p2_t1:"ARE via France Travail",p2_t2:"Portfolio untouched",p2_t3:"Cumul emploi-chômage",
+    p3_num:"Phase 3",p3_name:"Barista FIRE",p3_dates:"2030 – 2040 (ages 50 – 60)",p3_income:"Missions + portfolio drawdown",
+    p3_desc:"The bridge decade. Portfolio drawdown begins — barista missions complement the withdrawals rather than replace them. Chosen, occasional logistics work reduces the drawdown rate and extends portfolio longevity. The spending order is disciplined: tap wrappers in the optimal tax sequence.",
+    p3_d1l:"Work type",p3_d1v:"Logistics / forklift missions",p3_d2l:"Mission income",p3_d2v:"€1,000–€2,000/mo",p3_d3l:"Portfolio role",p3_d3v:"Gradual drawdown begins",p3_d4l:"AV maturity",p3_d4v:"~2033 (8-yr window)",
+    p3_a1:"Work only when desired — missions supplement portfolio withdrawals, not replace them",
+    p3_a2:"AV 8-year window matures ~2033: begins generating tax-optimized withdrawals if needed",
+    p3_a3:"CTO managed for progressive capital gains harvesting within annual tax envelope",
+    p3_a4:"PERE accessible from age 60 — plan activation toward end of this phase",
+    p3_a5:"This is the decade of living: travel, chess, fitness, philosophy, free time",
+    p3_so:"Withdrawal spending order",
+    p3_s1n:"1st",p3_s1name:"Cash",p3_s1note:"Spend down buffer, keep a small reserve",
+    p3_s2n:"2nd",p3_s2name:"Livrets",p3_s2note:"Drain to ~€1–2k floor",
+    p3_s3n:"3rd",p3_s3name:"CTO",p3_s3note:"Before PEA — no tax shelter to preserve",
+    p3_s4n:"4th",p3_s4name:"PEA",p3_s4note:"Protect as long as possible — best tax wrapper",
+    p3_s5n:"5th",p3_s5name:"AV / PERO / PERE",p3_s5note:"Tax-optimized, after AV 8-yr window",
+    p3_s6n:"6th",p3_s6name:"Colombia",p3_s6note:"Fondo first, relocation if needed",
+    p3_fbt:"⚠ Fallback",p3_fb:"If markets crash or portfolio drops below €150k, increase mission frequency temporarily. Colombia relocation activates here — €1,800/mo vs €2,000 in France buys meaningful additional runway on the same portfolio.",
+    p3_t1:"Drawdown begins",p3_t2:"CTO before PEA",p3_t3:"AV matures 2033",p3_t4:"Chosen work only",
+    p4_num:"Phase 4",p4_name:"Big Drawdown",p4_dates:"2040 – 2051 (ages 60 – 64)",p4_income:"Portfolio + optional missions",
+    p4_desc:"Primary income is the portfolio. Structured, tax-optimized withdrawals following the same spending order — CTO first, then PEA, then AV/PERE/PERO. Barista missions remain available as an emergency lever for market crashes or unexpected needs. PERE unlocked from age 60.",
+    p4_d1l:"Primary income",p4_d1v:"Portfolio drawdown",p4_d2l:"Target withdrawal",p4_d2v:"€2,000/mo",p4_d3l:"PERE access",p4_d3v:"From age 60",p4_d4l:"AV status",p4_d4v:"Fully tax-optimized",
+    p4_a1:"CTO first: sell ETFs and stocks progressively, managing annual capital gains tax envelope",
+    p4_a2:"PEA second: withdrawals taxed only at social charges (17.2%) — no income tax component",
+    p4_a3:"AV: withdraw up to €4,600/yr (single) tax-free above annual returns after 8-yr threshold",
+    p4_a4:"PERE unlocked at 60 — liquidate progressively within tax envelope",
+    p4_a5:"Barista missions on standby: activate if portfolio drops below €50k or sequence-of-returns risk materializes",
+    p4_fbt:"⚠ Fallback triggers",p4_fb:"Portfolio below €50k too early → Colombia relocation activates (€1,800/mo lifestyle). Market crash → resume light logistics missions. Partner separation → Colombia option activates independently as lifestyle reset and cost reduction.",
+    p4_t1:"CTO first",p4_t2:"PEA — social charges only",p4_t3:"PERE from 60",p4_t4:"Barista standby",
+    p5_num:"Phase 5",p5_name:"French State Pension",p5_dates:"From 2051 (age 64+)",p5_income:"Pension + portfolio floor",
+    p5_desc:"The pension kicks in and dramatically reduces portfolio drawdown pressure. Remaining capital becomes an experience fund. The target portfolio floor at age 75 is €20k — after that, zero. The plan is complete.",
+    p5_d1l:"Standard pension age",p5_d1v:"64 (current law)",p5_d2l:"Risk: delayed to",p5_d2v:"67 if trimestres short",p5_d3l:"Portfolio floor at 75",p5_d3v:"~€20k",p5_d4l:"Die with Zero target",p5_d4v:"~€0 at 75+",
+    p5_a1:"Pension income covers core living — drawdown rate drops significantly",
+    p5_a2:"Remaining capital deployed on experiences: travel, generosity, life quality",
+    p5_a3:"Ratchet down portfolio intentionally toward the €20k floor at 75",
+    p5_a4:"No legacy wealth target — memories are the dividend",
+    p5_fbt:"⚠ Pension risk — delayed to 67",p5_fb:"Leaving full-time employment at 47 means ~17 missing years of cotisation trimestres. If the total trimestres count falls short of the full-rate threshold, the pension may not be accessible until age 67 instead of 64. This creates a 3-year gap (ages 64–67) that must be covered by the portfolio alone. Factor this into late-Phase 4 drawdown modeling.",
+    p5_t1:"Pension base income",p5_t2:"Experience fund",p5_t3:"€20k floor at 75",p5_t4:"Risk: age 67 if trimestres short",
+    dwz_ht:"Die with (Almost) Zero — the philosophy in numbers",dwz_hd:"Ages 46 → 75+",
+    dwz_desc:"Die with Zero is not recklessness — it is precision. The goal is to convert every euro of capital into the maximum possible life experience before death. Hoarding wealth you never use is a form of waste. The optimal trajectory is a deliberate, planned descent to zero.",
+    dwz_c1t:"Memory dividend",dwz_c1:"Experiences compound in memory. A trip at 50 is enjoyed in the moment and relived for 25 years. A trip at 75 is enjoyed once. Spend on experiences early — the return on memory is highest when health and energy are still full.",
+    dwz_c2t:"Health × money × time",dwz_c2:"The three resources of a rich life. The optimal zone — high health, enough money, free time — is the window this plan is designed to maximize. You enter it at 47. Most people never enter it at all.",
+    dwz_c3t:"The €20k floor",dwz_c3:"Not a nest egg to be guarded — a safety buffer for the final years. Covers emergency care, final logistics, and dignity. Everything above this threshold is to be used. Intentionally. Joyfully.",
+    dwz_c4t:"Bucket timing",dwz_c4:"47–60: adventure bucket — travel, physical, novelty. 60–70: depth bucket — culture, relationships, slower richness. 70–75: comfort bucket — peace, beauty, presence. Each decade has its own spending logic.",
+    col_ht:"Colombian assets & relocation option",col_hm:"~€156k equivalent · Always available",
+    col_desc:"A parallel financial universe. Colombian assets can sustain a €1,800/mo lifestyle independently of the French portfolio. The relocation option is always available — not just as a crisis move but as a genuine life choice that also happens to extend financial runway significantly.",
+    col_a1n:"Fondo de Inversión BBVA",col_a1v:"~€34k",col_a1r:"140M COP. Investment fund, accessible under Colombian rules.",
+    col_a2n:"Heritage / inheritance",col_a2v:"~€73k",col_a2r:"300M COP. Family inheritance asset. Contingency reserve — not modeled in primary plan.",
+    col_a3n:"Apartment — your half",col_a3v:"~€49k",col_a3r:"200M COP. Shared property. If liquidated adds ~€49k to usable capital. Also available as housing post-relocation.",
+    col_a4n:"Colombia total",col_a4v:"~€156k",col_a4r:"Combined at current EUR/COP rates. Lifestyle: €1,800/mo vs €2,000 in France.",
+    col_trigger:"Trigger: France portfolio < €50k · or · partner separation",
+    exit_ht:"The Final Exit — Switzerland",exit_hm:"Planned · Timing TBD",
+    exit_desc:"The plan includes a conscious, dignified conclusion in Switzerland — not a medical emergency, not a decision made under distress, but a considered and prepared final act. This is the ultimate expression of autonomy: choosing the terms of one's own exit.",
+    exit_d1l:"Organizations",exit_d1:"The two principal Swiss organizations are <strong style=\"color:var(--text)\">Dignitas</strong> (Forch, Zurich canton) and <strong style=\"color:var(--text)\">Exit International</strong>. Dignitas is the primary option for non-Swiss residents. Website: dignitas.ch — membership and consultation process should begin well in advance, while full mental competence is unquestionable.",
+    exit_d2l:"Process & timeline",exit_d2:"Dignitas requires: annual membership (~CHF 80/yr), a formal written request with full medical documentation, evaluation by independent Swiss physicians, and a consistent demonstration of wish over time. From first contact to final approval: typically 6–18 months. This is not a crisis service — it requires deliberate planning and documented competence.",
+    exit_d3l:"Cost",exit_d3:"Total cost including travel, accommodation, physician fees, and the procedure: approximately CHF 10,000–15,000 (~€10k–€16k). Reserve this as a dedicated line item within or alongside the €20k terminal buffer.",
+    exit_d4l:"Legal status",exit_d4:"Assisted dying is legal in Switzerland for non-residents meeting the criteria. French law is evolving but Switzerland remains the most reliable option for full autonomy. No criminal liability for accompanying persons under Swiss law.",
+    exit_d5l:"Philosophical framing",exit_d5:"This is not a footnote. It is the capstone. A life lived with full autonomy — financial, temporal, relational — should end with the same principle. Knowing the exit exists removes the fear of slow decline and gives permission to spend fully, live fully, and choose the moment.",
+    philo_intro:"This is not a financial plan. The numbers exist to serve a life — not the other way around. What follows is the philosophy that makes the numbers meaningful.",
+    m1_num:"I — The Premise",m1_title:"Most people die with the wrong things.",
+    m1_p1:"They die with regrets about what they didn't do, with unspent savings they were afraid to touch, and with decades of delayed living waiting for a retirement that arrived too late, too tired, or not at all.",
+    m1_p2:"The conventional model is broken. Work 40 years. Accumulate. Retire at 65. Enjoy what's left. But health declines in your 60s. Energy peaks in your 40s and 50s. The window of vibrant, fully-lived life is not at the end — it's now.",
+    m1_p3:"This plan is a rejection of that model. It is an act of deliberate insubordination against the social script.",
+    m2_num:"II — The Formula",m2_title:"Time × Health × Money. Only one combination matters.",
+    m2_p1:"A rich life requires three things simultaneously: time, health, and enough money. Most people spend the first half of life sacrificing time for money. The second half trying to buy time back with money. And they never quite have all three at once.",
+    m2_p2:"The goal of this plan is to secure all three before age 50. Not vast wealth — enough. Not unlimited time — free time. Not perfect health — the health of a calisthenics-trained, science-based 47-year-old with 30 good years ahead.",
+    m2_p3:"The window opens in 2027. The window is finite. Use it.",
+    pull1:'"The goal is not to die rich. The goal is to die having lived."',
+    m3_num:"III — On Work",m3_title:"Work chosen is not work. Work required is a cage.",
+    m3_p1:"The barista FIRE model preserves the option to work without the obligation. A logistics mission in a warehouse, CACES certification in hand, taken because you wanted it — is categorically different from 18 years of showing up because the mortgage required it.",
+    m3_p2:"Chosen work has dignity. Required work has a price. This plan eliminates the price forever and restores the dignity.",
+    m3_p3:"If you never want to work another day, you won't have to. If you want the structure and the social energy of occasional missions, they're there. The certification is not a backup career — it's a freedom certificate.",
+    m4_num:"IV — The Memory Dividend",m4_title:"Experiences compound. Objects decay. Money unspent is life unlived.",
+    m4_p1:"Bill Perkins' core insight: a memory, unlike a material purchase, pays dividends for the rest of your life. A trip to Colombia at 50 is experienced in the moment — and then remembered, relived, discussed, dreamed about for 25 more years. That is a 25-year return on a single investment.",
+    m4_p2:"The optimal moment to make a memory is when you have the health to live it fully, the time to be present for it, and the youth to carry it longest. That moment is not 65. It is now.",
+    m4_p3:"Spend on experiences early. Spend on depth in your 60s. Spend on comfort and peace in your 70s. Each decade has its own optimal allocation — and saving it all for the last one is the worst possible strategy.",
+    m5_num:"V — On Frugality",m5_title:"€2,000 a month is not deprivation. It is precision.",
+    m5_p1:"The simulation is already underway. Constraining spending now — before the PSE — is not punishment. It is calibration. It answers the question every FIRE plan must answer honestly: is this number real, or is it a fantasy?",
+    m5_p2:"If €2,000/month in France feels comfortable during the test, it will feel comfortable in retirement. If it feels tight, adjust the plan. The discomfort now is infinitely cheaper than the discomfort of running out of money at 62.",
+    m5_p3:"The goal is not frugality as an identity. It is frugality as a tool — used to buy freedom, then set down.",
+    m6_num:"VI — On Colombia",m6_title:"A second country is not a backup. It is a superpower.",
+    m6_p1:"Having viable roots in two countries means that no single economic environment can trap you. If France becomes too expensive, too socially turbulent, too cold — in every sense — you can leave. The Colombian assets aren't an emergency fund. They are proof that your life is not hostage to any single place.",
+    m6_p2:"Knowing you could leave changes how you feel about staying. The choice to remain in France, each day, becomes a genuine choice — not inertia, not necessity. That shift in agency is quietly transformative.",
+    pull2:'"Autonomy is not what you can afford to do. It is what you can afford to walk away from."',
+    m7_num:"VII — Die with Zero",m7_title:"The €20k floor and the deliberate descent.",
+    m7_p1:"The terminal portfolio is not zero because you failed. It is zero because you succeeded. You converted every accumulated euro into the maximum possible life. You did not hoard. You did not defer. You lived in the years that living was most possible.",
+    m7_p2:"The €20k floor is not a safety net for heirs. It is dignity for the final years and coverage for the final logistics. Everything above it — every euro — is permission to live more fully, right now.",
+    m7_p3:"The descent from ~€378k to €20k, spread across 29 years of living, is not decline. It is the shape of a life fully spent.",
+    m8_num:"VIII — The Final Act",m8_title:"The right to end. The freedom to choose.",
+    m8_p1:"The inclusion of Switzerland in this plan is not morbid. It is the final, fullest expression of the same philosophy that runs through every other phase: the belief that a person has the right to govern their own life — including its end.",
+    m8_p2:"Knowing the exit exists changes the texture of the decades before it. It removes the terror of slow decline, of loss of control, of a drawn-out ending dictated by biology alone. With that fear removed, the years of health are no longer shadowed by what waits at the end.",
+    m8_p3:"This is not a plan to die early. It is a plan to live freely — all the way to a chosen close.",
+    m8_p4:"The plan ends, as it began, with autonomy.",
+    buckets_title:"The three buckets — a life in phases",buckets_intro:"Die with Zero proposes spending not as a flat annual budget but as a series of bucket deployments, each matched to what the body and mind can actually enjoy at that stage of life.",
+    b1_title:"Ages 47 – 60 · Adventure",b1_text:"Physical travel. New places. Calisthenics across continents. Chess tournaments. Long stays. The body is strong. Use it.",
+    b2_title:"Ages 60 – 70 · Depth",b2_text:"Culture, philosophy, slower richness. Deeper relationships. Longer stays in fewer places. The mind at full power.",
+    b3_title:"Ages 70 – 75 · Peace",b3_text:"Comfort, beauty, presence. The €20k buffer. Small joys. Witnessing. The portfolio has done its work.",
+  },
+  es:{
+    title_strategy:"Estrategia",title_sub:"Hoja de Ruta de Independencia Financiera · Confidencial",
+    meta_age:"Edad",meta_pse:"PSE Objetivo",meta_port:"Portafolio",
+    tab_fin:"⬡ Plan Financiero",tab_phi:"◇ Manifiesto de Vida",
+    sec_snapshot:"Portafolio actual · 2025",sec_timeline:"Cronograma · Fase por fase",
+    sec_dwz:"Morir con Cero — marco conceptual",sec_colombia:"Colombia — plan de contingencia siempre disponible",sec_exit:"Acto final — en tus propios términos",
+    snap_pee:"Natixis · mayormente desbloqueado",snap_pere:"Plan de jubilación",snap_pero:"Plan del empleador",snap_av:"Boursobank · en construcción",
+    snap_fr:"🇫🇷 Total Francia",snap_fr_sub:"Todos los vehículos franceses",snap_co:"🇨🇴 Colombia",snap_co_sub:"Fondo + Herencia + Apto",snap_grand:"Total general",snap_grand_sub:"Todos los activos combinados",
+    p0_num:"Fase 0",p0_name:"El Sprint de Acumulación",p0_dates:"2025 – 2027",p0_income:"Salario completo",
+    p0_desc:"Aún empleado. Cada euro de ingreso se ahorra o invierte. El objetivo es maximizar todos los vehículos antes de que abra la ventana del PSE, simular el estilo de vida de jubilación ahora para validar los números, y construir la fortaleza psicológica para la transición.",
+    p0_d1l:"Ingreso",p0_d1v:"Salario completo",p0_d2l:"Portafolio objetivo al salir",p0_d2v:"~€300k Francia",p0_d3l:"Antigüedad en el PSE",p0_d3v:"~18 años",p0_d4l:"Indemnización estimada",p0_d4v:"~€80k",
+    p0_a1:"Drenar sistemáticamente los tramos desbloqueados del PEE → reinvertir en PEA (prioridad: el techo de €150k del PEA es irremplazable)",
+    p0_a2:"Construir la Assurance Vie en Boursobank: base en fonds euros como protección de capital",
+    p0_a3:"Mantener Livret A + LDDS al máximo como colchón de liquidez",
+    p0_a4:"Monitorear el calendario del PSE en el trabajo — objetivo 2027, alternativa 2028",
+    p0_a5:"Simular estilo de vida de €2k/mes ahora — validar que es genuinamente cómodo antes de comprometerse",
+    p0_a6:"Vigilar la reestructuración de IA en la empresa para oportunidades o aceleración del cronograma",
+    p0_t1:"Pipeline PEE → PEA",p0_t2:"Reloj AV inicia 2025",p0_t3:"Simulación de frugalidad",
+    p1_num:"Fase 1",p1_name:"Congé de Reclassement",p1_dates:"2027 – 2028 (~9–12 meses)",p1_income:"Casi salario completo",
+    p1_desc:"Técnicamente aún empleado. Pagado a casi salario completo mientras está formalmente en un programa de transición profesional — la empresa financia tanto el ingreso como la formación. Este es el año dorado de descompresión. Sin retiro del portafolio. Úsalo sabiamente.",
+    p1_d1l:"Ingreso",p1_d1v:"~Salario completo",p1_d2l:"Duración",p1_d2v:"9 – 12 meses",p1_d3l:"Acción sobre portafolio",p1_d3v:"Sin tocar",p1_d4l:"Presupuesto de formación",p1_d4v:"Financiado por empresa + CPF ~€5k",
+    p1_a1:"Completar la certificación CACES R489 (montacargas) — cumple el requisito obligatorio de actividad de reconversión",
+    p1_a2:"Agregar 2 certificaciones adicionales (vehículo, maquinaria o logística) usando el saldo del CPF (~€5k)",
+    p1_a3:"La financiación de la empresa + CPF cubre el programa completo de formación",
+    p1_a4:"Descomprimirse de 18 años de vida corporativa — sin prisa, sin agitación",
+    p1_a5:"Viajar ligero, descansar profundamente, redescubrir cómo se siente el tiempo libre",
+    p1_a6:"Finalizar todas las transiciones administrativas: mutuelle, estado bancario, declaraciones fiscales",
+    p1_t1:"CACES R489",p1_t2:"CPF desplegado",p1_t3:"Formación financiada por empresa",p1_t4:"Año de descompresión",
+    p2_num:"Fase 2",p2_name:"ARE — Desempleo",p2_dates:"2028 – 2029 (~18 meses)",p2_income:"~€3.2k → €1.6k/mes",
+    p2_desc:"Entra en vigor la asignación por desempleo. Reemplazo significativo de ingresos tras 18 años de cotizaciones — el sistema haciendo su trabajo. El portafolio no se toca. Es posible trabajar en misiones barista sin perder los derechos del ARE, siempre que los ingresos se mantengan dentro de los umbrales de France Travail.",
+    p2_d1l:"ARE Año 1",p2_d1v:"~€3.200/mes",p2_d2l:"Últimos 6 meses",p2_d2v:"~€1.600/mes",p2_d3l:"Duración",p2_d3v:"~18 meses en total",p2_d4l:"Gasto objetivo",p2_d4v:"€2.000/mes",
+    p2_a1:"Año 1: el ARE cubre cómodamente el estilo de vida de €2k/mes — guardar el excedente en el Livret A",
+    p2_a2:"Año 1.5: el ARE baja a ~€1.600 — pequeño ajuste de estilo de vida o misiones barista ligeras para cubrir la diferencia",
+    p2_a3:"Las reglas de cumul emploi-chômage (France Travail) permiten trabajo parcial sin suspensión total del ARE",
+    p2_a4:"El portafolio permanece totalmente invertido y capitalizándose durante toda esta fase",
+    p2_a5:"Comenzar a activar la red barista de la Fase 3 y contactos logísticos hacia el final del ARE",
+    p2_fbt:"⚠ Plan de contingencia",p2_fb:"Si los ingresos del ARE caen incómodamente en los meses 13–18, activar misiones barista anticipadamente. Las certificaciones CACES están listas. El trabajo logístico ligero (1–2 días/semana) puede cubrir la brecha bajo las reglas de cumul de France Travail sin perder el ARE por completo.",
+    p2_t1:"ARE vía France Travail",p2_t2:"Portafolio sin tocar",p2_t3:"Cumul emploi-chômage",
+    p3_num:"Fase 3",p3_name:"Barista FIRE",p3_dates:"2030 – 2040 (edades 50 – 60)",p3_income:"Misiones + retiro del portafolio",
+    p3_desc:"La década puente. Comienza el retiro del portafolio — las misiones barista complementan las retiradas en lugar de reemplazarlas. El trabajo logístico ocasional y elegido reduce la tasa de retiro y extiende la longevidad del portafolio. El orden de gasto es disciplinado: usar los vehículos en la secuencia fiscal óptima.",
+    p3_d1l:"Tipo de trabajo",p3_d1v:"Misiones de logística / montacargas",p3_d2l:"Ingreso por misiones",p3_d2v:"€1.000–€2.000/mes",p3_d3l:"Rol del portafolio",p3_d3v:"Inicio de retiro gradual",p3_d4l:"Madurez AV",p3_d4v:"~2033 (ventana 8 años)",
+    p3_a1:"Trabajar solo cuando se desee — las misiones complementan los retiros del portafolio, no los reemplazan",
+    p3_a2:"La ventana de 8 años de la AV madura ~2033: comienza a generar retiros fiscalmente optimizados si es necesario",
+    p3_a3:"CTO gestionado para cosecha progresiva de plusvalías dentro del sobre fiscal anual",
+    p3_a4:"PERE accesible desde los 60 años — planificar su activación hacia el final de esta fase",
+    p3_a5:"Esta es la década de vivir: viajes, ajedrez, fitness, filosofía, tiempo libre",
+    p3_so:"Orden de retiro de fondos",
+    p3_s1n:"1°",p3_s1name:"Efectivo",p3_s1note:"Gastar el colchón, mantener una pequeña reserva",
+    p3_s2n:"2°",p3_s2name:"Libretas",p3_s2note:"Drenar hasta ~€1–2k de piso",
+    p3_s3n:"3°",p3_s3name:"CTO",p3_s3note:"Antes del PEA — sin ventaja fiscal que preservar",
+    p3_s4n:"4°",p3_s4name:"PEA",p3_s4note:"Proteger el mayor tiempo posible — mejor vehículo fiscal",
+    p3_s5n:"5°",p3_s5name:"AV / PERO / PERE",p3_s5note:"Fiscalmente optimizado, tras ventana de 8 años del AV",
+    p3_s6n:"6°",p3_s6name:"Colombia",p3_s6note:"Fondo primero, reubicación si es necesario",
+    p3_fbt:"⚠ Plan de contingencia",p3_fb:"Si los mercados caen o el portafolio baja de €150k, aumentar temporalmente la frecuencia de misiones. La reubicación en Colombia se activa aquí — €1.800/mes vs €2.000 en Francia da un margen adicional significativo con el mismo portafolio.",
+    p3_t1:"Retiro comienza",p3_t2:"CTO antes que PEA",p3_t3:"AV madura 2033",p3_t4:"Solo trabajo elegido",
+    p4_num:"Fase 4",p4_name:"Gran Retiro",p4_dates:"2040 – 2051 (edades 60 – 64)",p4_income:"Portafolio + misiones opcionales",
+    p4_desc:"El ingreso principal es el portafolio. Retiros estructurados y fiscalmente optimizados siguiendo el mismo orden de gasto — CTO primero, luego PEA, luego AV/PERE/PERO. Las misiones barista siguen disponibles como palanca de emergencia ante caídas de mercado o necesidades inesperadas. PERE desbloqueado desde los 60 años.",
+    p4_d1l:"Ingreso principal",p4_d1v:"Retiro del portafolio",p4_d2l:"Retiro objetivo",p4_d2v:"€2.000/mes",p4_d3l:"Acceso al PERE",p4_d3v:"Desde los 60 años",p4_d4l:"Estado AV",p4_d4v:"Totalmente optimizado fiscalmente",
+    p4_a1:"CTO primero: vender ETFs y acciones progresivamente, gestionando el sobre fiscal anual de plusvalías",
+    p4_a2:"PEA segundo: retiros gravados solo con cargas sociales (17,2%) — sin componente de IRPF",
+    p4_a3:"AV: retirar hasta €4.600/año (individual) libre de impuestos por encima de los rendimientos anuales tras el umbral de 8 años",
+    p4_a4:"PERE desbloqueado a los 60 — liquidar progresivamente dentro del sobre fiscal",
+    p4_a5:"Misiones barista en espera: activar si el portafolio baja de €50k o se materializa el riesgo de secuencia de rendimientos",
+    p4_fbt:"⚠ Disparadores de contingencia",p4_fb:"Portafolio por debajo de €50k muy pronto → se activa la reubicación en Colombia (estilo de vida €1.800/mes). Caída del mercado → reanudar misiones logísticas ligeras. Separación de pareja → la opción Colombia se activa independientemente como reinicio de estilo de vida y reducción de costos.",
+    p4_t1:"CTO primero",p4_t2:"PEA — solo cargas sociales",p4_t3:"PERE desde 60",p4_t4:"Barista en espera",
+    p5_num:"Fase 5",p5_name:"Pensión del Estado Francés",p5_dates:"Desde 2051 (edad 64+)",p5_income:"Pensión + piso del portafolio",
+    p5_desc:"La pensión entra en vigor y reduce drásticamente la presión de retiro del portafolio. El capital restante se convierte en un fondo de experiencias. El piso objetivo del portafolio a los 75 años es €20k — después de eso, cero. El plan se completa.",
+    p5_d1l:"Edad estándar de pensión",p5_d1v:"64 (ley actual)",p5_d2l:"Riesgo: retraso hasta",p5_d2v:"67 si faltan trimestres",p5_d3l:"Piso del portafolio a los 75",p5_d3v:"~€20k",p5_d4l:"Objetivo Morir con Cero",p5_d4v:"~€0 a los 75+",
+    p5_a1:"Los ingresos de la pensión cubren los gastos básicos — la tasa de retiro cae significativamente",
+    p5_a2:"El capital restante se despliega en experiencias: viajes, generosidad, calidad de vida",
+    p5_a3:"Reducir el portafolio intencionalmente hacia el piso de €20k a los 75",
+    p5_a4:"Sin objetivo de herencia — los recuerdos son el dividendo",
+    p5_fbt:"⚠ Riesgo pensión — retraso hasta 67",p5_fb:"Dejar el empleo a tiempo completo a los 47 significa ~17 años faltantes de cotización de trimestres. Si el total de trimestres cotizados no alcanza el umbral de tasa completa, la pensión podría no ser accesible hasta los 67 años en lugar de los 64. Esto crea una brecha de 3 años (edades 64–67) que debe cubrirse únicamente con el portafolio. Considerar esto en el modelo de retiro de finales de la Fase 4.",
+    p5_t1:"Pensión como ingreso base",p5_t2:"Fondo de experiencias",p5_t3:"Piso €20k a los 75",p5_t4:"Riesgo: edad 67 si faltan trimestres",
+    dwz_ht:"Morir con (Casi) Cero — la filosofía en números",dwz_hd:"Edades 46 → 75+",
+    dwz_desc:"Morir con Cero no es imprudencia — es precisión. El objetivo es convertir cada euro de capital en la máxima experiencia de vida posible antes de morir. Acumular riqueza que nunca usas es una forma de desperdicio. La trayectoria óptima es un descenso deliberado y planificado hacia cero.",
+    dwz_c1t:"Dividendo de los recuerdos",dwz_c1:"Las experiencias se acumulan en la memoria. Un viaje a los 50 se vive en el momento y se revive durante 25 años. Un viaje a los 75 se vive una sola vez. Gasta en experiencias pronto — el retorno sobre la memoria es mayor cuando la salud y la energía todavía están plenas.",
+    dwz_c2t:"Salud × dinero × tiempo",dwz_c2:"Los tres recursos de una vida rica. La zona óptima — buena salud, suficiente dinero, tiempo libre — es la ventana que este plan está diseñado para maximizar. La alcanzas a los 47. La mayoría de las personas nunca la alcanza.",
+    dwz_c3t:"El piso de €20k",dwz_c3:"No es un nido de huevos a proteger — es un colchón de seguridad para los últimos años. Cubre atención de emergencia, logística final y dignidad. Todo lo que supere este umbral debe usarse. Intencionalmente. Con alegría.",
+    dwz_c4t:"Momento de los compartimentos",dwz_c4:"47–60: compartimento aventura — viajes, físico, novedad. 60–70: compartimento profundidad — cultura, relaciones, riqueza más lenta. 70–75: compartimento confort — paz, belleza, presencia. Cada década tiene su propia lógica de gasto.",
+    col_ht:"Activos colombianos y opción de reubicación",col_hm:"~€156k equivalente · Siempre disponible",
+    col_desc:"Un universo financiero paralelo. Los activos colombianos pueden sostener un estilo de vida de €1.800/mes independientemente del portafolio francés. La opción de reubicación siempre está disponible — no solo como movimiento de crisis sino como una elección de vida genuina que también extiende significativamente el horizonte financiero.",
+    col_a1n:"Fondo de Inversión BBVA",col_a1v:"~€34k",col_a1r:"140M COP. Fondo de inversión, accesible bajo normativa colombiana.",
+    col_a2n:"Herencia familiar",col_a2v:"~€73k",col_a2r:"300M COP. Activo de herencia familiar. Reserva de contingencia — no modelado en el plan principal.",
+    col_a3n:"Apartamento — tu mitad",col_a3v:"~€49k",col_a3r:"200M COP. Propiedad compartida. Si se liquida agrega ~€49k al capital disponible. También disponible como vivienda tras reubicación.",
+    col_a4n:"Total Colombia",col_a4v:"~€156k",col_a4r:"Combinado a tasas EUR/COP actuales. Estilo de vida: €1.800/mes vs €2.000 en Francia.",
+    col_trigger:"Disparador: portafolio Francia < €50k · o · separación de pareja",
+    exit_ht:"La Salida Final — Suiza",exit_hm:"Planificado · Fecha por definir",
+    exit_desc:"El plan incluye una conclusión consciente y digna en Suiza — no una emergencia médica, no una decisión tomada bajo estrés, sino un acto final considerado y preparado. Esta es la expresión máxima de la autonomía: elegir los términos del propio final.",
+    exit_d1l:"Organizaciones",exit_d1:"Las dos principales organizaciones suizas son <strong style=\"color:var(--text)\">Dignitas</strong> (Forch, cantón de Zúrich) y <strong style=\"color:var(--text)\">Exit International</strong>. Dignitas es la opción principal para residentes fuera de Suiza. Sitio web: dignitas.ch — el proceso de membresía y consulta debe iniciarse con bastante anticipación, mientras la plena competencia mental es incuestionable.",
+    exit_d2l:"Proceso y cronograma",exit_d2:"Dignitas requiere: membresía anual (~CHF 80/año), una solicitud formal escrita con documentación médica completa, evaluación por médicos suizos independientes, y una demostración consistente de voluntad a lo largo del tiempo. Desde el primer contacto hasta la aprobación final: normalmente 6–18 meses. No es un servicio de crisis — requiere planificación deliberada y competencia documentada.",
+    exit_d3l:"Costo",exit_d3:"Costo total incluyendo viaje, alojamiento, honorarios médicos y el procedimiento: aproximadamente CHF 10.000–15.000 (~€10k–€16k). Reservar esto como una partida dedicada dentro o junto al colchón terminal de €20k.",
+    exit_d4l:"Estado legal",exit_d4:"La muerte asistida es legal en Suiza para no residentes que cumplan los criterios. La legislación francesa está evolucionando pero Suiza sigue siendo la opción más fiable para la plena autonomía. No hay responsabilidad penal para las personas acompañantes bajo la ley suiza.",
+    exit_d5l:"Marco filosófico",exit_d5:"Esto no es una nota al pie. Es la culminación. Una vida vivida con plena autonomía — financiera, temporal, relacional — debe terminar con el mismo principio. Saber que la salida existe elimina el miedo al declive lento y da permiso para gastar plenamente, vivir plenamente y elegir el momento.",
+    philo_intro:"Este no es un plan financiero. Los números existen para servir a una vida — no al revés. Lo que sigue es la filosofía que hace que los números tengan sentido.",
+    m1_num:"I — La Premisa",m1_title:"La mayoría de las personas muere con las cosas equivocadas.",
+    m1_p1:"Mueren con remordimientos por lo que no hicieron, con ahorros sin gastar que tenían miedo de tocar, y con décadas de vida aplazada esperando una jubilación que llegó demasiado tarde, demasiado cansada, o que nunca llegó.",
+    m1_p2:"El modelo convencional está roto. Trabaja 40 años. Acumula. Jubílate a los 65. Disfruta lo que queda. Pero la salud declina en los 60. La energía alcanza su pico en los 40 y 50. La ventana de una vida vibrante y plenamente vivida no está al final — está ahora.",
+    m1_p3:"Este plan es un rechazo de ese modelo. Es un acto de insubordinación deliberada contra el guion social.",
+    m2_num:"II — La Fórmula",m2_title:"Tiempo × Salud × Dinero. Solo una combinación importa.",
+    m2_p1:"Una vida rica requiere tres cosas simultáneamente: tiempo, salud y suficiente dinero. La mayoría de las personas pasa la primera mitad de su vida sacrificando tiempo por dinero. La segunda mitad intentando recuperar tiempo con dinero. Y nunca tienen las tres al mismo tiempo.",
+    m2_p2:"El objetivo de este plan es asegurar las tres antes de los 50. No una riqueza inmensa — suficiente. No tiempo ilimitado — tiempo libre. No salud perfecta — la salud de alguien entrenado en calistenia, basado en la ciencia, de 47 años con 30 buenos años por delante.",
+    m2_p3:"La ventana se abre en 2027. La ventana es finita. Úsala.",
+    pull1:'"El objetivo no es morir rico. El objetivo es morir habiendo vivido."',
+    m3_num:"III — Sobre el Trabajo",m3_title:"El trabajo elegido no es trabajo. El trabajo obligado es una jaula.",
+    m3_p1:"El modelo barista FIRE preserva la opción de trabajar sin la obligación. Una misión logística en un almacén, certificación CACES en mano, tomada porque quisiste — es categóricamente diferente a 18 años presentándose porque la hipoteca lo requería.",
+    m3_p2:"El trabajo elegido tiene dignidad. El trabajo obligatorio tiene un precio. Este plan elimina el precio para siempre y restaura la dignidad.",
+    m3_p3:"Si nunca quieres trabajar otro día, no tendrás que hacerlo. Si quieres la estructura y la energía social de misiones ocasionales, estarán ahí. La certificación no es una carrera de respaldo — es un certificado de libertad.",
+    m4_num:"IV — El Dividendo de los Recuerdos",m4_title:"Las experiencias se acumulan. Los objetos se degradan. El dinero sin gastar es vida no vivida.",
+    m4_p1:"La idea central de Bill Perkins: un recuerdo, a diferencia de una compra material, paga dividendos por el resto de tu vida. Un viaje a Colombia a los 50 se vive en el momento — y luego se recuerda, se revive, se cuenta, se sueña durante 25 años más. Ese es un retorno de 25 años sobre una sola inversión.",
+    m4_p2:"El momento óptimo para crear un recuerdo es cuando tienes la salud para vivirlo plenamente, el tiempo para estar presente en él, y la juventud para cargarlo más tiempo. Ese momento no es a los 65. Es ahora.",
+    m4_p3:"Gasta en experiencias pronto. Gasta en profundidad en tus 60. Gasta en confort y paz en tus 70. Cada década tiene su asignación óptima — y guardar todo para la última es la peor estrategia posible.",
+    m5_num:"V — Sobre la Frugalidad",m5_title:"€2.000 al mes no es privación. Es precisión.",
+    m5_p1:"La simulación ya está en marcha. Restringir el gasto ahora — antes del PSE — no es un castigo. Es calibración. Responde la pregunta que todo plan FIRE debe responder honestamente: ¿este número es real, o es una fantasía?",
+    m5_p2:"Si €2.000/mes en Francia se siente cómodo durante la prueba, se sentirá cómodo en la jubilación. Si se siente ajustado, ajusta el plan. El malestar ahora es infinitamente más barato que el malestar de quedarse sin dinero a los 62.",
+    m5_p3:"El objetivo no es la frugalidad como identidad. Es la frugalidad como herramienta — usada para comprar libertad, luego dejada a un lado.",
+    m6_num:"VI — Sobre Colombia",m6_title:"Un segundo país no es un respaldo. Es un superpoder.",
+    m6_p1:"Tener raíces viables en dos países significa que ningún entorno económico puede atraparte. Si Francia se vuelve demasiado cara, demasiado turbulenta socialmente, demasiado fría — en todos los sentidos — puedes irte. Los activos colombianos no son un fondo de emergencia. Son la prueba de que tu vida no está rehén de ningún lugar.",
+    m6_p2:"Saber que podrías irte cambia cómo te sientes al quedarte. La elección de permanecer en Francia, cada día, se convierte en una elección genuina — no inercia, no necesidad. Ese cambio en la autonomía es tranquilamente transformador.",
+    pull2:'"La autonomía no es lo que puedes permitirte hacer. Es lo que puedes permitirte abandonar."',
+    m7_num:"VII — Morir con Cero",m7_title:"El piso de €20k y el descenso deliberado.",
+    m7_p1:"El portafolio terminal no es cero porque fallaste. Es cero porque tuviste éxito. Convertiste cada euro acumulado en la máxima vida posible. No acumulaste. No aplazaste. Viviste en los años en que vivir era más posible.",
+    m7_p2:"El piso de €20k no es una red de seguridad para herederos. Es dignidad para los últimos años y cobertura para la logística final. Todo lo que esté por encima — cada euro — es permiso para vivir más plenamente, ahora mismo.",
+    m7_p3:"El descenso de ~€378k a €20k, extendido a lo largo de 29 años de vida, no es declive. Es la forma de una vida plenamente vivida.",
+    m8_num:"VIII — El Acto Final",m8_title:"El derecho a terminar. La libertad de elegir.",
+    m8_p1:"La inclusión de Suiza en este plan no es mórbida. Es la expresión final y más plena de la misma filosofía que recorre todas las demás fases: la creencia de que una persona tiene el derecho de gobernar su propia vida — incluyendo su final.",
+    m8_p2:"Saber que la salida existe cambia la textura de las décadas anteriores. Elimina el terror al declive lento, a la pérdida de control, a un final prolongado dictado únicamente por la biología. Con ese miedo eliminado, los años de salud ya no están ensombrecidos por lo que espera al final.",
+    m8_p3:"Este no es un plan para morir pronto. Es un plan para vivir libremente — hasta un final elegido.",
+    m8_p4:"El plan termina, como comenzó, con autonomía.",
+    buckets_title:"Los tres compartimentos — una vida en fases",buckets_intro:"Morir con Cero propone el gasto no como un presupuesto anual fijo sino como una serie de despliegues por compartimentos, cada uno adaptado a lo que el cuerpo y la mente pueden realmente disfrutar en esa etapa de la vida.",
+    b1_title:"Edades 47 – 60 · Aventura",b1_text:"Viajes físicos. Nuevos lugares. Calistenia por continentes. Torneos de ajedrez. Largas estadías. El cuerpo es fuerte. Úsalo.",
+    b2_title:"Edades 60 – 70 · Profundidad",b2_text:"Cultura, filosofía, riqueza más lenta. Relaciones más profundas. Estadías más largas en menos lugares. La mente a plena potencia.",
+    b3_title:"Edades 70 – 75 · Paz",b3_text:"Confort, belleza, presencia. El colchón de €20k. Pequeñas alegrías. Contemplación. El portafolio ha cumplido su función.",
+  },
+  fr:{
+    title_strategy:"Stratégie",title_sub:"Feuille de Route vers l'Indépendance Financière · Confidentiel",
+    meta_age:"Âge",meta_pse:"PSE Cible",meta_port:"Portefeuille",
+    tab_fin:"⬡ Plan Financier",tab_phi:"◇ Manifeste de Vie",
+    sec_snapshot:"Portefeuille actuel · 2025",sec_timeline:"Chronologie · Phase par phase",
+    sec_dwz:"Mourir avec Zéro — cadre conceptuel",sec_colombia:"Colombie — repli toujours disponible",sec_exit:"Acte final — à mes propres conditions",
+    snap_pee:"Natixis · majoritairement débloqué",snap_pere:"Plan retraite",snap_pero:"Plan employeur",snap_av:"Boursobank · en construction",
+    snap_fr:"🇫🇷 Total France",snap_fr_sub:"Toutes les enveloppes françaises",snap_co:"🇨🇴 Colombie",snap_co_sub:"Fondo + Héritage + Appt",snap_grand:"Total général",snap_grand_sub:"Tous les actifs combinés",
+    p0_num:"Phase 0",p0_name:"Le Sprint d'Accumulation",p0_dates:"2025 – 2027",p0_income:"Salaire complet",
+    p0_desc:"Toujours en poste. Chaque euro de revenu est soit épargné, soit investi. L'objectif est de maximiser toutes les enveloppes avant l'ouverture de la fenêtre PSE, de simuler le style de vie à la retraite dès maintenant pour valider les chiffres, et de construire la force psychologique nécessaire à la transition.",
+    p0_d1l:"Revenu",p0_d1v:"Salaire complet",p0_d2l:"Portefeuille cible à la sortie PSE",p0_d2v:"~€300k France",p0_d3l:"Ancienneté au PSE",p0_d3v:"~18 ans",p0_d4l:"Indemnité estimée",p0_d4v:"~€80k",
+    p0_a1:"Vider systématiquement les tranches PEE débloquées → réinvestir dans le PEA (priorité : le plafond de €150k du PEA est irremplaçable)",
+    p0_a2:"Construire l'Assurance Vie sur Boursobank : base fonds euros comme protection du capital",
+    p0_a3:"Maintenir Livret A + LDDS au plafond comme réserve de liquidité",
+    p0_a4:"Surveiller le calendrier PSE au travail — cible 2027, repli 2028",
+    p0_a5:"Simuler un style de vie à €2k/mois dès maintenant — valider que c'est genuinement confortable avant de s'engager",
+    p0_a6:"Surveiller la restructuration IA dans l'entreprise pour des opportunités ou une accélération du calendrier",
+    p0_t1:"Pipeline PEE → PEA",p0_t2:"Horloge AV démarre 2025",p0_t3:"Simulation de frugalité",
+    p1_num:"Phase 1",p1_name:"Congé de Reclassement",p1_dates:"2027 – 2028 (~9–12 mois)",p1_income:"Quasi-salaire complet",
+    p1_desc:"Encore techniquement salarié. Payé à quasi-salaire complet dans le cadre d'un programme de transition professionnelle — l'entreprise finance à la fois le revenu et la formation de reconversion. C'est l'année dorée de décompression. Aucun retrait du portefeuille. À utiliser sagement.",
+    p1_d1l:"Revenu",p1_d1v:"~Salaire complet",p1_d2l:"Durée",p1_d2v:"9 – 12 mois",p1_d3l:"Action sur le portefeuille",p1_d3v:"Intouché",p1_d4l:"Budget formation",p1_d4v:"Financé entreprise + CPF ~€5k",
+    p1_a1:"Obtenir la certification CACES R489 (chariot élévateur) — satisfait l'obligation d'activité de reconversion",
+    p1_a2:"Ajouter 2 certifications supplémentaires (véhicule, engin ou logistique) via le solde CPF (~€5k)",
+    p1_a3:"Le financement entreprise + CPF couvre l'intégralité du programme de formation",
+    p1_a4:"Décompresser après 18 ans de vie corporate — sans précipitation, sans agitation",
+    p1_a5:"Voyager léger, se reposer profondément, redécouvrir ce que le temps libre signifie vraiment",
+    p1_a6:"Finaliser toutes les transitions administratives : mutuelle, statut bancaire, déclarations fiscales",
+    p1_t1:"CACES R489",p1_t2:"CPF mobilisé",p1_t3:"Formation financée par l'entreprise",p1_t4:"Année de décompression",
+    p2_num:"Phase 2",p2_name:"ARE — Chômage",p2_dates:"2028 – 2029 (~18 mois)",p2_income:"~€3,2k → €1,6k/mois",
+    p2_desc:"L'allocation chômage entre en vigueur. Remplacement significatif du revenu après 18 ans de cotisations — le système qui joue son rôle. Le portefeuille reste intact. Des missions barista sont possibles sans perdre les droits ARE, à condition que les revenus restent dans les seuils de France Travail.",
+    p2_d1l:"ARE Année 1",p2_d1v:"~€3 200/mois",p2_d2l:"6 derniers mois",p2_d2v:"~€1 600/mois",p2_d3l:"Durée",p2_d3v:"~18 mois au total",p2_d4l:"Dépenses cibles",p2_d4v:"€2 000/mois",
+    p2_a1:"Année 1 : l'ARE couvre confortablement un style de vie à €2k/mois — mettre tout surplus sur le Livret A",
+    p2_a2:"Année 1,5 : l'ARE chute à ~€1 600 — léger ajustement du train de vie ou petites missions barista pour combler l'écart",
+    p2_a3:"Les règles de cumul emploi-chômage (France Travail) permettent un travail partiel sans suspension totale de l'ARE",
+    p2_a4:"Le portefeuille reste entièrement investi et capitalisé tout au long de cette phase",
+    p2_a5:"Commencer à activer le réseau barista de la Phase 3 et les contacts logistiques vers la fin de l'ARE",
+    p2_fbt:"⚠ Plan de repli",p2_fb:"Si les revenus ARE chutent inconfortablement entre les mois 13 et 18, activer les missions barista par anticipation. Les certifications CACES sont prêtes. Un travail logistique léger (1–2 jours/semaine) peut combler l'écart via les règles de cumul France Travail sans perdre l'ARE entièrement.",
+    p2_t1:"ARE via France Travail",p2_t2:"Portefeuille intact",p2_t3:"Cumul emploi-chômage",
+    p3_num:"Phase 3",p3_name:"Barista FIRE",p3_dates:"2030 – 2040 (âges 50 – 60)",p3_income:"Missions + retrait du portefeuille",
+    p3_desc:"La décennie pont. Les retraits du portefeuille commencent — les missions barista complètent les retraits plutôt qu'ils ne les remplacent. Le travail logistique occasionnel et choisi réduit le taux de retrait et prolonge la longévité du portefeuille. L'ordre des dépenses est discipliné : puiser dans les enveloppes dans la séquence fiscale optimale.",
+    p3_d1l:"Type de travail",p3_d1v:"Missions logistique / chariot",p3_d2l:"Revenus missions",p3_d2v:"€1 000–€2 000/mois",p3_d3l:"Rôle du portefeuille",p3_d3v:"Retrait progressif démarre",p3_d4l:"Maturité AV",p3_d4v:"~2033 (fenêtre 8 ans)",
+    p3_a1:"Travailler uniquement quand désiré — les missions complètent les retraits du portefeuille, ne les remplacent pas",
+    p3_a2:"La fenêtre des 8 ans de l'AV arrive à maturité ~2033 : commence à générer des retraits fiscalement optimisés si nécessaire",
+    p3_a3:"CTO géré pour une récolte progressive des plus-values dans l'enveloppe fiscale annuelle",
+    p3_a4:"PERE accessible à partir de 60 ans — planifier l'activation vers la fin de cette phase",
+    p3_a5:"C'est la décennie du vivant : voyages, échecs, fitness, philosophie, temps libre",
+    p3_so:"Ordre de retrait des fonds",
+    p3_s1n:"1er",p3_s1name:"Liquidités",p3_s1note:"Dépenser le coussin, garder une petite réserve",
+    p3_s2n:"2e",p3_s2name:"Livrets",p3_s2note:"Vider jusqu'à ~€1–2k de plancher",
+    p3_s3n:"3e",p3_s3name:"CTO",p3_s3note:"Avant le PEA — pas d'avantage fiscal à préserver",
+    p3_s4n:"4e",p3_s4name:"PEA",p3_s4note:"Protéger le plus longtemps possible — meilleure enveloppe fiscale",
+    p3_s5n:"5e",p3_s5name:"AV / PERO / PERE",p3_s5note:"Fiscalement optimisé, après fenêtre 8 ans de l'AV",
+    p3_s6n:"6e",p3_s6name:"Colombie",p3_s6note:"Fondo d'abord, relocalisation si nécessaire",
+    p3_fbt:"⚠ Plan de repli",p3_fb:"Si les marchés s'effondrent ou si le portefeuille passe sous €150k, augmenter temporairement la fréquence des missions. La relocalisation en Colombie s'active ici — €1 800/mois vs €2 000 en France donne une marge supplémentaire significative avec le même portefeuille.",
+    p3_t1:"Retraits démarrent",p3_t2:"CTO avant PEA",p3_t3:"AV maturité 2033",p3_t4:"Travail choisi uniquement",
+    p4_num:"Phase 4",p4_name:"Grand Retrait",p4_dates:"2040 – 2051 (âges 60 – 64)",p4_income:"Portefeuille + missions optionnelles",
+    p4_desc:"Le revenu principal est le portefeuille. Retraits structurés et fiscalement optimisés selon le même ordre de dépenses — CTO d'abord, puis PEA, puis AV/PERE/PERO. Les missions barista restent disponibles comme levier d'urgence en cas de krach boursier ou de besoins imprévus. PERE débloqué à partir de 60 ans.",
+    p4_d1l:"Revenu principal",p4_d1v:"Retrait du portefeuille",p4_d2l:"Retrait cible",p4_d2v:"€2 000/mois",p4_d3l:"Accès PERE",p4_d3v:"À partir de 60 ans",p4_d4l:"Statut AV",p4_d4v:"Totalement optimisé fiscalement",
+    p4_a1:"CTO d'abord : vendre ETF et actions progressivement en gérant l'enveloppe fiscale annuelle des plus-values",
+    p4_a2:"PEA ensuite : retraits soumis uniquement aux prélèvements sociaux (17,2%) — aucun impôt sur le revenu",
+    p4_a3:"AV : retirer jusqu'à €4 600/an (célibataire) en franchise d'impôt au-delà des rendements annuels après le seuil des 8 ans",
+    p4_a4:"PERE débloqué à 60 ans — liquider progressivement dans l'enveloppe fiscale",
+    p4_a5:"Missions barista en veille : activer si le portefeuille passe sous €50k ou si le risque de séquence de rendements se matérialise",
+    p4_fbt:"⚠ Déclencheurs de repli",p4_fb:"Portefeuille sous €50k trop tôt → relocalisation Colombie s'active (style de vie €1 800/mois). Krach boursier → reprendre des missions logistiques légères. Séparation du partenaire → option Colombie s'active indépendamment comme remise à zéro du style de vie et réduction des coûts.",
+    p4_t1:"CTO d'abord",p4_t2:"PEA — prélèvements sociaux seuls",p4_t3:"PERE à partir de 60",p4_t4:"Barista en veille",
+    p5_num:"Phase 5",p5_name:"Retraite de l'État Français",p5_dates:"À partir de 2051 (âge 64+)",p5_income:"Pension + plancher du portefeuille",
+    p5_desc:"La pension entre en jeu et réduit considérablement la pression de retrait sur le portefeuille. Le capital restant devient un fonds d'expériences. Le plancher cible du portefeuille à 75 ans est €20k — ensuite, zéro. Le plan est accompli.",
+    p5_d1l:"Âge standard de la pension",p5_d1v:"64 ans (loi actuelle)",p5_d2l:"Risque : décalé à",p5_d2v:"67 ans si trimestres insuffisants",p5_d3l:"Plancher du portefeuille à 75",p5_d3v:"~€20k",p5_d4l:"Objectif Mourir avec Zéro",p5_d4v:"~€0 à 75+",
+    p5_a1:"Les revenus de la pension couvrent les dépenses courantes — le taux de retrait chute significativement",
+    p5_a2:"Le capital restant est déployé en expériences : voyages, générosité, qualité de vie",
+    p5_a3:"Réduire intentionnellement le portefeuille vers le plancher de €20k à 75 ans",
+    p5_a4:"Aucun objectif de succession — les souvenirs sont le dividende",
+    p5_fbt:"⚠ Risque pension — décalé à 67",p5_fb:"Quitter l'emploi à temps plein à 47 ans signifie ~17 années manquantes de trimestres cotisés. Si le total des trimestres ne dépasse pas le seuil du taux plein, la pension pourrait n'être accessible qu'à 67 ans au lieu de 64. Cela crée un écart de 3 ans (âges 64–67) couvert uniquement par le portefeuille. À intégrer dans la modélisation du retrait de fin de Phase 4.",
+    p5_t1:"Pension comme revenu de base",p5_t2:"Fonds d'expériences",p5_t3:"Plancher €20k à 75",p5_t4:"Risque : âge 67 si trimestres insuffisants",
+    dwz_ht:"Mourir avec (Presque) Zéro — la philosophie en chiffres",dwz_hd:"Âges 46 → 75+",
+    dwz_desc:"Mourir avec Zéro n'est pas de l'imprudence — c'est de la précision. L'objectif est de convertir chaque euro de capital en la plus grande expérience de vie possible avant de mourir. Accumuler une richesse qu'on n'utilise jamais est une forme de gaspillage. La trajectoire optimale est une descente délibérée et planifiée vers zéro.",
+    dwz_c1t:"Le dividende des souvenirs",dwz_c1:"Les expériences se capitalisent dans la mémoire. Un voyage à 50 ans est vécu dans l'instant et revécu pendant 25 ans. Un voyage à 75 ans est vécu une seule fois. Dépenser en expériences tôt — le retour sur la mémoire est le plus élevé quand la santé et l'énergie sont encore pleines.",
+    dwz_c2t:"Santé × argent × temps",dwz_c2:"Les trois ressources d'une vie riche. La zone optimale — bonne santé, assez d'argent, temps libre — est la fenêtre que ce plan est conçu pour maximiser. Tu y entres à 47 ans. La plupart des gens n'y entrent jamais.",
+    dwz_c3t:"Le plancher de €20k",dwz_c3:"Ce n'est pas un pécule à protéger — c'est un coussin de sécurité pour les dernières années. Couvre les soins d'urgence, la logistique finale et la dignité. Tout ce qui dépasse ce seuil doit être utilisé. Intentionnellement. Joyeusement.",
+    dwz_c4t:"Le timing des compartiments",dwz_c4:"47–60 : compartiment aventure — voyages, physique, nouveauté. 60–70 : compartiment profondeur — culture, relations, richesse plus lente. 70–75 : compartiment confort — paix, beauté, présence. Chaque décennie a sa propre logique de dépense.",
+    col_ht:"Actifs colombiens et option de relocalisation",col_hm:"~€156k équivalent · Toujours disponible",
+    col_desc:"Un univers financier parallèle. Les actifs colombiens peuvent soutenir un style de vie à €1 800/mois indépendamment du portefeuille français. L'option de relocalisation est toujours disponible — pas seulement comme mesure de crise mais comme un vrai choix de vie qui prolonge significativement le cap financier.",
+    col_a1n:"Fondo de Inversión BBVA",col_a1v:"~€34k",col_a1r:"140M COP. Fonds d'investissement, accessible selon la réglementation colombienne.",
+    col_a2n:"Héritage familial",col_a2v:"~€73k",col_a2r:"300M COP. Actif d'héritage familial. Réserve de contingence — non modélisé dans le plan principal.",
+    col_a3n:"Appartement — ta moitié",col_a3v:"~€49k",col_a3r:"200M COP. Propriété partagée. Si liquidée, ajoute ~€49k au capital disponible. Disponible aussi comme logement après relocalisation.",
+    col_a4n:"Total Colombie",col_a4v:"~€156k",col_a4r:"Combiné aux taux EUR/COP actuels. Style de vie : €1 800/mois vs €2 000 en France.",
+    col_trigger:"Déclencheur : portefeuille France < €50k · ou · séparation du partenaire",
+    exit_ht:"La Sortie Finale — Suisse",exit_hm:"Planifié · Date à définir",
+    exit_desc:"Le plan inclut une conclusion consciente et digne en Suisse — pas une urgence médicale, pas une décision prise sous le stress, mais un acte final réfléchi et préparé. C'est l'expression ultime de l'autonomie : choisir les termes de sa propre sortie.",
+    exit_d1l:"Organisations",exit_d1:"Les deux principales organisations suisses sont <strong style=\"color:var(--text)\">Dignitas</strong> (Forch, canton de Zurich) et <strong style=\"color:var(--text)\">Exit International</strong>. Dignitas est l'option principale pour les résidents hors Suisse. Site web : dignitas.ch — le processus d'adhésion et de consultation doit être entamé bien à l'avance, tant que la pleine capacité mentale est incontestable.",
+    exit_d2l:"Processus et calendrier",exit_d2:"Dignitas requiert : une adhésion annuelle (~CHF 80/an), une demande formelle écrite avec dossier médical complet, une évaluation par des médecins suisses indépendants, et une démonstration cohérente de la volonté dans le temps. Du premier contact à l'approbation finale : généralement 6 à 18 mois. Ce n'est pas un service de crise — cela exige une planification délibérée et une compétence documentée.",
+    exit_d3l:"Coût",exit_d3:"Coût total incluant le voyage, l'hébergement, les honoraires médicaux et la procédure : environ CHF 10 000–15 000 (~€10k–€16k). À réserver comme ligne budgétaire dédiée dans ou à côté du coussin terminal de €20k.",
+    exit_d4l:"Statut légal",exit_d4:"Le suicide assisté est légal en Suisse pour les non-résidents remplissant les critères. La législation française évolue mais la Suisse reste l'option la plus fiable pour une pleine autonomie. Aucune responsabilité pénale pour les personnes accompagnatrices en droit suisse.",
+    exit_d5l:"Cadre philosophique",exit_d5:"Ce n'est pas une note de bas de page. C'est le couronnement. Une vie vécue avec pleine autonomie — financière, temporelle, relationnelle — doit se terminer avec le même principe. Savoir que la sortie existe supprime la peur du déclin lent et donne la permission de dépenser pleinement, de vivre pleinement et de choisir le moment.",
+    philo_intro:"Ce n'est pas un plan financier. Les chiffres existent pour servir une vie — et non l'inverse. Ce qui suit est la philosophie qui donne tout leur sens aux chiffres.",
+    m1_num:"I — La Prémisse",m1_title:"La plupart des gens meurent avec les mauvaises choses.",
+    m1_p1:"Ils meurent avec des regrets pour ce qu'ils n'ont pas fait, avec des épargnes non dépensées qu'ils avaient peur de toucher, et avec des décennies de vie différée attendant une retraite arrivée trop tard, trop épuisée, ou pas du tout.",
+    m1_p2:"Le modèle conventionnel est cassé. Travailler 40 ans. Accumuler. Se retirer à 65 ans. Profiter de ce qui reste. Mais la santé décline dans les années 60. L'énergie culmine dans les années 40 et 50. La fenêtre d'une vie vibrante et pleinement vécue n'est pas à la fin — elle est maintenant.",
+    m1_p3:"Ce plan est un rejet de ce modèle. C'est un acte d'insubordination délibérée contre le scénario social.",
+    m2_num:"II — La Formule",m2_title:"Temps × Santé × Argent. Une seule combinaison compte.",
+    m2_p1:"Une vie riche nécessite trois choses simultanément : le temps, la santé et assez d'argent. La plupart des gens passent la première moitié de leur vie à sacrifier du temps pour de l'argent. La seconde moitié à tenter de racheter du temps avec de l'argent. Et ils n'ont jamais les trois en même temps.",
+    m2_p2:"L'objectif de ce plan est de sécuriser les trois avant 50 ans. Pas une richesse immense — suffisante. Pas du temps illimité — du temps libre. Pas une santé parfaite — la santé d'un homme de 47 ans entraîné en callisthénie, basé sur la science, avec 30 bonnes années devant lui.",
+    m2_p3:"La fenêtre s'ouvre en 2027. La fenêtre est finie. Utilise-la.",
+    pull1:"\"L'objectif n'est pas de mourir riche. L'objectif est de mourir en ayant vécu.\"",
+    m3_num:"III — Sur le Travail",m3_title:"Le travail choisi n'est pas du travail. Le travail obligé est une cage.",
+    m3_p1:"Le modèle barista FIRE préserve l'option de travailler sans l'obligation. Une mission logistique dans un entrepôt, certification CACES en main, prise parce qu'on le voulait — est catégoriquement différente de 18 ans à se pointer parce que le crédit l'exigeait.",
+    m3_p2:"Le travail choisi a de la dignité. Le travail obligatoire a un prix. Ce plan élimine le prix pour toujours et restaure la dignité.",
+    m3_p3:"Si tu ne veux plus jamais travailler un seul jour, tu n'auras pas à le faire. Si tu veux la structure et l'énergie sociale des missions occasionnelles, elles seront là. La certification n'est pas une carrière de secours — c'est un certificat de liberté.",
+    m4_num:"IV — Le Dividende des Souvenirs",m4_title:"Les expériences se capitalisent. Les objets se dégradent. L'argent non dépensé est une vie non vécue.",
+    m4_p1:"L'idée centrale de Bill Perkins : un souvenir, contrairement à un achat matériel, verse des dividendes pour le reste de ta vie. Un voyage en Colombie à 50 ans est vécu dans l'instant — puis rappelé, revécu, raconté, rêvé pendant 25 ans encore. C'est un retour sur investissement sur 25 ans pour une seule décision.",
+    m4_p2:"Le moment optimal pour créer un souvenir est quand tu as la santé pour le vivre pleinement, le temps d'y être présent, et la jeunesse pour le porter le plus longtemps. Ce moment n'est pas à 65 ans. C'est maintenant.",
+    m4_p3:"Dépense en expériences tôt. Dépense en profondeur dans tes 60 ans. Dépense en confort et en paix dans tes 70 ans. Chaque décennie a son allocation optimale — et tout garder pour la dernière est la pire stratégie possible.",
+    m5_num:"V — Sur la Frugalité",m5_title:"€2 000 par mois n'est pas de la privation. C'est de la précision.",
+    m5_p1:"La simulation est déjà en cours. Contraindre les dépenses maintenant — avant le PSE — n'est pas une punition. C'est de la calibration. Cela répond à la question que tout plan FIRE doit répondre honnêtement : ce chiffre est-il réel, ou est-ce une fantaisie ?",
+    m5_p2:"Si €2 000/mois en France se sent confortable pendant le test, ce sera confortable à la retraite. Si c'est serré, ajuster le plan. L'inconfort maintenant est infiniment moins cher que l'inconfort de manquer d'argent à 62 ans.",
+    m5_p3:"L'objectif n'est pas la frugalité comme identité. C'est la frugalité comme outil — utilisée pour acheter la liberté, puis mise de côté.",
+    m6_num:"VI — Sur la Colombie",m6_title:"Un second pays n'est pas un repli. C'est un superpouvoir.",
+    m6_p1:"Avoir des racines viables dans deux pays signifie qu'aucun environnement économique ne peut te piéger. Si la France devient trop chère, trop turbulente socialement, trop froide — dans tous les sens — tu peux partir. Les actifs colombiens ne sont pas un fonds d'urgence. Ils sont la preuve que ta vie n'est otage d'aucun endroit.",
+    m6_p2:"Savoir que tu pourrais partir change la façon dont tu vis le fait de rester. Le choix de rester en France, chaque jour, devient un choix véritable — pas de l'inertie, pas de la nécessité. Ce changement d'autonomie est silencieusement transformateur.",
+    pull2:"\"L'autonomie n'est pas ce que tu peux te permettre de faire. C'est ce que tu peux te permettre d'abandonner.\"",
+    m7_num:"VII — Mourir avec Zéro",m7_title:"Le plancher de €20k et la descente délibérée.",
+    m7_p1:"Le portefeuille terminal n'est pas à zéro parce que tu as échoué. Il est à zéro parce que tu as réussi. Tu as converti chaque euro accumulé en la vie la plus grande possible. Tu n'as pas thésaurisé. Tu n'as pas différé. Tu as vécu dans les années où vivre était le plus possible.",
+    m7_p2:"Le plancher de €20k n'est pas un filet de sécurité pour les héritiers. C'est la dignité pour les dernières années et la couverture pour la logistique finale. Tout ce qui est au-dessus — chaque euro — est la permission de vivre plus pleinement, maintenant.",
+    m7_p3:"La descente de ~€378k à €20k, étalée sur 29 ans de vie, n'est pas un déclin. C'est la forme d'une vie pleinement vécue.",
+    m8_num:"VIII — L'Acte Final",m8_title:"Le droit de terminer. La liberté de choisir.",
+    m8_p1:"L'inclusion de la Suisse dans ce plan n'est pas morbide. C'est l'expression finale et la plus complète de la même philosophie qui parcourt toutes les autres phases : la conviction qu'une personne a le droit de gouverner sa propre vie — y compris sa fin.",
+    m8_p2:"Savoir que la sortie existe change la texture des décennies qui la précèdent. Cela supprime la terreur du déclin lent, de la perte de contrôle, d'une fin prolongée dictée uniquement par la biologie. Avec cette peur supprimée, les années de santé ne sont plus assombries par ce qui attend à la fin.",
+    m8_p3:"Ce n'est pas un plan pour mourir tôt. C'est un plan pour vivre librement — jusqu'à une conclusion choisie.",
+    m8_p4:"Le plan se termine, comme il a commencé, par l'autonomie.",
+    buckets_title:"Les trois compartiments — une vie en phases",buckets_intro:"Mourir avec Zéro propose les dépenses non pas comme un budget annuel fixe mais comme une série de déploiements par compartiments, chacun adapté à ce que le corps et l'esprit peuvent vraiment apprécier à ce stade de la vie.",
+    b1_title:"Âges 47 – 60 · Aventure",b1_text:"Voyages physiques. Nouveaux endroits. Callisthénie sur tous les continents. Tournois d'échecs. Longs séjours. Le corps est fort. Utilise-le.",
+    b2_title:"Âges 60 – 70 · Profondeur",b2_text:"Culture, philosophie, richesse plus lente. Relations plus profondes. Séjours plus longs dans moins d'endroits. L'esprit à pleine puissance.",
+    b3_title:"Âges 70 – 75 · Paix",b3_text:"Confort, beauté, présence. Le coussin de €20k. Petites joies. Contemplation. Le portefeuille a accompli sa mission.",
+  }
+};
+
+function $(id){return document.getElementById(id);}
+function set(id,val,html=false){const el=$(id);if(el){if(html)el.innerHTML=val;else el.textContent=val;}}
+
+function applyLang(lang){
+  const t=T[lang];
+  set('title-strategy',t.title_strategy);
+  set('title-sub',t.title_sub);
+  set('meta-age-label',t.meta_age);
+  set('meta-pse-label',t.meta_pse);
+  set('meta-port-label',t.meta_port);
+  set('tab-btn-financial',t.tab_fin);
+  set('tab-btn-philo',t.tab_phi);
+  // section titles — set text node only
+  ['sec-snapshot','sec-timeline','sec-dwz','sec-colombia','sec-exit'].forEach((id,i)=>{
+    const keys=['sec_snapshot','sec_timeline','sec_dwz','sec_colombia','sec_exit'];
+    const el=$(id); if(!el) return;
+    el.childNodes[0].textContent=t[keys[i]];
+  });
+  // snapshot
+  set('snap-pee',t.snap_pee); set('snap-pere',t.snap_pere); set('snap-pero',t.snap_pero); set('snap-av',t.snap_av);
+  set('snap-fr-label',t.snap_fr); set('snap-fr-sub',t.snap_fr_sub);
+  set('snap-co-label',t.snap_co); set('snap-co-sub',t.snap_co_sub);
+  set('snap-grand-label',t.snap_grand); set('snap-grand-sub',t.snap_grand_sub);
+  // phases 0–5
+  ['p0','p1','p2','p3','p4','p5'].forEach(p=>{
+    ['num','name','dates','income','desc','d1l','d1v','d2l','d2v','d3l','d3v','d4l','d4v','fbt','fb','t1','t2','t3','t4'].forEach(k=>{
+      const key=`${p}_${k}`, id=`${p}-${k}`;
+      if(t[key]!==undefined) set(id,t[key]);
+    });
+    // action items
+    for(let i=1;i<=6;i++){ const k=`${p}_a${i}`,id=`${p}-a${i}`; if(t[k]) set(id,t[k]); }
+  });
+  // phase 3 spend order
+  ['s1n','s1name','s1note','s2n','s2name','s2note','s3n','s3name','s3note','s4n','s4name','s4note','s5n','s5name','s5note','s6n','s6name','s6note'].forEach(k=>{
+    set('p3-'+k,t['p3_'+k]);
+  });
+  set('p3-so-title',t.p3_so);
+  // DWZ
+  set('dwz-header-title',t.dwz_ht); set('dwz-header-dates',t.dwz_hd); set('dwz-desc',t.dwz_desc);
+  set('dwz-c1t',t.dwz_c1t); set('dwz-c1',t.dwz_c1);
+  set('dwz-c2t',t.dwz_c2t); set('dwz-c2',t.dwz_c2);
+  set('dwz-c3t',t.dwz_c3t); set('dwz-c3',t.dwz_c3);
+  set('dwz-c4t',t.dwz_c4t); set('dwz-c4',t.dwz_c4);
+  // Colombia
+  set('col-header-title',t.col_ht); set('col-header-meta',t.col_hm); set('col-desc',t.col_desc);
+  set('col-a1n',t.col_a1n); set('col-a1v',t.col_a1v); set('col-a1r',t.col_a1r);
+  set('col-a2n',t.col_a2n); set('col-a2v',t.col_a2v); set('col-a2r',t.col_a2r);
+  set('col-a3n',t.col_a3n); set('col-a3v',t.col_a3v); set('col-a3r',t.col_a3r);
+  set('col-a4n',t.col_a4n); set('col-a4v',t.col_a4v); set('col-a4r',t.col_a4r);
+  set('col-trigger',t.col_trigger);
+  // exit
+  set('exit-header-title',t.exit_ht); set('exit-header-meta',t.exit_hm); set('exit-desc',t.exit_desc);
+  set('exit-d1l',t.exit_d1l); set('exit-d1',t.exit_d1,true);
+  set('exit-d2l',t.exit_d2l); set('exit-d2',t.exit_d2,true);
+  set('exit-d3l',t.exit_d3l); set('exit-d3',t.exit_d3,true);
+  set('exit-d4l',t.exit_d4l); set('exit-d4',t.exit_d4,true);
+  set('exit-d5l',t.exit_d5l); set('exit-d5',t.exit_d5,true);
+  // philo
+  set('philo-intro',t.philo_intro);
+  ['m1','m2','m3','m4','m5','m6','m7','m8'].forEach(m=>{
+    ['num','title','p1','p2','p3','p4'].forEach(k=>{ const key=`${m}_${k}`,id=`${m}-${k}`; if(t[key]) set(id,t[key]); });
+  });
+  set('pull1',t.pull1); set('pull2',t.pull2);
+  set('buckets-title',t.buckets_title); set('buckets-intro',t.buckets_intro);
+  set('b1-title',t.b1_title); set('b1-text',t.b1_text);
+  set('b2-title',t.b2_title); set('b2-text',t.b2_text);
+  set('b3-title',t.b3_title); set('b3-text',t.b3_text);
+}
+
+function setLang(lang){
+  ['en','es','fr'].forEach(l=>{
+    document.getElementById('flag-'+l).classList.toggle('active',lang===l);
+    document.getElementById('flag-'+l+'-m').classList.toggle('active',lang===l);
+  });
+  applyLang(lang);
+}
+
+/* ── TOGGLES ── */
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
   btn.classList.add('active');
 }
-
-function togglePhase(header) {
-  const body = header.nextElementSibling;
-  const open = body.classList.toggle('open');
-  header.classList.toggle('open', open);
-  const chev = header.querySelector('.phase-chevron');
-  chev.style.transform = open ? 'rotate(180deg)' : '';
+function togglePhase(header){
+  const body=header.nextElementSibling;
+  const open=body.classList.toggle('open');
+  header.classList.toggle('open',open);
+  header.querySelector('.phase-chevron').style.transform=open?'rotate(180deg)':'';
 }
-
-function toggleGeneric(header, bodyId) {
-  const body = document.getElementById(bodyId);
-  const open = body.classList.toggle('open');
-  header.classList.toggle('open', open);
-  const chev = header.querySelector('.phase-chevron');
-  if (chev) chev.style.transform = open ? 'rotate(180deg)' : '';
+function toggleGeneric(header,bodyId){
+  const body=document.getElementById(bodyId);
+  const open=body.classList.toggle('open');
+  header.classList.toggle('open',open);
+  const chev=header.querySelector('.phase-chevron');
+  if(chev) chev.style.transform=open?'rotate(180deg)':'';
 }
-
-function toggleManifesto(block) {
+function toggleManifesto(block){
   block.querySelector('.manifesto-body').classList.toggle('open');
 }
 </script>
