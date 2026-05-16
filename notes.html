@@ -122,7 +122,7 @@
 
   .main-layout {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
     gap: 20px;
     padding: 24px 32px 32px;
@@ -135,7 +135,7 @@
   ═══════════════════════════════════════ */
 
   .postits-area {
-    grid-column: 1;
+    grid-column: 1 / -1;
     grid-row: 1;
     display: flex;
     flex-direction: row;
@@ -303,27 +303,14 @@
     gap: 8px;
     padding: 4px 12px;
     min-height: 28px;
-    cursor: grab;
     transition: background 0.1s;
     position: relative;
-    group: true;
   }
 
-  .todo-item:active { cursor: grabbing; }
   .todo-item.drag-over { background: rgba(0,0,0,0.06); }
   .todo-item.dragging { opacity: 0.4; }
 
-  .drag-handle {
-    color: rgba(0,0,0,0.2);
-    font-size: 10px;
-    cursor: grab;
-    flex-shrink: 0;
-    opacity: 0;
-    transition: opacity 0.15s;
-    line-height: 1;
-    user-select: none;
-  }
-  .todo-item:hover .drag-handle { opacity: 1; }
+  .drag-handle { display: none; }
 
   .todo-check {
     width: 14px;
@@ -424,8 +411,8 @@
   ═══════════════════════════════════════ */
 
   .editor-area {
-    grid-column: 2;
-    grid-row: 1 / 3;
+    grid-column: 1;
+    grid-row: 2;
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -593,11 +580,10 @@
   ═══════════════════════════════════════ */
 
   .notes-area {
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 2;
-    width: fit-content;
-    min-width: 540px;
-    max-width: 540px;
+    min-width: 0;
+    width: 100%;
   }
 
   .section-header {
@@ -772,6 +758,7 @@
     }
     .postits-area {
       grid-column: 1;
+      grid-row: 1;
       flex-wrap: wrap;
     }
     .postit { width: 220px; }
@@ -791,7 +778,8 @@
   @media (max-width: 600px) {
     .postit { width: 100%; }
     .postits-area { flex-direction: column; }
-    .app-header { padding: 16px 16px 0; }
+    .sticky-header { padding: 12px 16px; }
+    .main-layout { padding: 12px 16px 24px; }
   }
 </style>
 </head>
@@ -980,40 +968,207 @@ function getOverflowChain(id) {
   return chain[idx + 1] || null;
 }
 
-function addItemToPostit(postitId, text='', done=false) {
+function addItemToPostit(postitId, text='', done=false, focusNew=false) {
   const postit = state.postits[postitId];
+
   if (postit.items.length >= MAX_ITEMS) {
+    // Overflow to next postit
     const nextId = getOverflowChain(postitId);
     if (nextId) {
-      addItemToPostit(nextId, text, done);
+      // Need to show LATER if it wasn't visible — full re-render needed
+      addItemToPostit(nextId, text, done, focusNew);
+      // Expand the next postit so user sees it
+      if (state.postits[nextId].collapsed) {
+        state.postits[nextId].collapsed = false;
+      }
+      saveToLS();
+      renderPostits(); // safe here because we're not mid-typing in this postit
     }
     return;
   }
-  postit.items.push({ id: uid(), text, done });
+
+  const newItem = { id: uid(), text, done };
+  postit.items.push(newItem);
   saveToLS();
-  renderPostits();
+
+  // Surgical DOM update: append new row to existing items container
+  const container = document.getElementById(`items-${postitId}`);
+  if (container) {
+    // Remove placeholder row if present (data-iid="")
+    const placeholder = container.querySelector('.todo-item[data-iid=""]');
+    if (placeholder) placeholder.remove();
+
+    // Append new real item row
+    const row = createTodoItemEl(postitId, newItem);
+    container.appendChild(row);
+
+    // Update count badge
+    const countEl = container.closest('.postit-inner').querySelector('.postit-count');
+    if (countEl) countEl.textContent = `${postit.items.length}/${MAX_ITEMS}`;
+
+    // If list is now full, hide the + button
+    const addBtn = container.closest('.postit-inner').querySelector('.add-btn');
+    if (addBtn) addBtn.style.display = postit.items.length >= MAX_ITEMS ? 'none' : '';
+
+    if (focusNew) {
+      const newText = row.querySelector('.todo-text');
+      if (newText) {
+        newText.focus();
+        // Place cursor at end
+        const range = document.createRange();
+        range.selectNodeContents(newText);
+        range.collapse(false);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    }
+  } else {
+    // Fallback full re-render if container not found
+    renderPostits();
+  }
+}
+
+// Create a single todo item DOM element (no innerHTML injection)
+function createTodoItemEl(postitId, item) {
+  const row = document.createElement('div');
+  row.className = `todo-item${item.done ? ' done' : ''}`;
+  row.dataset.iid = item.id;
+
+  // Checkbox
+  const check = document.createElement('div');
+  check.className = `todo-check${item.done ? ' checked' : ''}`;
+  check.addEventListener('click', () => toggleItemDone(postitId, item.id));
+  row.appendChild(check);
+
+  // Text
+  const textEl = document.createElement('div');
+  textEl.className = 'todo-text';
+  textEl.contentEditable = 'true';
+  textEl.textContent = item.text; // safe — no HTML injection
+  textEl.addEventListener('input', () => {
+    updateItemText(postitId, item.id, textEl.textContent.trim());
+  });
+  textEl.addEventListener('keydown', (e) => onTodoKeydown(e, postitId, item.id, textEl));
+  row.appendChild(textEl);
+
+  // Delete button
+  const del = document.createElement('button');
+  del.className = 'todo-del';
+  del.textContent = '✕';
+  del.addEventListener('click', () => deleteItemFromPostit(postitId, item.id));
+  row.appendChild(del);
+
+  return row;
+}
+
+// Create the empty placeholder row
+function createPlaceholderEl(postitId) {
+  const row = document.createElement('div');
+  row.className = 'todo-item';
+  row.dataset.iid = '';
+
+  const check = document.createElement('div');
+  check.className = 'todo-check';
+  row.appendChild(check);
+
+  const textEl = document.createElement('div');
+  textEl.className = 'todo-text';
+  textEl.contentEditable = 'true';
+  textEl.addEventListener('keydown', (e) => onPlaceholderKeydown(e, postitId, textEl));
+  textEl.addEventListener('blur', () => {
+    const text = textEl.textContent.trim();
+    if (text) {
+      addItemToPostit(postitId, text, false, false);
+    }
+  });
+  row.appendChild(textEl);
+
+  const del = document.createElement('button');
+  del.className = 'todo-del';
+  del.textContent = '✕';
+  row.appendChild(del);
+
+  return row;
+}
+
+function onPlaceholderKeydown(e, postitId, textEl) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const text = textEl.textContent.trim();
+    if (text) {
+      addItemToPostit(postitId, text, false, true);
+      // The placeholder gets removed when addItemToPostit runs,
+      // so we don't need to clear textEl — it will be gone
+    }
+  }
+}
+
+function onTodoKeydown(e, postitId, itemId, textEl) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    // Save current text first
+    updateItemText(postitId, itemId, textEl.textContent.trim());
+    // Add new empty item and focus it
+    addItemToPostit(postitId, '', false, true);
+  }
 }
 
 function deleteItemFromPostit(postitId, itemId) {
   const postit = state.postits[postitId];
   postit.items = postit.items.filter(i => i.id !== itemId);
   saveToLS();
-  renderPostits();
+
+  // Surgical: remove the row from DOM
+  const container = document.getElementById(`items-${postitId}`);
+  if (container) {
+    const row = container.querySelector(`.todo-item[data-iid="${itemId}"]`);
+    if (row) row.remove();
+    // Update count
+    const inner = container.closest('.postit-inner');
+    if (inner) {
+      const countEl = inner.querySelector('.postit-count');
+      if (countEl) countEl.textContent = `${postit.items.length}/${MAX_ITEMS}`;
+      const addBtn = inner.querySelector('.add-btn');
+      if (addBtn) addBtn.style.display = '';
+      // If container is now empty, add placeholder
+      const remaining = container.querySelectorAll('.todo-item[data-iid]');
+      const hasReal = Array.from(remaining).some(r => r.dataset.iid !== '');
+      if (!hasReal && !container.querySelector('.todo-item[data-iid=""]')) {
+        container.appendChild(createPlaceholderEl(postitId));
+      }
+    }
+  } else {
+    renderPostits();
+  }
 }
 
 function toggleItemDone(postitId, itemId) {
   const postit = state.postits[postitId];
   const item = postit.items.find(i => i.id === itemId);
-  if (item) item.done = !item.done;
+  if (!item) return;
+  item.done = !item.done;
   saveToLS();
-  renderPostits();
+
+  // Surgical: toggle classes on the row
+  const container = document.getElementById(`items-${postitId}`);
+  if (container) {
+    const row = container.querySelector(`.todo-item[data-iid="${itemId}"]`);
+    if (row) {
+      row.classList.toggle('done', item.done);
+      const check = row.querySelector('.todo-check');
+      if (check) check.classList.toggle('checked', item.done);
+    }
+  }
 }
 
 function updateItemText(postitId, itemId, text) {
   const postit = state.postits[postitId];
   const item = postit.items.find(i => i.id === itemId);
-  if (item) item.text = text;
-  saveToLS();
+  if (item) {
+    item.text = text;
+    saveToLS(); // debounce could be added here but it's fine
+  }
 }
 
 function setPostitColor(postitId, colorClass) {
@@ -1035,61 +1190,6 @@ function deletePostit(postitId) {
   saveToLS();
   renderPostits();
   showToast(`${postitId.toUpperCase()} cleared`);
-}
-
-// ═══════════════════════════════════════════════
-// DRAG & DROP (post-it items)
-// ═══════════════════════════════════════════════
-
-let dragSrc = null; // {postitId, itemId}
-
-function onDragStart(e, postitId, itemId) {
-  dragSrc = { postitId, itemId };
-  e.dataTransfer.effectAllowed = 'move';
-  setTimeout(() => e.target.closest('.todo-item').classList.add('dragging'), 0);
-}
-
-function onDragEnd(e) {
-  document.querySelectorAll('.todo-item').forEach(el => {
-    el.classList.remove('dragging', 'drag-over');
-  });
-}
-
-function onDragOver(e, postitId, itemId) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  document.querySelectorAll('.todo-item').forEach(el => el.classList.remove('drag-over'));
-  e.currentTarget.classList.add('drag-over');
-}
-
-function onDrop(e, postitId, itemId) {
-  e.preventDefault();
-  if (!dragSrc) return;
-  if (dragSrc.postitId === postitId && dragSrc.itemId === itemId) return;
-
-  // Same postit: reorder
-  if (dragSrc.postitId === postitId) {
-    const items = state.postits[postitId].items;
-    const fromIdx = items.findIndex(i => i.id === dragSrc.itemId);
-    const toIdx   = items.findIndex(i => i.id === itemId);
-    if (fromIdx !== -1 && toIdx !== -1) {
-      const [moved] = items.splice(fromIdx, 1);
-      items.splice(toIdx, 0, moved);
-    }
-  } else {
-    // Cross-postit: move item
-    const srcItems = state.postits[dragSrc.postitId].items;
-    const dstItems = state.postits[postitId].items;
-    const fromIdx = srcItems.findIndex(i => i.id === dragSrc.itemId);
-    if (fromIdx !== -1 && dstItems.length < MAX_ITEMS) {
-      const [moved] = srcItems.splice(fromIdx, 1);
-      const toIdx = dstItems.findIndex(i => i.id === itemId);
-      dstItems.splice(toIdx >= 0 ? toIdx : dstItems.length, 0, moved);
-    }
-  }
-  dragSrc = null;
-  saveToLS();
-  renderPostits();
 }
 
 // ═══════════════════════════════════════════════
@@ -1126,118 +1226,81 @@ function buildPostit(id, def) {
   const postit = state.postits[id];
   const items  = postit.items;
   const color  = postit.color;
-  const collapsed = postit.collapsed ? 'collapsed' : '';
   const canDelete = id !== 'today';
 
   const el = document.createElement('div');
-  el.className = `postit ${color} ${collapsed}`;
+  el.className = `postit ${color}${postit.collapsed ? ' collapsed' : ''}`;
   el.dataset.id = id;
 
   const colors = ['yellow','blue','green','pink','lavender'];
 
+  // Build inner shell via innerHTML for static structure only
   el.innerHTML = `
     <div class="postit-inner">
-      <div class="postit-header" onclick="togglePostitCollapse('${id}')">
+      <div class="postit-header">
         <div class="postit-header-left">
           <span class="postit-collapse-arrow">▼</span>
           <div class="postit-title">${def.label}</div>
         </div>
         <div class="postit-header-right">
-          <div class="postit-controls" onclick="event.stopPropagation()">
-            ${colors.map(c => `<div class="color-dot c${c[0]}" title="${c}" onclick="setPostitColor('${id}','${c}')"></div>`).join('')}
+          <div class="postit-controls">
+            ${colors.map(c => `<div class="color-dot c${c[0]}" title="${c}"></div>`).join('')}
           </div>
-          ${canDelete ? `<button class="postit-delete-btn" title="Remove this post-it" onclick="event.stopPropagation();deletePostit('${id}')">✕</button>` : ''}
+          ${canDelete ? `<button class="postit-delete-btn" title="Remove this post-it">✕</button>` : ''}
         </div>
       </div>
       <div class="postit-body" style="max-height:600px;opacity:1;">
-        <div class="postit-items" id="items-${id}">
-          ${items.length === 0 ? buildTodoItem(id, null) : items.map(item => buildTodoItem(id, item)).join('')}
-        </div>
+        <div class="postit-items" id="items-${id}"></div>
         <div class="postit-add">
-          <button class="add-btn" onclick="addItemToPostit('${id}','')">+</button>
+          <button class="add-btn">+</button>
           <span class="postit-count">${items.length}/${MAX_ITEMS}</span>
         </div>
       </div>
     </div>
   `;
 
-  // Attach drag/drop events after render
-  requestAnimationFrame(() => {
-    const container = el.querySelector(`#items-${id}`);
-    if (!container) return;
-    container.querySelectorAll('.todo-item').forEach(row => {
-      const iid = row.dataset.iid;
-      if (!iid) return;
-      row.setAttribute('draggable', true);
-      row.addEventListener('dragstart', e => onDragStart(e, id, iid));
-      row.addEventListener('dragend',   e => onDragEnd(e));
-      row.addEventListener('dragover',  e => onDragOver(e, id, iid));
-      row.addEventListener('drop',      e => onDrop(e, id, iid));
-    });
+  // Wire up header click (collapse)
+  el.querySelector('.postit-header').addEventListener('click', () => togglePostitCollapse(id));
+
+  // Wire up color dots (stop propagation so header click doesn't fire)
+  const colorControls = el.querySelector('.postit-controls');
+  colorControls.addEventListener('click', e => e.stopPropagation());
+  el.querySelectorAll('.color-dot').forEach((dot, i) => {
+    dot.addEventListener('click', () => setPostitColor(id, colors[i]));
   });
+
+  // Wire up delete button
+  const delBtn = el.querySelector('.postit-delete-btn');
+  if (delBtn) {
+    delBtn.addEventListener('click', (e) => { e.stopPropagation(); deletePostit(id); });
+  }
+
+  // Wire up + button
+  el.querySelector('.add-btn').addEventListener('click', () => {
+    addItemToPostit(id, '', false, true);
+  });
+
+  // Populate items using DOM methods
+  const container = el.querySelector(`#items-${id}`);
+  if (items.length === 0) {
+    container.appendChild(createPlaceholderEl(id));
+  } else {
+    items.forEach(item => container.appendChild(createTodoItemEl(id, item)));
+    // Add placeholder at bottom if room
+    if (items.length < MAX_ITEMS) {
+      container.appendChild(createPlaceholderEl(id));
+    }
+  }
+
+  // Hide + button if full
+  if (items.length >= MAX_ITEMS) {
+    el.querySelector('.add-btn').style.display = 'none';
+  }
 
   return el;
 }
 
-function buildTodoItem(postitId, item) {
-  if (!item) {
-    // Empty placeholder — always renders truly empty
-    return `
-      <div class="todo-item" data-iid="">
-        <div class="drag-handle">⋮⋮</div>
-        <div class="todo-check"></div>
-        <div class="todo-text" contenteditable="true" data-pid="${postitId}" data-iid=""
-          onkeydown="onTodoKeydown(event,'${postitId}','')"
-          onblur="onTodoBlur(event,'${postitId}','')"
-        ></div>
-        <button class="todo-del" onclick="deleteItemFromPostit('${postitId}','')">✕</button>
-      </div>`;
-  }
-
-  const doneClass = item.done ? 'done' : '';
-  const checkedClass = item.done ? 'checked' : '';
-  const text = item.text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-  return `
-    <div class="todo-item ${doneClass}" data-iid="${item.id}">
-      <div class="drag-handle">⋮⋮</div>
-      <div class="todo-check ${checkedClass}" onclick="toggleItemDone('${postitId}','${item.id}')"></div>
-      <div class="todo-text" contenteditable="true" data-pid="${postitId}" data-iid="${item.id}"
-        onkeydown="onTodoKeydown(event,'${postitId}','${item.id}')"
-        oninput="onTodoInput(event,'${postitId}','${item.id}')"
-      >${text}</div>
-      <button class="todo-del" onclick="deleteItemFromPostit('${postitId}','${item.id}')">✕</button>
-    </div>`;
-}
-
-function onTodoKeydown(e, postitId, itemId) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    const text = e.target.textContent.trim();
-    if (!itemId) {
-      // Placeholder row: commit text as new item, then re-render (which creates fresh empty placeholder)
-      if (text) {
-        addItemToPostit(postitId, text);
-      }
-      // if empty, do nothing
-    } else {
-      // Existing item: save current text then add new empty item, focus it
-      updateItemText(postitId, itemId, text);
-      addItemToPostit(postitId, '');
-      setTimeout(() => {
-        const container = document.getElementById(`items-${postitId}`);
-        if (container) {
-          const inputs = container.querySelectorAll('.todo-text');
-          if (inputs.length > 0) {
-            const last = inputs[inputs.length - 1];
-            last.textContent = ''; // guarantee empty
-            last.focus();
-          }
-        }
-      }, 50);
-    }
-  }
-}
+// (item rendering now handled by createTodoItemEl and createPlaceholderEl above)
 
 function onTodoInput(e, postitId, itemId) {
   updateItemText(postitId, itemId, e.target.textContent.trim());
