@@ -26,18 +26,19 @@
     position:sticky;top:0;z-index:100;height:var(--header-h);
     background:rgba(10,10,15,0.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
     border-bottom:1px solid var(--border);
-    padding:0 2rem;
-    display:grid;
-    grid-template-columns:auto auto 1fr auto auto;
-    align-items:center;gap:1rem;
   }
+  .header-desktop{
+    display:flex;align-items:center;gap:1rem;
+    height:100%;padding:0 2rem;
+  }
+  .header-desktop .header-meta{flex:1;justify-content:center;}
   /* mobile rows — hidden on desktop */
   .header-row1,.header-row2,.header-row3{display:none;}
 
   .atom-btn{background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;opacity:.85;transition:opacity .2s;flex-shrink:0;}
   .atom-btn:hover{opacity:1;}
   .header-sep{width:1px;height:36px;background:var(--border2);flex-shrink:0;}
-  .title-block{display:flex;flex-direction:column;gap:2px;}
+  .title-block{display:flex;flex-direction:column;gap:2px;flex-shrink:0;}
   .title-main{display:flex;align-items:baseline;gap:.55rem;line-height:1;}
   .title-fire{font-family:'Playfair Display',serif;font-weight:600;font-size:1.85rem;color:var(--gold2);letter-spacing:.03em;}
   .title-strategy{font-family:'DM Sans',sans-serif;font-weight:300;font-size:1rem;color:var(--text2);letter-spacing:.08em;}
@@ -50,30 +51,18 @@
   .meta-value{font-family:'DM Mono',monospace;font-size:.9rem;color:var(--gold);font-weight:500;margin-top:.1rem;}
 
   /* flags */
-  .lang-switcher{display:flex;gap:.35rem;align-items:center;justify-content:center;}
+  .lang-switcher{display:flex;gap:.35rem;align-items:center;justify-content:center;flex-shrink:0;}
   .flag-btn{background:none;border:2px solid transparent;border-radius:6px;padding:2px 3px;cursor:pointer;font-size:1.45rem;line-height:1;opacity:.4;transition:opacity .18s,border-color .18s,transform .15s;}
   .flag-btn:hover{opacity:.8;transform:scale(1.1);}
   .flag-btn.active{opacity:1;border-color:var(--gold);transform:scale(1.08);}
 
   /* ── MOBILE HEADER: 3 stacked rows ── */
   @media(max-width:640px){
-    /* hide the desktop grid layout */
-    .header{
-      height:auto;
-      display:flex;
-      flex-direction:column;
-      padding:0;
-      gap:0;
-    }
-    .header > .atom-btn,
-    .header > div:not(.header-row1):not(.header-row2):not(.header-row3),
-    .header > .header-sep,
-    .header > .header-meta,
-    .header > .lang-switcher { display:none; }
-
+    .header{ height:auto; }
+    /* hide the desktop wrapper entirely */
+    .header-desktop{ display:none; }
     /* show mobile rows */
     .header-row1,.header-row2,.header-row3{display:flex;}
-
     .header-row1{
       align-items:center;gap:.75rem;
       padding:.65rem 1.2rem;
@@ -100,6 +89,10 @@
     .tabs{padding:0 1rem;}
     .tab-btn{padding:.7rem .9rem;font-size:.63rem;letter-spacing:.08em;}
     .tab-content{padding:1.5rem 1rem 3rem;}
+    /* phase header: stack on mobile to avoid overflow */
+    .phase-header{flex-wrap:wrap;gap:.5rem;}
+    .phase-income{font-size:.65rem;padding:2px 7px;}
+    .phase-dates{font-size:.65rem;}
   }
 
   /* ── TABS ── */
@@ -130,14 +123,14 @@
   .phase-block{position:relative;padding-left:60px;margin-bottom:1.2rem;}
   .phase-dot{position:absolute;left:15px;top:20px;width:15px;height:15px;border-radius:50%;border:2px solid;background:var(--bg);z-index:2;transition:transform .2s;}
   .phase-block:hover .phase-dot{transform:scale(1.3);}
-  .phase-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s;user-select:none;}
+  .phase-header{display:flex;align-items:center;gap:.6rem;padding:1rem 1.2rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s;user-select:none;overflow:hidden;}
   .phase-header:hover{border-color:var(--border2);background:var(--surface2);}
   .phase-header.open{border-radius:8px 8px 0 0;}
-  .phase-num{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text3);letter-spacing:.1em;min-width:55px;}
-  .phase-name{font-family:'Playfair Display',serif;font-size:1rem;flex:1;}
-  .phase-dates{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--text2);}
-  .phase-income{font-family:'DM Mono',monospace;font-size:.72rem;padding:3px 10px;border-radius:20px;}
-  .phase-chevron{font-size:.7rem;color:var(--text3);transition:transform .25s;min-width:12px;}
+  .phase-num{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text3);letter-spacing:.1em;min-width:52px;flex-shrink:0;}
+  .phase-name{font-family:'Playfair Display',serif;font-size:1rem;flex:1;min-width:0;}
+  .phase-dates{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--text2);flex-shrink:0;white-space:nowrap;}
+  .phase-income{font-family:'DM Mono',monospace;font-size:.68rem;padding:3px 9px;border-radius:20px;flex-shrink:0;white-space:nowrap;}
+  .phase-chevron{font-size:.7rem;color:var(--text3);transition:transform .25s;flex-shrink:0;margin-left:.2rem;}
   .phase-body{background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;overflow:hidden;max-height:0;transition:max-height .38s ease;}
   .phase-body.open{max-height:2400px;}
   .phase-inner{padding:1.2rem 1.4rem 1.4rem;}
@@ -245,39 +238,41 @@
 <!-- ══════════ STICKY HEADER ══════════ -->
 <header class="header">
 
-  <!-- ── DESKTOP layout (grid, hidden on mobile) ── -->
-  <button class="atom-btn" onclick="window.location.href='index.html'" title="Back to Hub">
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="16" cy="16" r="13.5" stroke="url(#g1)" stroke-width="1.2" fill="none" opacity="0.7"/>
-      <ellipse cx="16" cy="16" rx="13.5" ry="5.5" stroke="url(#g2)" stroke-width="1" fill="none" opacity="0.55" transform="rotate(-35 16 16)"/>
-      <ellipse cx="16" cy="16" rx="13.5" ry="5.5" stroke="url(#g3)" stroke-width="1" fill="none" opacity="0.45" transform="rotate(35 16 16)"/>
-      <circle cx="16" cy="16" r="2.5" fill="url(#g4)"/>
-      <circle cx="16" cy="2.5" r="1.5" fill="white" opacity="0.9"/>
-      <defs>
-        <linearGradient id="g1" x1="2.5" y1="2.5" x2="29.5" y2="29.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#7dd3fc"/></linearGradient>
-        <linearGradient id="g2" x1="2.5" y1="2.5" x2="29.5" y2="29.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7dd3fc"/><stop offset="100%" stop-color="#00e5a0"/></linearGradient>
-        <linearGradient id="g3" x1="2.5" y1="29.5" x2="29.5" y2="2.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#ffd166"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient>
-        <radialGradient id="g4" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#a78bfa"/></radialGradient>
-      </defs>
-    </svg>
-  </button>
-  <div style="display:flex;align-items:center;gap:1rem;">
-    <div class="header-sep"></div>
-    <div class="title-block">
-      <div class="title-main"><span class="title-fire">FIRE</span><span class="title-strategy" id="title-strategy">Strategy</span></div>
-      <div class="title-sub" id="title-sub">Personal Financial Independence Roadmap · Confidential</div>
+  <!-- ── DESKTOP layout (hidden on mobile via .header-desktop) ── -->
+  <div class="header-desktop">
+    <button class="atom-btn" onclick="window.location.href='index.html'" title="Back to Hub">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="13.5" stroke="url(#g1)" stroke-width="1.2" fill="none" opacity="0.7"/>
+        <ellipse cx="16" cy="16" rx="13.5" ry="5.5" stroke="url(#g2)" stroke-width="1" fill="none" opacity="0.55" transform="rotate(-35 16 16)"/>
+        <ellipse cx="16" cy="16" rx="13.5" ry="5.5" stroke="url(#g3)" stroke-width="1" fill="none" opacity="0.45" transform="rotate(35 16 16)"/>
+        <circle cx="16" cy="16" r="2.5" fill="url(#g4)"/>
+        <circle cx="16" cy="2.5" r="1.5" fill="white" opacity="0.9"/>
+        <defs>
+          <linearGradient id="g1" x1="2.5" y1="2.5" x2="29.5" y2="29.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#7dd3fc"/></linearGradient>
+          <linearGradient id="g2" x1="2.5" y1="2.5" x2="29.5" y2="29.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7dd3fc"/><stop offset="100%" stop-color="#00e5a0"/></linearGradient>
+          <linearGradient id="g3" x1="2.5" y1="29.5" x2="29.5" y2="2.5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#ffd166"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient>
+          <radialGradient id="g4" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#a78bfa"/></radialGradient>
+        </defs>
+      </svg>
+    </button>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <div class="header-sep"></div>
+      <div class="title-block">
+        <div class="title-main"><span class="title-fire">FIRE</span><span class="title-strategy" id="title-strategy">Strategy</span></div>
+        <div class="title-sub" id="title-sub">Personal Financial Independence Roadmap · Confidential</div>
+      </div>
     </div>
-  </div>
-  <div class="header-meta">
-    <div class="meta-item"><div class="meta-label" id="meta-age-label">Age</div><div class="meta-value">46</div></div>
-    <div class="meta-item"><div class="meta-label" id="meta-pse-label">Target PSE</div><div class="meta-value">2027</div></div>
-    <div class="meta-item"><div class="meta-label" id="meta-port-label">Portfolio</div><div class="meta-value">~€222k</div></div>
-  </div>
-  <div class="header-sep"></div>
-  <div class="lang-switcher">
-    <button class="flag-btn active" id="flag-en" onclick="setLang('en')" title="English">🇺🇸</button>
-    <button class="flag-btn" id="flag-es" onclick="setLang('es')" title="Español">🇨🇴</button>
-    <button class="flag-btn" id="flag-fr" onclick="setLang('fr')" title="Français">🇫🇷</button>
+    <div class="header-meta">
+      <div class="meta-item"><div class="meta-label" id="meta-age-label">Age</div><div class="meta-value">46</div></div>
+      <div class="meta-item"><div class="meta-label" id="meta-pse-label">Target PSE</div><div class="meta-value">2027</div></div>
+      <div class="meta-item"><div class="meta-label" id="meta-port-label">Portfolio</div><div class="meta-value">~€222k</div></div>
+    </div>
+    <div class="header-sep"></div>
+    <div class="lang-switcher">
+      <button class="flag-btn active" id="flag-en" onclick="setLang('en')" title="English">🇺🇸</button>
+      <button class="flag-btn" id="flag-es" onclick="setLang('es')" title="Español">🇨🇴</button>
+      <button class="flag-btn" id="flag-fr" onclick="setLang('fr')" title="Français">🇫🇷</button>
+    </div>
   </div>
 
   <!-- ── MOBILE layout: 3 rows ── -->
@@ -351,14 +346,14 @@
     <!-- PHASE 0 -->
     <div class="phase-block">
       <div class="phase-dot dot-gold"></div>
-      <div class="phase-header open" onclick="togglePhase(this)">
+      <div class="phase-header" onclick="togglePhase(this)">
         <span class="phase-num" id="p0-num">Phase 0</span>
         <span class="phase-name c-gold" id="p0-name">The Accumulation Sprint</span>
         <span class="phase-dates" id="p0-dates">2025 – 2027</span>
         <span class="phase-income income-gold" id="p0-income">Full salary</span>
-        <span class="phase-chevron" style="transform:rotate(180deg)">▼</span>
+        <span class="phase-chevron">▼</span>
       </div>
-      <div class="phase-body open">
+      <div class="phase-body">
         <div class="phase-inner">
           <p class="phase-desc" id="p0-desc">Still employed. Every euro of income is either saved or invested. The goal is to maximize all wrappers before the PSE window opens, simulate the retirement lifestyle now to validate the numbers, and build the psychological muscle for the transition.</p>
           <div class="detail-grid">
