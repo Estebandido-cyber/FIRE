@@ -48,18 +48,20 @@
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   }
 
+  /* ─── APP HEADER ─── */
   .sticky-header {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: var(--bg);
+    background: rgba(14,15,17,0.95);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 14px 32px;
+    padding: 8px 32px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    backdrop-filter: blur(12px);
-    background: rgba(28,26,23,0.92);
+    gap: 20px;
+    flex-wrap: wrap;
+    min-height: 60px;
   }
 
   .logo {
@@ -69,55 +71,55 @@
     line-height: 1;
     font-family: 'Syne', sans-serif;
     letter-spacing: -0.01em;
+    flex-shrink: 0;
   }
   .logo-do {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 800;
     color: var(--accent);
     letter-spacing: -0.02em;
   }
   .logo-it {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     color: var(--ink-dim);
     letter-spacing: 0.01em;
   }
   .logo-bang {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 800;
     color: #e86060;
     margin-left: 1px;
   }
-  .logo-tagline {
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-left: 14px;
-    align-self: center;
+
+  .hdr-sep {
+    width: 1px;
+    height: 28px;
+    background: var(--border);
+    flex-shrink: 0;
+    opacity: 0.6;
   }
 
-  .app-header {
-    padding: 24px 32px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .hdr-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.3px;
+    color: var(--ink);
+    flex-shrink: 0;
   }
-
-  .app-title {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+  .hdr-title span {
     color: var(--ink-dim);
+    font-weight: 400;
   }
+
+  .hdr-spacer { flex: 1; }
 
   .app-date {
     font-family: 'DM Mono', monospace;
     font-size: 11px;
     color: var(--ink-faint);
+    flex-shrink: 0;
   }
 
   .main-layout {
@@ -829,12 +831,46 @@
 <body>
 
 <header class="sticky-header">
-  <div style="display:flex;align-items:center;gap:0;">
-    <div class="logo">
-      <span class="logo-do">DO</span><span class="logo-it">it</span><span class="logo-bang">!</span>
-    </div>
-    <div class="logo-tagline">Life Command Center</div>
+  <!-- Atom icon → back to hub -->
+  <a href="../index.html" title="Back to Life Hub"
+     style="display:flex;align-items:center;flex-shrink:0;opacity:0.85;transition:opacity 0.15s;"
+     onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.85'">
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="13.5" stroke="url(#hdr-g1)" stroke-width="1.2" fill="none" opacity="0.7"/>
+      <ellipse cx="16" cy="16" rx="13.5" ry="5.5" stroke="url(#hdr-g2)" stroke-width="1" fill="none" opacity="0.55" transform="rotate(-35 16 16)"/>
+      <ellipse cx="16" cy="16" rx="13.5" ry="5.5" stroke="url(#hdr-g3)" stroke-width="1" fill="none" opacity="0.45" transform="rotate(35 16 16)"/>
+      <circle cx="16" cy="16" r="2.5" fill="url(#hdr-g4)"/>
+      <circle cx="16" cy="2.5" r="1.5" fill="white" opacity="0.9"/>
+      <defs>
+        <linearGradient id="hdr-g1" x1="2.5" y1="2.5" x2="29.5" y2="29.5" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#7dd3fc"/>
+        </linearGradient>
+        <linearGradient id="hdr-g2" x1="2.5" y1="2.5" x2="29.5" y2="29.5" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#7dd3fc"/><stop offset="100%" stop-color="#00e5a0"/>
+        </linearGradient>
+        <linearGradient id="hdr-g3" x1="2.5" y1="29.5" x2="29.5" y2="2.5" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#ffd166"/><stop offset="100%" stop-color="#a78bfa"/>
+        </linearGradient>
+        <radialGradient id="hdr-g4" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#a78bfa"/>
+        </radialGradient>
+      </defs>
+    </svg>
+  </a>
+  <!-- Separator -->
+  <div class="hdr-sep"></div>
+  <!-- Logo -->
+  <div class="logo">
+    <span class="logo-do">DO</span><span class="logo-it">it</span><span class="logo-bang">!</span>
   </div>
+  <!-- Emoji -->
+  <span style="font-size:20px;line-height:1;flex-shrink:0;">📝</span>
+  <!-- Separator -->
+  <div class="hdr-sep"></div>
+  <!-- Subtitle -->
+  <div class="hdr-title">Life <span>Command Center</span></div>
+  <!-- Push date to right -->
+  <div class="hdr-spacer"></div>
   <div class="app-date" id="live-date"></div>
 </header>
 
@@ -960,7 +996,7 @@ function saveToLS() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       showSaved();
     } catch(e) { console.warn('Save error', e); }
-  }, 400);
+  }, 10000);
 }
 
 function loadFromLS() {
