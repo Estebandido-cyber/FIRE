@@ -825,12 +825,21 @@
   .cf-trend-lbl { font-size:9px; color:var(--text3); white-space:nowrap; }
   .cf-trend-amt { font-size:9px; font-family:'Syne',sans-serif; font-weight:600; }
 
-  /* ─── TABLET + MOBILE: buttons always on their own row ─── */
+  /* ─── TABLET + MOBILE: totals on row 2, buttons on row 3 ─── */
   @media (max-width: 1024px) {
     .app-header {
       flex-wrap: wrap;
       padding: 8px 16px;
       gap: 8px;
+    }
+    .header-totals {
+      order: 2;
+      flex: 0 0 100%;
+      padding-top: 6px;
+      border-top: 1px solid var(--border);
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      min-width: 0;
     }
     .header-actions {
       order: 3;
@@ -853,6 +862,9 @@
     .app-title {
       font-size: 15px;
       flex: 0 0 auto;
+    }
+    .header-totals {
+      justify-content: center;
     }
     .header-stat-label { font-size: 8px; }
     .header-stat-value { font-size: 14px; }
