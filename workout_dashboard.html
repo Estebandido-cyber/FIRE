@@ -520,7 +520,7 @@ async function decompress(b64) {
 // STORAGE
 // ══════════════════════════════════════════════════════════════
 function saveToLS() {
-  try { localStorage.setItem(LS_KEY, JSON.stringify({sessions, monthly, ts: Date.now()})); } catch(e){}
+  try { localStorage.setItem(LS_KEY, JSON.stringify({savedAt: new Date().toISOString(), sessions, monthly, ts: Date.now()})); } catch(e){}
 }
 function loadFromLS() {
   try {
