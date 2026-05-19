@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Xpenser Tracker</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -712,25 +713,6 @@
   }
   .save-indicator.saved .save-dot { animation: none; }
 
-  /* ─── IMPORT/EXPORT MODAL ─── */
-  .import-area {
-    border: 2px dashed var(--border2);
-    border-radius: 8px;
-    padding: 24px;
-    text-align: center;
-    color: var(--text3);
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 12px;
-  }
-  .import-area:hover, .import-area.drag-over {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(240,192,96,0.04);
-  }
-  .import-area-icon { font-size: 28px; margin-bottom: 8px; }
-  .import-area-text { font-size: 12px; }
-
   /* ─── LAST SAVE BANNER ─── */
   .last-save-bar {
     text-align: center;
@@ -764,16 +746,20 @@
   }
   .entry-method-pill:hover { opacity: 0.8; }
 
-  /* ─── CLOUD SYNC ─── */
-  .btn-cloud { background:rgba(80,200,176,0.12); border-color:#50c8b0; color:#50c8b0; }
-  .btn-cloud:hover { background:rgba(80,200,176,0.22); }
-  .btn-cloud:disabled { opacity:0.5; cursor:not-allowed; }
-  .btn-export { background:rgba(240,140,60,0.12); border-color:#e07838; color:#e07838; }
-  .btn-export:hover { background:rgba(240,140,60,0.22); }
-  .btn-import { background:rgba(80,200,176,0.12); border-color:#50c8b0; color:#50c8b0; }
-  .btn-import:hover { background:rgba(80,200,176,0.22); }
+  /* ─── DRIVE SYNC ─── */
+  .btn-drive { background:#1a73e8; border-color:#1a73e8; color:#fff; }
+  .btn-drive:hover { background:#1557b0; border-color:#1557b0; }
+  .btn-drive:disabled { opacity:0.5; cursor:not-allowed; }
   .btn-settings { background:rgba(160,124,224,0.12); border-color:#a07ce0; color:#a07ce0; }
   .btn-settings:hover { background:rgba(160,124,224,0.22); }
+  .drive-status-bar {
+    text-align:center; font-size:10px; color:var(--text3);
+    padding:4px 8px; letter-spacing:0.5px;
+    transition: color 0.3s;
+  }
+  .drive-status-bar.ok { color:var(--green); }
+  .drive-status-bar.err { color:var(--red); }
+  .drive-status-bar.working { color:var(--accent); }
 
   /* ─── CASHFLOW ─── */
   .cf-section { background:var(--surface); border:1px solid var(--border); border-radius:10px; margin-bottom:24px; overflow:hidden; }
@@ -1321,10 +1307,8 @@
     </div>
   </div>
   <div class="header-actions">
-    <button class="btn btn-cloud" id="cloud-save-btn" onclick="cloudSave(true)" title="Save to cloud">☁ Save</button>
-    <button class="btn btn-cloud" id="cloud-load-btn" onclick="cloudLoad(true)" title="Load from cloud">☁ Load</button>
-    <button class="btn btn-export" onclick="openExport()">↓ Export</button>
-    <button class="btn btn-import" onclick="openImport()">↑ Import</button>
+    <button class="btn btn-drive" id="drive-save-btn" onclick="gdriveSave()" title="Save to Google Drive">☁ Save</button>
+    <button class="btn btn-drive" id="drive-load-btn" onclick="gdriveLoad()" title="Load from Google Drive">☁ Load</button>
     <button class="btn btn-settings" onclick="openSettings()">⚙ Settings</button>
   </div>
 </header>
@@ -1332,6 +1316,7 @@
 <!-- MAIN -->
 <main class="main">
   <div class="last-save-bar" id="last-save-bar">No data saved yet</div>
+  <div class="drive-status-bar" id="drive-status-bar"></div>
 
   <!-- Month Nav -->
   <div class="month-nav">
@@ -1488,48 +1473,6 @@
   </div>
 </div>
 
-<!-- EXPORT MODAL -->
-<div class="modal-overlay" id="export-modal">
-  <div class="modal">
-    <div class="modal-title">
-      Export Data
-      <button class="modal-close" onclick="closeExport()">×</button>
-    </div>
-    <p style="color:var(--text2);font-size:12px;margin-bottom:16px;line-height:1.6;">
-      Download a complete backup of all your expenses. Keep this file safe — you can import it anytime to restore your data.
-    </p>
-    <div id="export-summary" style="background:var(--surface2);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:var(--text2);line-height:2;"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeExport()">Cancel</button>
-      <button class="btn btn-accent" onclick="doExport()">↓ Download JSON</button>
-    </div>
-  </div>
-</div>
-
-<!-- IMPORT MODAL -->
-<div class="modal-overlay" id="import-modal">
-  <div class="modal">
-    <div class="modal-title">
-      Import Data
-      <button class="modal-close" onclick="closeImport()">×</button>
-    </div>
-    <p style="color:var(--text2);font-size:12px;margin-bottom:16px;line-height:1.6;">
-      Load a previously exported JSON file. Existing entries will be <strong style="color:var(--accent)">merged</strong> — nothing is deleted unless you choose full overwrite.
-    </p>
-    <div class="import-area" id="import-drop-area" onclick="document.getElementById('file-input').click()">
-      <div class="import-area-icon">📂</div>
-      <div class="import-area-text">Click or drag & drop your backup file here</div>
-    </div>
-    <input type="file" id="file-input" accept=".json" style="display:none" onchange="handleFileImport(event)">
-    <div id="import-preview" style="display:none;background:var(--surface2);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--text2);line-height:2;"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeImport()">Cancel</button>
-      <button class="btn btn-ghost btn-danger" id="overwrite-btn" style="display:none" onclick="doImport(true)">Full Overwrite</button>
-      <button class="btn btn-accent" id="merge-btn" style="display:none" onclick="doImport(false)">Merge Import</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ═══════════════════════════════════════════════
 // STATE
@@ -1554,7 +1497,6 @@ let settings = {
   defaultMethod: 'm2'
 };
 
-let pendingImportData = null;
 let saveTimer = null;
 
 // ═══════════════════════════════════════════════
@@ -1569,8 +1511,7 @@ function init() {
   updateHeaderTotals();
   cfRender();
   notesRender();
-  // Cloud sync on startup — silent, non-blocking
-  cloudLoad(false);
+  cloudLoad();
 }
 
 function loadFromStorage() {
@@ -1607,10 +1548,9 @@ function saveToStorage() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
       localStorage.setItem('depenses_last_save', new Date().toISOString());
+      cloudSave();
       showSaved();
       updateLastSaveBar();
-      // Sync to cloud after every local save
-      cloudSave(false);
     } catch(e) { console.warn('Save error', e); }
   }, 400);
 }
@@ -1879,7 +1819,6 @@ function rerenderDayEntries(key) {
   }
 }
 
-
 // ═══════════════════════════════════════════════
 // TOTALS
 // ═══════════════════════════════════════════════
@@ -2079,141 +2018,6 @@ function saveSettings() {
 }
 
 // ═══════════════════════════════════════════════
-// EXPORT
-// ═══════════════════════════════════════════════
-function openExport() {
-  const keys = Object.keys(data);
-  const totalEntries = Object.values(data).reduce((s, v) => s + v.filter(e => e.cat || e.amt).length, 0);
-  const months = [...new Set(keys.map(k => k.substring(0,7)))].sort();
-  let grandTotal = 0;
-  Object.values(data).forEach(entries => entries.forEach(e => grandTotal += parseFloat(e.amt) || 0));
-
-  document.getElementById('export-summary').innerHTML = `
-    <div>📅 Period covered: <strong style="color:var(--text)">${months[0] || '—'} → ${months[months.length-1] || '—'}</strong></div>
-    <div>📝 Total entries: <strong style="color:var(--text)">${totalEntries}</strong></div>
-    <div>💰 Grand total: <strong style="color:var(--accent)">${fmt(grandTotal)}</strong></div>
-  `;
-  document.getElementById('export-modal').classList.add('open');
-}
-
-function closeExport() {
-  document.getElementById('export-modal').classList.remove('open');
-}
-
-function doExport() {
-  const payload = { version: 1, exportedAt: new Date().toISOString(), data, settings, cashflow: cfData, notes: notesData };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  const d = new Date();
-  a.download = `depenses_backup_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  closeExport();
-}
-
-// ═══════════════════════════════════════════════
-// IMPORT
-// ═══════════════════════════════════════════════
-function openImport() {
-  pendingImportData = null;
-  document.getElementById('import-preview').style.display = 'none';
-  document.getElementById('merge-btn').style.display = 'none';
-  document.getElementById('overwrite-btn').style.display = 'none';
-  document.getElementById('file-input').value = '';
-  document.getElementById('import-modal').classList.add('open');
-}
-
-function closeImport() {
-  document.getElementById('import-modal').classList.remove('open');
-}
-
-function handleFileImport(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const payload = JSON.parse(e.target.result);
-      if (!payload.data) throw new Error('Invalid format');
-      pendingImportData = payload;
-
-      const keys = Object.keys(payload.data);
-      const totalEntries = Object.values(payload.data).reduce((s,v) => s+v.length, 0);
-      const months = [...new Set(keys.map(k => k.substring(0,7)))].sort();
-      let grandTotal = 0;
-      Object.values(payload.data).forEach(entries => entries.forEach(e => grandTotal += parseFloat(e.amt)||0));
-
-      document.getElementById('import-preview').style.display = 'block';
-      document.getElementById('import-preview').innerHTML = `
-        <div>✅ Valid backup file detected</div>
-        <div>📅 Period: <strong style="color:var(--text)">${months[0]||'—'} → ${months[months.length-1]||'—'}</strong></div>
-        <div>📝 Entries: <strong style="color:var(--text)">${totalEntries}</strong></div>
-        <div>💰 Total: <strong style="color:var(--accent)">${fmt(grandTotal)}</strong></div>
-        ${payload.exportedAt ? `<div>🕐 Exported: <strong style="color:var(--text)">${new Date(payload.exportedAt).toLocaleString('fr-FR')}</strong></div>` : ''}
-      `;
-      document.getElementById('merge-btn').style.display = 'inline-flex';
-      document.getElementById('overwrite-btn').style.display = 'inline-flex';
-    } catch(err) {
-      document.getElementById('import-preview').style.display = 'block';
-      document.getElementById('import-preview').innerHTML = `<div style="color:var(--red)">❌ Invalid file. Please select a valid backup JSON.</div>`;
-    }
-  };
-  reader.readAsText(file);
-}
-
-function doImport(overwrite) {
-  if (!pendingImportData) return;
-  if (overwrite) {
-    data = pendingImportData.data;
-    if (pendingImportData.settings) settings = pendingImportData.settings;
-    if (pendingImportData.cashflow) {
-      cfData = pendingImportData.cashflow;
-      localStorage.setItem(CF_KEY, JSON.stringify(cfData));
-    }
-    if (pendingImportData.notes) {
-      notesData = pendingImportData.notes;
-      localStorage.setItem(NOTES_KEY, JSON.stringify(notesData));
-    }
-  } else {
-    // Merge expenses
-    Object.keys(pendingImportData.data).forEach(k => {
-      const hasRealLocal = data[k] && data[k].some(e => e.cat || e.amt);
-      if (!hasRealLocal) {
-        data[k] = pendingImportData.data[k];
-      } else {
-        pendingImportData.data[k].forEach(e => {
-          if (e.cat || e.amt) data[k].push(e);
-        });
-      }
-    });
-    // Merge cashflow
-    if (pendingImportData.cashflow) {
-      Object.keys(pendingImportData.cashflow).forEach(mk => {
-        if (!cfData[mk] || (!cfData[mk].salary && !cfData[mk].partner && !cfData[mk].extra)) {
-          cfData[mk] = pendingImportData.cashflow[mk];
-        }
-      });
-      localStorage.setItem(CF_KEY, JSON.stringify(cfData));
-    }
-    // Merge notes
-    if (pendingImportData.notes) {
-      Object.keys(pendingImportData.notes).forEach(mk => {
-        if (!notesData[mk]) notesData[mk] = pendingImportData.notes[mk];
-      });
-      localStorage.setItem(NOTES_KEY, JSON.stringify(notesData));
-    }
-  }
-  saveToStorage();
-  closeImport();
-  renderMonth();
-  updateHeaderTotals();
-  cfRender();
-  notesRender();
-}
-
-// ═══════════════════════════════════════════════
 // SAVE INDICATOR
 // ═══════════════════════════════════════════════
 let saveHideTimer;
@@ -2236,38 +2040,15 @@ function showSaved() {
 }
 
 // ═══════════════════════════════════════════════
-// DRAG & DROP FOR IMPORT
-// ═══════════════════════════════════════════════
-function setupDragDrop() {
-  const area = document.getElementById('import-drop-area');
-  area.addEventListener('dragover', e => { e.preventDefault(); area.classList.add('drag-over'); });
-  area.addEventListener('dragleave', () => area.classList.remove('drag-over'));
-  area.addEventListener('drop', e => {
-    e.preventDefault();
-    area.classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      const input = document.getElementById('file-input');
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      input.files = dt.files;
-      handleFileImport({ target: input });
-    }
-  });
-}
-
-// ═══════════════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════════════
 function escHtml(str) {
   return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// Close modals on overlay click
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay) overlay.classList.remove('open');
-  });
+// Close settings modal on overlay click
+document.getElementById('settings-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeSettings();
 });
 
 // ═══════════════════════════════════════════════
@@ -2515,12 +2296,11 @@ function runSearch() {
   resultsEl.innerHTML = html;
 }
 
-
 // ═══════════════════════════════════════════════
 // CASHFLOW
 // ═══════════════════════════════════════════════
 const CF_KEY = 'depenses_cashflow_v1';
-let cfData = {};
+let cfData = {}; // { 'YYYY-MM': { salary, partner, extra, extraNote } }
 
 function cfLoad() {
   try {
@@ -2550,9 +2330,9 @@ function cfSave() {
   showSaving();
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
+    cloudSave();
     showSaved();
     updateLastSaveBar();
-    cloudSave(false);
   }, 400);
 }
 
@@ -2686,74 +2466,204 @@ function cfRenderTrend() {
 }
 
 // ═══════════════════════════════════════════════
-// CLOUDFLARE WORKERS SYNC
+// GOOGLE DRIVE SYNC
 // ═══════════════════════════════════════════════
-const CF_SYNC_URL = 'https://widgets-sync.estebandido80.workers.dev/data/xpenser';
-const CF_SYNC_SECRET = 'widget-sync-secret-2024';
+const GD_CLIENT_ID   = '453884215011-bnuqib76c5lt7vr87g6e5sd59q7r2cip.apps.googleusercontent.com';
+const GD_SCOPE       = 'https://www.googleapis.com/auth/drive.file';
+const GD_FILENAME    = 'xpenser_data.json';
+let gdToken          = null;
+let gdFileId         = null;
 
-async function cloudSave(manual = false) {
-  if (manual) {
-    const btn = document.getElementById('cloud-save-btn');
-    if (btn) { btn.disabled = true; btn.textContent = '☁ Saving…'; }
-  }
-  try {
-    const payload = { data, settings, cashflow: cfData, notes: notesData };
-    await fetch(CF_SYNC_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Secret': CF_SYNC_SECRET },
-      body: JSON.stringify(payload)
-    });
-    if (manual) {
-      const btn = document.getElementById('cloud-save-btn');
-      if (btn) { btn.textContent = '☁ Saved ✓'; setTimeout(() => { btn.disabled = false; btn.textContent = '☁ Save'; }, 2000); }
-    }
-  } catch(e) {
-    console.warn('Cloud save failed', e);
-    if (manual) {
-      const btn = document.getElementById('cloud-save-btn');
-      if (btn) { btn.disabled = false; btn.textContent = '☁ Save'; }
-    }
-  }
+function gdStatus(msg, type) {
+  const el = document.getElementById('drive-status-bar');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'drive-status-bar' + (type ? ' ' + type : '');
 }
 
-async function cloudLoad(manual = false) {
-  if (manual) {
-    const btn = document.getElementById('cloud-load-btn');
-    if (btn) { btn.disabled = true; btn.textContent = '☁ Loading…'; }
-  }
-  try {
-    const res = await fetch(CF_SYNC_URL, {
-      headers: { 'X-Secret': CF_SYNC_SECRET }
+function gdSetBusy(busy) {
+  const s = document.getElementById('drive-save-btn');
+  const l = document.getElementById('drive-load-btn');
+  if (s) s.disabled = busy;
+  if (l) l.disabled = busy;
+}
+
+function gdAuth(callback) {
+  if (gdToken) { callback(gdToken); return; }
+  gdStatus('Connecting to Google…', 'working');
+  gdSetBusy(true);
+
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: GD_CLIENT_ID,
+    scope: GD_SCOPE,
+    callback: (response) => {
+      if (response.error) {
+        gdStatus('Sign-in failed: ' + response.error, 'err');
+        gdSetBusy(false);
+        return;
+      }
+      gdToken = response.access_token;
+      gdStatus('Connected to Google Drive', 'ok');
+      callback(gdToken);
+    }
+  });
+  client.requestAccessToken();
+}
+
+function gdFindFile(token, callback) {
+  if (gdFileId) { callback(gdFileId); return; }
+  fetch('https://www.googleapis.com/drive/v3/files?q=name%3D%22' + GD_FILENAME + '%22+and+trashed%3Dfalse&fields=files(id,name)', {
+    headers: { Authorization: 'Bearer ' + token }
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.files && res.files.length > 0) {
+      gdFileId = res.files[0].id;
+      callback(gdFileId);
+    } else {
+      callback(null);
+    }
+  })
+  .catch(err => {
+    console.error('[GD] find file error:', err);
+    gdStatus('Drive search failed', 'err');
+    gdSetBusy(false);
+  });
+}
+
+function gdriveSave() {
+  gdSetBusy(true);
+  gdStatus('Saving to Google Drive…', 'working');
+  gdAuth(token => {
+    const payload = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      data, settings, cashflow: cfData, notes: notesData
+    };
+    const body = JSON.stringify(payload, null, 2);
+    const blob = new Blob([body], { type: 'application/json' });
+
+    gdFindFile(token, fileId => {
+      const url = fileId
+        ? 'https://www.googleapis.com/upload/drive/v3/files/' + fileId + '?uploadType=multipart'
+        : 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
+      const method = fileId ? 'PATCH' : 'POST';
+
+      const formData = new FormData();
+      formData.append('metadata', new Blob([JSON.stringify({ name: GD_FILENAME, mimeType: 'application/json' })], { type: 'application/json' }));
+      formData.append('file', blob);
+
+      fetch(url, {
+        method,
+        headers: { Authorization: 'Bearer ' + token },
+        body: formData
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.error) throw new Error(JSON.stringify(res.error));
+        if (!fileId) gdFileId = res.id;
+        gdStatus('✓ Saved to Google Drive — ' + new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}), 'ok');
+        gdSetBusy(false);
+      })
+      .catch(err => {
+        console.error('[GD] save error:', err);
+        if (String(err).includes('401')) { gdToken = null; gdFileId = null; gdStatus('Session expired — click Save again', 'err'); }
+        else gdStatus('Save failed — try again', 'err');
+        gdSetBusy(false);
+      });
     });
+  });
+}
+
+function gdriveLoad() {
+  gdSetBusy(true);
+  gdStatus('Loading from Google Drive…', 'working');
+  gdAuth(token => {
+    gdFindFile(token, fileId => {
+      if (!fileId) {
+        gdStatus('No file found in Drive — save first', 'err');
+        gdSetBusy(false);
+        return;
+      }
+      fetch('https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media', {
+        headers: { Authorization: 'Bearer ' + token }
+      })
+      .then(r => r.json())
+      .then(payload => {
+        if (!payload.data) throw new Error('Invalid format');
+
+        data = payload.data;
+        if (payload.settings) settings = payload.settings;
+        if (payload.cashflow) {
+          cfData = payload.cashflow;
+          localStorage.setItem(CF_KEY, JSON.stringify(cfData));
+        }
+        if (payload.notes) {
+          notesData = payload.notes;
+          localStorage.setItem(NOTES_KEY, JSON.stringify(notesData));
+        }
+
+        saveToStorage();
+        renderMonth();
+        updateHeaderTotals();
+        cfRender();
+        notesRender();
+        gdStatus('✓ Loaded from Google Drive — ' + new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}), 'ok');
+        gdSetBusy(false);
+      })
+      .catch(err => {
+        console.error('[GD] load error:', err);
+        if (String(err).includes('401')) { gdToken = null; gdStatus('Session expired — click Load again', 'err'); }
+        else gdStatus('Load failed — try again', 'err');
+        gdSetBusy(false);
+      });
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════
+// CLOUDFLARE WORKERS AUTO-SYNC
+// ═══════════════════════════════════════════════
+const CW_URL    = 'https://widgets-sync.estebandido80.workers.dev/data/xpenser';
+const CW_SECRET = 'widget-sync-secret-2024';
+
+async function cloudSave() {
+  try {
+    const payload = { data, settings, cashflow: cfData, notes: notesData };
+    await fetch(CW_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Secret': CW_SECRET },
+      body: JSON.stringify(payload)
+    });
+  } catch(e) { console.warn('Cloud save failed', e); }
+}
+
+async function cloudLoad() {
+  try {
+    const res = await fetch(CW_URL, {
+      headers: { 'X-Secret': CW_SECRET }
+    });
+    if (!res.ok) return;
     const payload = await res.json();
-    if (payload && payload.data && Object.keys(payload.data).length > 0) {
-      data = payload.data;
-      if (payload.settings) settings = payload.settings;
-      if (payload.cashflow) {
-        cfData = payload.cashflow;
-        localStorage.setItem(CF_KEY, JSON.stringify(cfData));
-      }
-      if (payload.notes) {
-        notesData = payload.notes;
-        localStorage.setItem(NOTES_KEY, JSON.stringify(notesData));
-      }
-      saveToStorage();
-      renderMonth();
-      updateHeaderTotals();
-      cfRender();
-      notesRender();
+    if (!payload || !payload.data || Object.keys(payload.data).length === 0) return;
+
+    data = payload.data;
+    if (payload.settings) settings = payload.settings;
+    if (payload.cashflow) {
+      cfData = payload.cashflow;
+      localStorage.setItem(CF_KEY, JSON.stringify(cfData));
     }
-    if (manual) {
-      const btn = document.getElementById('cloud-load-btn');
-      if (btn) { btn.textContent = '☁ Loaded ✓'; setTimeout(() => { btn.disabled = false; btn.textContent = '☁ Load'; }, 2000); }
+    if (payload.notes) {
+      notesData = payload.notes;
+      localStorage.setItem(NOTES_KEY, JSON.stringify(notesData));
     }
-  } catch(e) {
-    console.warn('Cloud load failed', e);
-    if (manual) {
-      const btn = document.getElementById('cloud-load-btn');
-      if (btn) { btn.disabled = false; btn.textContent = '☁ Load'; }
-    }
-  }
+
+    saveToStorage();
+    renderMonth();
+    updateHeaderTotals();
+    cfRender();
+    notesRender();
+  } catch(e) { console.warn('Cloud load failed', e); }
 }
 
 // ═══════════════════════════════════════════════
@@ -2761,7 +2671,6 @@ async function cloudLoad(manual = false) {
 // ═══════════════════════════════════════════════
 let undoStack = null;
 let undoTimer = null;
-let undoBarTimer = null;
 const UNDO_DURATION = 5000;
 
 function showUndoToast(key, idx, entry) {
@@ -2863,7 +2772,7 @@ function notesSave() {
   document.getElementById('notes-saved').className = 'notes-saved';
   notesSaveTimer = setTimeout(() => {
     localStorage.setItem(NOTES_KEY, JSON.stringify(notesData));
-    cloudSave(false);
+    cloudSave();
     document.getElementById('notes-saved').textContent = 'Saved ✓';
     document.getElementById('notes-saved').className = 'notes-saved ok';
     setTimeout(() => {
@@ -2884,18 +2793,17 @@ function notesUpdateCharcount(text) {
   if (el) el.textContent = text.length + ' / 1000';
 }
 
-setupDragDrop();
 notesLoad();
 cfLoad();
 init();
 </script>
+
 <!-- UNDO TOAST -->
 <div class="undo-toast" id="undo-toast">
   <span class="undo-toast-msg" id="undo-toast-msg">Entry deleted</span>
   <div class="undo-toast-timer"><div class="undo-toast-bar" id="undo-bar"></div></div>
   <button class="undo-btn" onclick="undoDelete()">Undo</button>
 </div>
-
 
 </body>
 </html>
