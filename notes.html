@@ -300,6 +300,30 @@
     min-height: 36px;
   }
 
+  .drag-handle {
+    color: rgba(0,0,0,0.25);
+    font-size: 11px;
+    cursor: grab;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.15s;
+    line-height: 1;
+    user-select: none;
+    padding: 0 1px;
+    letter-spacing: -1px;
+  }
+  .todo-item:hover .drag-handle { opacity: 1; }
+  .todo-item.dragging {
+    opacity: 0.35;
+    background: rgba(0,0,0,0.06);
+  }
+  .todo-item.drag-over-top {
+    border-top: 2px solid rgba(0,0,0,0.3);
+  }
+  .todo-item.drag-over-bottom {
+    border-bottom: 2px solid rgba(0,0,0,0.3);
+  }
+
   .todo-item {
     display: flex;
     align-items: center;
@@ -1138,7 +1162,7 @@ const POSTIT_DEFS = [
   { id: 'later',  label: 'LATER',  colorClass: 'green'  },
 ];
 
-const MAX_ITEMS = 5;
+const MAX_ITEMS = 10;
 
 let state = {
   postits: {
@@ -1170,6 +1194,7 @@ function _writeSave() {
   try {
     // Never serialize editingNoteId — it's UI state only
     const toSave = {
+      savedAt: new Date().toISOString(),
       postits: state.postits,
       notes: state.notes,
     };
@@ -1404,6 +1429,14 @@ function createTodoItemEl(postitId, item) {
   const row = document.createElement('div');
   row.className = `todo-item${item.done ? ' done' : ''}`;
   row.dataset.iid = item.id;
+  row.draggable = true;
+
+  // Drag handle
+  const handle = document.createElement('div');
+  handle.className = 'drag-handle';
+  handle.textContent = '⋮⋮';
+  handle.title = 'Drag to reorder';
+  row.appendChild(handle);
 
   // Checkbox
   const check = document.createElement('div');
@@ -1415,11 +1448,13 @@ function createTodoItemEl(postitId, item) {
   const textEl = document.createElement('div');
   textEl.className = 'todo-text';
   textEl.contentEditable = 'true';
-  textEl.textContent = item.text; // safe — no HTML injection
+  textEl.textContent = item.text;
   textEl.addEventListener('input', () => {
     updateItemText(postitId, item.id, textEl.textContent.trim());
   });
   textEl.addEventListener('keydown', (e) => onTodoKeydown(e, postitId, item.id, textEl));
+  // Prevent drag from starting when user is selecting text
+  textEl.addEventListener('mousedown', e => e.stopPropagation());
   row.appendChild(textEl);
 
   // Delete button
@@ -1428,6 +1463,65 @@ function createTodoItemEl(postitId, item) {
   del.textContent = '✕';
   del.addEventListener('click', () => deleteItemFromPostit(postitId, item.id));
   row.appendChild(del);
+
+  // Drag events — scoped to this post-it only
+  row.addEventListener('dragstart', (e) => {
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', item.id + '|' + postitId);
+    setTimeout(() => row.classList.add('dragging'), 0);
+  });
+
+  row.addEventListener('dragend', () => {
+    row.classList.remove('dragging');
+    // Clean up any drop indicators
+    document.querySelectorAll('.drag-over-top, .drag-over-bottom')
+      .forEach(el => el.classList.remove('drag-over-top', 'drag-over-bottom'));
+  });
+
+  row.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    // Determine top/bottom half
+    const rect = row.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    document.querySelectorAll('.drag-over-top, .drag-over-bottom')
+      .forEach(el => el.classList.remove('drag-over-top', 'drag-over-bottom'));
+    row.classList.add(e.clientY < midY ? 'drag-over-top' : 'drag-over-bottom');
+  });
+
+  row.addEventListener('dragleave', () => {
+    row.classList.remove('drag-over-top', 'drag-over-bottom');
+  });
+
+  row.addEventListener('drop', (e) => {
+    e.preventDefault();
+    row.classList.remove('drag-over-top', 'drag-over-bottom');
+
+    const raw = e.dataTransfer.getData('text/plain');
+    const [draggedId, draggedPostitId] = raw.split('|');
+
+    // Only allow reorder within the same post-it
+    if (draggedPostitId !== postitId) return;
+    if (draggedId === item.id) return;
+
+    const items = state.postits[postitId].items;
+    const fromIdx = items.findIndex(i => i.id === draggedId);
+    const toIdx   = items.findIndex(i => i.id === item.id);
+    if (fromIdx === -1 || toIdx === -1) return;
+
+    // Determine insert position based on which half was hovered
+    const rect = row.getBoundingClientRect();
+    const insertBefore = e.clientY < rect.top + rect.height / 2;
+    let targetIdx = insertBefore ? toIdx : toIdx + 1;
+    // Adjust for the removal of fromIdx
+    if (fromIdx < targetIdx) targetIdx--;
+
+    const [moved] = items.splice(fromIdx, 1);
+    items.splice(targetIdx, 0, moved);
+
+    saveToLS();
+    renderPostits();
+  });
 
   return row;
 }
