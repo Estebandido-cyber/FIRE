@@ -438,10 +438,10 @@ function toast(msg='Saved'){
 }
 
 // ── persistence ──
-const saveActs=()=>{try{localStorage.setItem(SK_ACTS,JSON.stringify(acts));toast('Activities saved');}catch(e){}};
-const saveWeek=w=>{try{localStorage.setItem(SK_WEEK(w),JSON.stringify(weekPlaces[w]));toast('Week '+(w+1)+' saved');}catch(e){}};
-const saveCur=()=>{try{localStorage.setItem(SK_CUR,String(curWeek));}catch(e){}};
-const saveNotes=()=>{try{localStorage.setItem(SK_NOTES,JSON.stringify(weekNotes));}catch(e){}};
+const saveActs=()=>{try{localStorage.setItem(SK_ACTS,JSON.stringify(acts));localStorage.setItem('weekplan_savedAt',new Date().toISOString());toast('Activities saved');}catch(e){}};
+const saveWeek=w=>{try{localStorage.setItem(SK_WEEK(w),JSON.stringify(weekPlaces[w]));localStorage.setItem('weekplan_savedAt',new Date().toISOString());toast('Week '+(w+1)+' saved');}catch(e){}};
+const saveCur=()=>{try{localStorage.setItem(SK_CUR,String(curWeek));localStorage.setItem('weekplan_savedAt',new Date().toISOString());}catch(e){}};
+const saveNotes=()=>{try{localStorage.setItem(SK_NOTES,JSON.stringify(weekNotes));localStorage.setItem('weekplan_savedAt',new Date().toISOString());}catch(e){}};
 const load=()=>{
   try{const v=localStorage.getItem(SK_CUR);if(v!==null)curWeek=parseInt(v)||0;}catch(e){}
   try{const v=localStorage.getItem(SK_ACTS);if(v){const d=JSON.parse(v);acts=d&&d.length?d:mkA();}else acts=mkA();}catch(e){acts=mkA();}
@@ -509,6 +509,7 @@ document.getElementById('import-input').addEventListener('change',function(){
         for(let w=0;w<4;w++)localStorage.setItem(SK_WEEK(w),JSON.stringify(weekPlaces[w]));
         localStorage.setItem(SK_NOTES,JSON.stringify(weekNotes));
         localStorage.setItem(SK_CUR,String(curWeek));
+        localStorage.setItem('weekplan_savedAt',new Date().toISOString());
         renderTabs();renderChips();renderBlocks();renderTracker();renderNote();setTapSel(null);toast('Imported!');
       }else toast('Invalid file');
     }catch(err){toast('Import failed');}
@@ -916,6 +917,7 @@ function gdriveLoad(){
         for(let w=0;w<4;w++)localStorage.setItem(SK_WEEK(w),JSON.stringify(weekPlaces[w]));
         localStorage.setItem(SK_NOTES,JSON.stringify(weekNotes));
         localStorage.setItem(SK_CUR,String(curWeek));
+        localStorage.setItem('weekplan_savedAt',new Date().toISOString());
         renderTabs();renderChips();renderBlocks();renderTracker();renderNote();setTapSel(null);
         const t=new Date();
         gdStatus('✓ Loaded from Drive — '+t.getHours()+':'+String(t.getMinutes()).padStart(2,'0'),'ok');
