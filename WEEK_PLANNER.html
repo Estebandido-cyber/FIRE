@@ -49,15 +49,8 @@ body{font-family:var(--font);display:flex;flex-direction:column;min-height:100vh
 #head-right{display:flex;align-items:center;gap:6px;justify-self:end;}
 .hbtn{font-family:var(--font);font-size:12px;font-weight:500;padding:6px 12px;border-radius:var(--r);border:1.5px solid;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;}
 .hbtn svg{width:13px;height:13px;flex-shrink:0;}
-#exportbtn{background:rgba(26,122,74,0.12);border-color:#1a7a4a;color:#1a7a4a;}
-#exportbtn:hover{background:rgba(26,122,74,0.22);color:#15623c;}
-#importbtn{background:rgba(61,92,168,0.12);border-color:#3D5CA8;color:#3D5CA8;}
-#importbtn:hover{background:rgba(61,92,168,0.22);color:#2e4680;}
+
 @media(prefers-color-scheme:dark){
-  #exportbtn{background:rgba(26,122,74,0.18);border-color:#2aaa65;color:#2aaa65;}
-  #exportbtn:hover{background:rgba(26,122,74,0.3);color:#35cc7a;}
-  #importbtn{background:rgba(100,130,220,0.18);border-color:#7F99DD;color:#7F99DD;}
-  #importbtn:hover{background:rgba(100,130,220,0.3);color:#99aaee;}
   #wm-week{color:#ccc8ff;}
   #wm-planner{color:#9D96F0;}
 }
@@ -173,7 +166,6 @@ body.tap-mode .sl:hover,body.tap-mode .sl.tap-ready{background:var(--bg3);}
 #toast{position:fixed;bottom:18px;right:18px;background:#1a7a4a;color:#fff;font-family:var(--font);font-size:12px;font-weight:500;padding:8px 14px;border-radius:var(--r);box-shadow:0 2px 14px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:9998;display:flex;align-items:center;gap:7px;}
 #toast.show{opacity:1;transform:translateY(0);}
 #toast-dot{width:7px;height:7px;border-radius:50%;background:#6ee7a8;flex-shrink:0;}
-#import-input{display:none;}
 
 /* ── mobile layout ── */
 @media(max-width:700px){
@@ -293,15 +285,7 @@ body.tap-mode .sl:hover,body.tap-mode .sl.tap-ready{background:var(--bg3);}
           <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10l2.5-4.5 2.5 2.5L9.5 4 12 10H2z"/></svg>
           <span class="hbtn-label">☁ Load</span>
         </button>
-        <button class="hbtn" id="exportbtn">
-          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1v8M4 6l3 3 3-3"/><path d="M2 10v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
-          <span class="hbtn-label">Export</span>
-        </button>
-        <button class="hbtn" id="importbtn">
-          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V1M4 4l3-3 3 3"/><path d="M2 10v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
-          <span class="hbtn-label">Import</span>
-        </button>
-        <input type="file" id="import-input" accept=".json"/>
+        <input type="file" id="import-input" accept=".json" style="display:none"/>
       </div>
     </div>
   </div>
@@ -438,10 +422,10 @@ function toast(msg='Saved'){
 }
 
 // ── persistence ──
-const saveActs=()=>{try{localStorage.setItem(SK_ACTS,JSON.stringify(acts));localStorage.setItem('weekplan_savedAt',new Date().toISOString());toast('Activities saved');}catch(e){}};
-const saveWeek=w=>{try{localStorage.setItem(SK_WEEK(w),JSON.stringify(weekPlaces[w]));localStorage.setItem('weekplan_savedAt',new Date().toISOString());toast('Week '+(w+1)+' saved');}catch(e){}};
-const saveCur=()=>{try{localStorage.setItem(SK_CUR,String(curWeek));localStorage.setItem('weekplan_savedAt',new Date().toISOString());}catch(e){}};
-const saveNotes=()=>{try{localStorage.setItem(SK_NOTES,JSON.stringify(weekNotes));localStorage.setItem('weekplan_savedAt',new Date().toISOString());}catch(e){}};
+const saveActs=()=>{try{localStorage.setItem(SK_ACTS,JSON.stringify(acts));localStorage.setItem('weekplan_savedAt',new Date().toISOString());toast('Activities saved');cloudSave();}catch(e){}};
+const saveWeek=w=>{try{localStorage.setItem(SK_WEEK(w),JSON.stringify(weekPlaces[w]));localStorage.setItem('weekplan_savedAt',new Date().toISOString());toast('Week '+(w+1)+' saved');cloudSave();}catch(e){}};
+const saveCur=()=>{try{localStorage.setItem(SK_CUR,String(curWeek));localStorage.setItem('weekplan_savedAt',new Date().toISOString());cloudSave();}catch(e){}};
+const saveNotes=()=>{try{localStorage.setItem(SK_NOTES,JSON.stringify(weekNotes));localStorage.setItem('weekplan_savedAt',new Date().toISOString());cloudSave();}catch(e){}};
 const load=()=>{
   try{const v=localStorage.getItem(SK_CUR);if(v!==null)curWeek=parseInt(v)||0;}catch(e){}
   try{const v=localStorage.getItem(SK_ACTS);if(v){const d=JSON.parse(v);acts=d&&d.length?d:mkA();}else acts=mkA();}catch(e){acts=mkA();}
@@ -484,38 +468,6 @@ function renderTracker(){
     chip.appendChild(dot);chip.appendChild(nm);chip.appendChild(h);inner.appendChild(chip);
   });
 }
-
-// ── export / import ──
-document.getElementById('exportbtn').addEventListener('click',()=>{
-  const data={acts,weekPlaces,weekNotes,curWeek};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;
-  const d=new Date();
-  const stamp=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  a.download='weekplan_'+stamp+'.json';a.click();URL.revokeObjectURL(url);toast('Exported!');
-});
-document.getElementById('importbtn').addEventListener('click',()=>document.getElementById('import-input').click());
-document.getElementById('import-input').addEventListener('change',function(){
-  const file=this.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{
-      const data=JSON.parse(e.target.result);
-      if(data.acts&&data.weekPlaces){
-        acts=data.acts;weekPlaces=data.weekPlaces;
-        if(Array.isArray(data.weekNotes))weekNotes=data.weekNotes;
-        if(typeof data.curWeek==='number')curWeek=data.curWeek;
-        localStorage.setItem(SK_ACTS,JSON.stringify(acts));
-        for(let w=0;w<4;w++)localStorage.setItem(SK_WEEK(w),JSON.stringify(weekPlaces[w]));
-        localStorage.setItem(SK_NOTES,JSON.stringify(weekNotes));
-        localStorage.setItem(SK_CUR,String(curWeek));
-        localStorage.setItem('weekplan_savedAt',new Date().toISOString());
-        renderTabs();renderChips();renderBlocks();renderTracker();renderNote();setTapSel(null);toast('Imported!');
-      }else toast('Invalid file');
-    }catch(err){toast('Import failed');}
-  };
-  reader.readAsText(file);this.value='';
-});
 
 // ── tabs ──
 function renderTabs(){
@@ -827,9 +779,44 @@ document.getElementById('addbtn').addEventListener('click',doAdd);
 document.getElementById('newinput').addEventListener('keydown',e=>{if(e.key==='Enter')doAdd();});
 
 load();buildGrid();renderTabs();renderChips();renderBlocks();renderTracker();renderNote();
+cloudLoad();
 
-// ── Google Drive Sync ──
-const GD_CLIENT_ID='453884215011-bnuqib76c5lt7vr87g6e5sd59q7r2cip.apps.googleusercontent.com';
+// ═══════════════════════════════════════════════
+// CLOUDFLARE WORKERS AUTO-SYNC
+// ═══════════════════════════════════════════════
+const CF_URL='https://widgets-sync.estebandido80.workers.dev/data/weekplanner';
+const CF_SECRET='widget-sync-secret-2024';
+async function cloudSave(){
+  try{
+    const payload={acts,weekPlaces,weekNotes,curWeek};
+    await fetch(CF_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Secret':CF_SECRET},
+      body:JSON.stringify(payload)
+    });
+  }catch(e){console.warn('Cloud save failed',e);}
+}
+async function cloudLoad(){
+  try{
+    const res=await fetch(CF_URL,{headers:{'X-Secret':CF_SECRET}});
+    const data=await res.json();
+    if(data&&data.acts&&data.weekPlaces){
+      acts=data.acts;
+      weekPlaces=data.weekPlaces;
+      if(Array.isArray(data.weekNotes))weekNotes=data.weekNotes;
+      if(typeof data.curWeek==='number')curWeek=data.curWeek;
+      localStorage.setItem(SK_ACTS,JSON.stringify(acts));
+      for(let w=0;w<4;w++)localStorage.setItem(SK_WEEK(w),JSON.stringify(weekPlaces[w]));
+      localStorage.setItem(SK_NOTES,JSON.stringify(weekNotes));
+      localStorage.setItem(SK_CUR,String(curWeek));
+      localStorage.setItem('weekplan_savedAt',new Date().toISOString());
+      renderTabs();renderChips();renderBlocks();renderTracker();renderNote();setTapSel(null);
+    }
+  }catch(e){console.warn('Cloud load failed',e);}
+}
+
+
+// ── Google Drive Sync ──'453884215011-bnuqib76c5lt7vr87g6e5sd59q7r2cip.apps.googleusercontent.com';
 const GD_SCOPE='https://www.googleapis.com/auth/drive.file';
 const GD_FILENAME='weekplan_data.json';
 let gdToken=null,gdFileId=null;
