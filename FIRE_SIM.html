@@ -483,12 +483,42 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
   color: var(--color-text-tertiary);
   padding: 4px 8px 0;
   letter-spacing: 0.5px;
-  min-height: 18px;
-  transition: color 0.3s;
+  min-height: 0;
+  opacity: 0;
+  transition: color 0.3s, opacity 0.5s;
+  pointer-events: none;
 }
+.drive-status-bar.visible { opacity: 1; pointer-events: auto; }
 .drive-status-bar.ok      { color: var(--color-text-success); }
 .drive-status-bar.err     { color: var(--color-text-danger); }
 .drive-status-bar.working { color: var(--color-text-warning); }
+
+/* Cloudflare sync status bar */
+#cf-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  padding: 5px 8px 2px;
+  letter-spacing: 0.3px;
+  min-height: 0;
+  opacity: 0;
+  transition: color 0.3s, opacity 0.5s;
+}
+#cf-status-bar.visible { opacity: 1; }
+#cf-status-bar.ok  { color: var(--color-text-success); }
+#cf-status-bar.err { color: var(--color-text-danger); }
+.cf-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  background: var(--color-text-tertiary);
+  transition: background 0.3s;
+}
+#cf-status-bar.ok  .cf-dot { background: var(--color-text-success); box-shadow: 0 0 5px rgba(15,110,86,0.5); }
+#cf-status-bar.err .cf-dot { background: var(--color-text-danger);  box-shadow: 0 0 5px rgba(192,57,43,0.5); }
 </style>
 </head>
 <body>
@@ -593,6 +623,7 @@ table.bd tr.unlock-row td { padding-top: 8px; border-top: 2px solid var(--teal-b
     <div style="font-size:12px;color:var(--color-text-secondary)">French &amp; Colombian assets · Phase-by-phase cashflow · Die-with-zero projection</div>
   </div>
   <div class="drive-status-bar" id="drive-status-bar"></div>
+  <div id="cf-status-bar"><span class="cf-dot"></span><span id="cf-status-text"></span></div>
 
   <div style="padding:0 16px">
   <p class="section-title">Assets</p>
@@ -951,6 +982,20 @@ const CF_URL    = 'https://widgets-sync.estebandido80.workers.dev/data/fire-sim'
 const CF_SECRET = 'widget-sync-secret-2024';
 let cfSaveTimer = null;
 
+function cfStatus(type) {
+  const bar  = document.getElementById('cf-status-bar');
+  const text = document.getElementById('cf-status-text');
+  if (!bar || !text) return;
+  const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  if (type === 'ok') {
+    text.textContent = 'Synced at ' + time;
+    bar.className = 'visible ok';
+  } else {
+    text.textContent = 'Sync failed at ' + time;
+    bar.className = 'visible err';
+  }
+}
+
 async function cloudSave() {
   try {
     const payload = {
@@ -962,7 +1007,8 @@ async function cloudSave() {
       headers: { 'Content-Type': 'application/json', 'X-Secret': CF_SECRET },
       body: JSON.stringify(payload)
     });
-  } catch(e) { console.warn('Cloud save failed', e); }
+    cfStatus('ok');
+  } catch(e) { console.warn('Cloud save failed', e); cfStatus('err'); }
 }
 
 function cloudSaveDebounced() {
@@ -983,8 +1029,8 @@ async function cloudLoad() {
     if (p.activeScenario !== undefined) activeScenario = p.activeScenario;
     saveState();
     draw();
-    showToast('Synced ✓');
-  } catch(e) { console.warn('Cloud load failed', e); }
+    cfStatus('ok');
+  } catch(e) { console.warn('Cloud load failed', e); cfStatus('err'); }
 }
 
 /* ═══════════════════════════════════════════════
@@ -1581,11 +1627,17 @@ const GD_FILENAME  = 'fire-sim-data.json';
 let gdToken  = null;
 let gdFileId = null;
 
+let gdFadeTimer = null;
 function gdStatus(msg, type) {
   const el = document.getElementById('drive-status-bar');
   if (!el) return;
   el.textContent = msg;
-  el.className = 'drive-status-bar' + (type ? ' ' + type : '');
+  el.className = 'drive-status-bar visible' + (type ? ' ' + type : '');
+  if (gdFadeTimer) clearTimeout(gdFadeTimer);
+  gdFadeTimer = setTimeout(() => {
+    el.classList.remove('visible');
+    setTimeout(() => { el.textContent = ''; el.className = 'drive-status-bar'; }, 500);
+  }, 5000);
 }
 
 function gdSetBusy(busy) {
