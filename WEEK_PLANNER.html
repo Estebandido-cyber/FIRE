@@ -215,13 +215,28 @@ body.tap-mode .sl:hover,body.tap-mode .sl.tap-ready{background:var(--bg3);}
 #drive-status{
   text-align:center;font-size:10px;color:var(--tx3);
   padding:3px 14px;letter-spacing:.04em;
-  min-height:0;transition:color .3s;
-  display:none;
+  min-height:0;transition:color .3s,opacity .6s;
+  display:none;opacity:1;
 }
 #drive-status.visible{display:block;}
+#drive-status.fading{opacity:0;}
 #drive-status.ok{color:#1a7a4a;}
 #drive-status.err{color:#c0392b;}
 #drive-status.working{color:#854F0B;}
+#cf-status{
+  text-align:center;font-size:12px;font-weight:500;color:var(--tx3);
+  padding:4px 14px;letter-spacing:.03em;
+  min-height:0;transition:color .3s;
+  display:none;align-items:center;justify-content:center;gap:6px;
+}
+#cf-status.visible{display:flex;}
+#cf-status.ok{color:#1a7a4a;}
+#cf-status.err{color:#c0392b;}
+#cf-status.working{color:#854F0B;}
+.cf-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--tx3);}
+#cf-status.ok .cf-dot{background:#1a7a4a;}
+#cf-status.err .cf-dot{background:#c0392b;}
+#cf-status.working .cf-dot{background:#854F0B;}
 </style>
 </head>
 <body>
@@ -310,6 +325,7 @@ body.tap-mode .sl:hover,body.tap-mode .sl.tap-ready{background:var(--bg3);}
     </div>
   </div>
   <div id="drive-status"></div>
+  <div id="cf-status"><span class="cf-dot"></span><span id="cf-status-msg"></span></div>
 </div>
 
 <div id="gridwrap">
@@ -422,10 +438,10 @@ function toast(msg='Saved'){
 }
 
 // ── persistence ──
-const saveActs=()=>{try{localStorage.setItem(SK_ACTS,JSON.stringify(acts));localStorage.setItem('weekplan_savedAt',new Date().toISOString());toast('Activities saved');cloudSave();}catch(e){}};
-const saveWeek=w=>{try{localStorage.setItem(SK_WEEK(w),JSON.stringify(weekPlaces[w]));localStorage.setItem('weekplan_savedAt',new Date().toISOString());toast('Week '+(w+1)+' saved');cloudSave();}catch(e){}};
-const saveCur=()=>{try{localStorage.setItem(SK_CUR,String(curWeek));localStorage.setItem('weekplan_savedAt',new Date().toISOString());cloudSave();}catch(e){}};
-const saveNotes=()=>{try{localStorage.setItem(SK_NOTES,JSON.stringify(weekNotes));localStorage.setItem('weekplan_savedAt',new Date().toISOString());cloudSave();}catch(e){}};
+const saveActs=()=>{try{localStorage.setItem(SK_ACTS,JSON.stringify(acts));localStorage.setItem('weekplan_savedAt',new Date().toISOString());toast('Activities saved');scheduleCloudsave();}catch(e){}};
+const saveWeek=w=>{try{localStorage.setItem(SK_WEEK(w),JSON.stringify(weekPlaces[w]));localStorage.setItem('weekplan_savedAt',new Date().toISOString());toast('Week '+(w+1)+' saved');scheduleCloudsave();}catch(e){}};
+const saveCur=()=>{try{localStorage.setItem(SK_CUR,String(curWeek));localStorage.setItem('weekplan_savedAt',new Date().toISOString());scheduleCloudsave();}catch(e){}};
+const saveNotes=()=>{try{localStorage.setItem(SK_NOTES,JSON.stringify(weekNotes));localStorage.setItem('weekplan_savedAt',new Date().toISOString());scheduleCloudsave();}catch(e){}};
 const load=()=>{
   try{const v=localStorage.getItem(SK_CUR);if(v!==null)curWeek=parseInt(v)||0;}catch(e){}
   try{const v=localStorage.getItem(SK_ACTS);if(v){const d=JSON.parse(v);acts=d&&d.length?d:mkA();}else acts=mkA();}catch(e){acts=mkA();}
@@ -786,15 +802,36 @@ cloudLoad();
 // ═══════════════════════════════════════════════
 const CF_URL='https://widgets-sync.estebandido80.workers.dev/data/weekplanner';
 const CF_SECRET='widget-sync-secret-2024';
+let cfSaveTimer=null;
+
+function cfStatus(msg,type){
+  const el=document.getElementById('cf-status');
+  const ms=document.getElementById('cf-status-msg');
+  if(!el||!ms)return;
+  ms.textContent=msg;
+  el.className='visible'+(type?' '+type:'');
+}
+
+function scheduleCloudsave(){
+  clearTimeout(cfSaveTimer);
+  cfSaveTimer=setTimeout(cloudSave,3000);
+}
+
 async function cloudSave(){
   try{
     const payload={acts,weekPlaces,weekNotes,curWeek};
-    await fetch(CF_URL,{
+    const res=await fetch(CF_URL,{
       method:'POST',
       headers:{'Content-Type':'application/json','X-Secret':CF_SECRET},
       body:JSON.stringify(payload)
     });
-  }catch(e){console.warn('Cloud save failed',e);}
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const t=new Date();
+    cfStatus('Synced at '+t.getHours()+':'+String(t.getMinutes()).padStart(2,'0'),'ok');
+  }catch(e){
+    console.warn('Cloud save failed',e);
+    cfStatus('Sync failed','err');
+  }
 }
 async function cloudLoad(){
   try{
@@ -811,8 +848,13 @@ async function cloudLoad(){
       localStorage.setItem(SK_CUR,String(curWeek));
       localStorage.setItem('weekplan_savedAt',new Date().toISOString());
       renderTabs();renderChips();renderBlocks();renderTracker();renderNote();setTapSel(null);
+      const t=new Date();
+      cfStatus('Synced at '+t.getHours()+':'+String(t.getMinutes()).padStart(2,'0'),'ok');
     }
-  }catch(e){console.warn('Cloud load failed',e);}
+  }catch(e){
+    console.warn('Cloud load failed',e);
+    cfStatus('Sync failed','err');
+  }
 }
 
 
@@ -822,11 +864,20 @@ const GD_SCOPE='https://www.googleapis.com/auth/drive.file';
 const GD_FILENAME='weekplan_data.json';
 let gdToken=null,gdFileId=null;
 
+let gdStatusTimer=null;
 function gdStatus(msg,type){
   const el=document.getElementById('drive-status');
   if(!el)return;
   el.textContent=msg;
   el.className='visible'+(type?' '+type:'');
+  el.style.opacity='1';
+  clearTimeout(gdStatusTimer);
+  if(type==='ok'){
+    gdStatusTimer=setTimeout(()=>{
+      el.classList.add('fading');
+      setTimeout(()=>{el.className='';el.style.opacity='1';},650);
+    },5000);
+  }
 }
 function gdSetBusy(busy){
   const s=document.getElementById('drivesavebtn');
