@@ -208,11 +208,16 @@
   .tile-strat:hover { border-color: rgba(251,113,133,0.5); }
   .tile-strat .tile-icon { background: rgba(251,113,133,0.1); color: #e8c97a; font-size: 20px; }
   .tile-strat .tile-name { color: #fb7185; }
-  .tile-notes { border-color: rgba(129,140,248,0.3); }
+  .tile-notes { border-color: rgba(129,140,248,0.3); grid-column: span 2; }
   .tile-notes::before { background: radial-gradient(ellipse at top left, var(--accent-notes-dim), transparent 70%); }
   .tile-notes:hover { border-color: var(--accent-notes-glow); }
   .tile-notes .tile-icon { background: var(--accent-notes-dim); }
   .tile-notes .tile-name { color: var(--accent-notes); }
+  .tile-notes .tile-stats { flex-direction: row; gap: 0; align-items: stretch; }
+  .doit-col { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 0 10px; border-right: 1px solid var(--border); }
+  .doit-col:first-child { padding-left: 0; }
+  .doit-col:last-child { border-right: none; padding-right: 0; }
+  .doit-col-title { font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em; color: var(--subtle); text-transform: uppercase; margin-bottom: 4px; flex-shrink: 0; }
   .tile-lukas { border-color: rgba(0,212,170,0.3); }
   .tile-lukas::before { background: radial-gradient(ellipse at top left, rgba(0,212,170,0.1), transparent 70%); }
   .tile-lukas:hover { border-color: rgba(0,212,170,0.5); }
@@ -381,9 +386,10 @@
   }
 
   @media (max-width: 380px) {
-    .tiles { grid-template-columns: 1fr; }
+    .tiles { grid-template-columns: 1fr 1fr; }
     .tile { min-height: auto; }
     .logo-title { font-size: 28px; }
+    .doit-item { font-size: 10px; }
   }
 
   /* Tablet landscape: 3-column grid */
@@ -529,6 +535,7 @@
         <div class="stat-divider"></div>
         <div class="stat"><div class="stat-label">Current Phase</div><div class="stat-value">Phase 0 · Accumulation Sprint</div></div>
       </div>
+      <div class="tile-footer" id="footer-strat"></div>
       <div class="tile-arrow">↗</div>
     </a>
 
@@ -564,12 +571,18 @@ function noData(msg) { return `<div class="no-data">${msg||'No data yet'}</div>`
 function fmtAgo(iso) {
   if (!iso) return '';
   try {
-    const diff = Math.floor((Date.now() - new Date(iso)) / 60000);
-    if (diff < 1) return 'saved just now';
-    if (diff < 60) return `saved ${diff}m ago`;
-    const h = Math.floor(diff/60);
-    if (h < 24) return `saved ${h}h ago`;
-    return `saved ${Math.floor(h/24)}d ago`;
+    const saved = new Date(iso);
+    const now = new Date();
+    const savedDay = new Date(saved.getFullYear(), saved.getMonth(), saved.getDate());
+    const todayDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const diffDays = Math.round((todayDay - savedDay) / 86400000);
+    if (diffDays === 0) {
+      const hh = String(saved.getHours()).padStart(2,'0');
+      const mm = String(saved.getMinutes()).padStart(2,'0');
+      return `Synced at ${hh}:${mm}`;
+    }
+    if (diffDays === 1) return 'Synced yesterday';
+    return `Synced ${diffDays} days ago`;
   } catch(e) { return ''; }
 }
 
@@ -787,40 +800,46 @@ function loadDoIt() {
   const raw = safeGet('doit_lcc_v1');
   const data = safeParse(raw);
   const el = document.getElementById('stats-notes');
+  const foot = document.getElementById('footer-notes');
   if (!data || !data.postits) { el.innerHTML = noData('Open Do it! to start'); return; }
 
-  const todayItems = (data.postits.today?.items || []).filter(i => !i.done).slice(0, 3);
-  const weekItems  = (data.postits.week?.items  || []).filter(i => !i.done).slice(0, 2);
+  const todayItems  = (data.postits.today?.items  || []).filter(i => !i.done).slice(0, 5);
+  const weekItems   = (data.postits.week?.items   || []).filter(i => !i.done).slice(0, 5);
+  const laterItems  = (data.postits.later?.items  || []).filter(i => !i.done).slice(0, 5);
 
-  let html = '';
+  const renderItems = items => items.length > 0
+    ? items.map(i => `<div class="doit-item">◦ ${i.text}</div>`).join('')
+    : `<div class="doit-item" style="opacity:0.4">All clear ✓</div>`;
 
-  if (todayItems.length === 0 && weekItems.length === 0) {
-    el.innerHTML = noData('All done! 🎉'); return;
-  }
+  el.innerHTML = `
+    <div class="doit-col">
+      <div class="doit-col-title">Today</div>
+      ${renderItems(todayItems)}
+    </div>
+    <div class="doit-col">
+      <div class="doit-col-title">This week</div>
+      ${renderItems(weekItems)}
+    </div>
+    <div class="doit-col">
+      <div class="doit-col-title">Later</div>
+      ${renderItems(laterItems)}
+    </div>`;
 
-  if (todayItems.length > 0) {
-    html += `<div class="stat-label" style="margin-bottom:4px">Today</div>`;
-    todayItems.forEach(i => {
-      html += `<div class="doit-item">◦ ${i.text}</div>`;
-    });
-  }
-
-  if (weekItems.length > 0) {
-    if (todayItems.length > 0) html += '<div class="stat-divider"></div>';
-    html += `<div class="stat-label" style="margin-bottom:4px">This week</div>`;
-    weekItems.forEach(i => {
-      html += `<div class="doit-item">◦ ${i.text}</div>`;
-    });
-  }
-
-  el.innerHTML = html;
-
-  const foot = document.getElementById('footer-notes');
   if (data.savedAt) foot.textContent = fmtAgo(data.savedAt);
 }
 
 // ── init ─────────────────────────────────────────────────────────
-function loadAll() { loadDoIt(); loadTracker(); loadCalc(); loadPlanner(); loadFire(); loadWorkout(); loadLukas(); }
+function loadAll() {
+  loadDoIt();
+  loadTracker();
+  loadCalc();
+  loadPlanner();
+  loadFire();
+  loadWorkout();
+  loadLukas();
+  const stratFoot = document.getElementById('footer-strat');
+  if (stratFoot) stratFoot.textContent = 'To update manually';
+}
 loadAll();
 </script>
 </body>
