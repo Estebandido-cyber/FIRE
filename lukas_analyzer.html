@@ -1147,6 +1147,58 @@ function setFilter(f,el) { currentFilter=f; document.querySelectorAll('.filter-t
 function sortBy(key) { if(sortKey===key) sortDir*=-1; else{sortKey=key;sortDir=-1;} render(); }
 function updateCash(val) { CASH=parseFloat(val)||0; localStorage.setItem('portfolio_cash',CASH); render(); debouncedCloudSave(); }
 
+// ═══════════════════════════════════════════════════════
+// CLOUDFLARE WORKERS AUTO-SYNC
+// ═══════════════════════════════════════════════════════
+const CF_URL    = 'https://widgets-sync.estebandido80.workers.dev/data/lukas-flow';
+const CF_SECRET = 'widget-sync-secret-2024';
+let cfSaveTimer = null;
+
+function cfStatus(msg, type) {
+  const el = document.getElementById('cf-status-bar');
+  if (!el) return;
+  el.className = 'cf-status-bar' + (type ? ' ' + type : '');
+  el.innerHTML = type
+    ? `<span class="cf-status-dot"></span>${msg}`
+    : msg;
+}
+
+function debouncedCloudSave() {
+  clearTimeout(cfSaveTimer);
+  cfSaveTimer = setTimeout(cloudSave, 3000);
+}
+
+async function cloudSave() {
+  try {
+    await fetch(CF_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Secret': CF_SECRET },
+      body: JSON.stringify(getAllWidgetData())
+    });
+    const t = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    cfStatus('Synced at ' + t, 'ok');
+  } catch(e) {
+    console.warn('[CF] Cloud save failed', e);
+    cfStatus('Sync failed', 'err');
+  }
+}
+
+async function cloudLoad() {
+  try {
+    const res = await fetch(CF_URL, { headers: { 'X-Secret': CF_SECRET } });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && Object.keys(data).length > 0) {
+      restoreAllWidgetData(data); // already calls render() internally
+      const t = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      cfStatus('Synced at ' + t, 'ok');
+    }
+  } catch(e) {
+    console.warn('[CF] Cloud load failed', e);
+    cfStatus('Sync failed', 'err');
+  }
+}
+
 // Initial render with stored values immediately (no flicker — fetch updates in place)
 render();
 // Then fetch live prices — render() is called once inside fetchAllPrices when done
@@ -1251,58 +1303,6 @@ function gdriveLoad() {
   });
 }
 
-
-// ═══════════════════════════════════════════════════════
-// CLOUDFLARE WORKERS AUTO-SYNC
-// ═══════════════════════════════════════════════════════
-const CF_URL    = 'https://widgets-sync.estebandido80.workers.dev/data/lukas-flow';
-const CF_SECRET = 'widget-sync-secret-2024';
-let cfSaveTimer = null;
-
-function cfStatus(msg, type) {
-  const el = document.getElementById('cf-status-bar');
-  if (!el) return;
-  el.className = 'cf-status-bar' + (type ? ' ' + type : '');
-  el.innerHTML = type
-    ? `<span class="cf-status-dot"></span>${msg}`
-    : msg;
-}
-
-function debouncedCloudSave() {
-  clearTimeout(cfSaveTimer);
-  cfSaveTimer = setTimeout(cloudSave, 3000);
-}
-
-async function cloudSave() {
-  try {
-    await fetch(CF_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Secret': CF_SECRET },
-      body: JSON.stringify(getAllWidgetData())
-    });
-    const t = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    cfStatus('Synced at ' + t, 'ok');
-  } catch(e) {
-    console.warn('[CF] Cloud save failed', e);
-    cfStatus('Sync failed', 'err');
-  }
-}
-
-async function cloudLoad() {
-  try {
-    const res = await fetch(CF_URL, { headers: { 'X-Secret': CF_SECRET } });
-    if (!res.ok) return;
-    const data = await res.json();
-    if (data && Object.keys(data).length > 0) {
-      restoreAllWidgetData(data); // already calls render() internally
-      const t = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-      cfStatus('Synced at ' + t, 'ok');
-    }
-  } catch(e) {
-    console.warn('[CF] Cloud load failed', e);
-    cfStatus('Sync failed', 'err');
-  }
-}
 
 // ═══════════════════════════════════════════════════════
 // WIDGET DATA — get / restore
