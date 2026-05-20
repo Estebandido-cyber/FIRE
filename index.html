@@ -218,9 +218,9 @@
   .doit-col:first-child { padding-left: 0; }
   .doit-col:last-child { border-right: none; padding-right: 0; }
   .doit-col-title { font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em; color: var(--subtle); text-transform: uppercase; margin-bottom: 4px; flex-shrink: 0; }
-  .tile-lukas { border-color: rgba(0,212,170,0.3); }
-  .tile-lukas::before { background: radial-gradient(ellipse at top left, rgba(0,212,170,0.1), transparent 70%); }
-  .tile-lukas:hover { border-color: rgba(0,212,170,0.5); }
+  .tile-lukas { border-color: rgba(245,158,11,0.3); }
+  .tile-lukas::before { background: radial-gradient(ellipse at top left, rgba(245,158,11,0.1), transparent 70%); }
+  .tile-lukas:hover { border-color: rgba(245,158,11,0.5); }
   .tile-lukas .tile-icon { background-color: rgba(0,212,170,0.1); }
   .tile-lukas .tile-name { color: #f59e0b; }
   .tile-icon-lukas {
@@ -787,12 +787,7 @@ function loadLukas() {
     '<div class="stat-divider"></div>' +
     glEurHTML;
 
-  if (updatedAt) {
-    try {
-      const t = new Date(updatedAt);
-      foot.textContent = 'updated ' + t.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-    } catch(e) {}
-  }
+  if (updatedAt) foot.textContent = fmtAgo(updatedAt);
 }
 
 // ── DO IT! ───────────────────────────────────────────────────────
