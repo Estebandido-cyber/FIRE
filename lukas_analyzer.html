@@ -222,10 +222,6 @@
   .btn-drive { background:#1a73e8; border-color:#1a73e8; color:#fff; }
   .btn-drive:hover { background:#1557b0; border-color:#1557b0; }
   .btn-drive:disabled { opacity:0.5; cursor:not-allowed; }
-  .btn-export { background:rgba(240,140,60,0.12); border-color:#e07838; color:#e07838; }
-  .btn-export:hover { background:rgba(240,140,60,0.22); }
-  .btn-import { background:rgba(80,200,176,0.12); border-color:#50c8b0; color:#50c8b0; }
-  .btn-import:hover { background:rgba(80,200,176,0.22); }
   .btn-ghost { background:transparent; border-color:var(--border); color:var(--muted); }
   .btn-ghost:hover { border-color:var(--muted); color:var(--text); }
   .btn-danger { background:rgba(239,68,68,0.12); border-color:#ef4444; color:#ef4444; }
@@ -242,8 +238,7 @@
   .modal-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--text); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
   .modal-close { background:transparent; border:none; color:var(--muted); font-size:20px; cursor:pointer; padding:0 4px; line-height:1; }
   .modal-close:hover { color:var(--text); }
-  .import-area { border:2px dashed var(--border); border-radius:10px; padding:32px; text-align:center; cursor:pointer; color:var(--muted); transition:border-color 0.2s; margin-bottom:12px; }
-  .import-area:hover { border-color:var(--accent); color:var(--text); }
+
 </style>
 </head>
 <body>
@@ -307,8 +302,6 @@
       <button class="btn btn-update" onclick="openUpdateModal()" title="Manually update fund positions">✎ Update</button>
       <button class="btn btn-drive" id="drive-save-btn" onclick="gdriveSave()" title="Save to Google Drive">☁ Save</button>
       <button class="btn btn-drive" id="drive-load-btn" onclick="gdriveLoad()" title="Load from Google Drive">☁ Load</button>
-      <button class="btn btn-export" onclick="openExport()">↓ Export</button>
-      <button class="btn btn-import" onclick="openImport()">↑ Import</button>
       <button id="debugBtn" class="btn" onclick="toggleDebug()" title="Toggle debug logging in browser console" style="background:transparent;border-color:var(--border);color:var(--muted);font-size:10px">⚙ Debug</button>
     </div>
 
@@ -334,37 +327,6 @@
     </div>
   </div>
 
-  <!-- EXPORT MODAL -->
-  <div class="modal-overlay" id="export-modal">
-    <div class="modal">
-      <div class="modal-title">Export Data <button class="modal-close" onclick="closeExport()">×</button></div>
-      <p style="color:#9aa0ad;font-size:12px;margin-bottom:16px;line-height:1.6;">Download a complete backup of all your portfolio settings as a JSON file.</p>
-      <div id="export-summary" style="background:#1e2126;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:#9aa0ad;line-height:2;"></div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:24px;">
-        <button class="btn btn-ghost" onclick="closeExport()">Cancel</button>
-        <button class="btn btn-export" onclick="doExport()">↓ Download JSON</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- IMPORT MODAL -->
-  <div class="modal-overlay" id="import-modal">
-    <div class="modal">
-      <div class="modal-title">Import Data <button class="modal-close" onclick="closeImport()">×</button></div>
-      <p style="color:#9aa0ad;font-size:12px;margin-bottom:16px;line-height:1.6;">Load a previously exported JSON file. Choose merge (safe) or full overwrite.</p>
-      <div class="import-area" id="import-drop-area" onclick="document.getElementById('file-input').click()">
-        <div style="font-size:28px;margin-bottom:8px;">📂</div>
-        <div style="font-size:12px;">Click or drag &amp; drop your backup file here</div>
-      </div>
-      <input type="file" id="file-input" accept=".json" style="display:none" onchange="handleFileImport(event)">
-      <div id="import-preview" style="display:none;background:#1e2126;border-radius:8px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:#9aa0ad;line-height:2;"></div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:24px;">
-        <button class="btn btn-ghost" onclick="closeImport()">Cancel</button>
-        <button class="btn btn-danger" id="overwrite-btn" style="display:none" onclick="doImport(true)">Full Overwrite</button>
-        <button class="btn btn-import" id="merge-btn" style="display:none" onclick="doImport(false)">Merge Import</button>
-      </div>
-    </div>
-  </div>
 
   <div class="kpis">
     <div class="kpi">
@@ -824,6 +786,7 @@ function saveManualUpdates() {
   pendingManualChanges = {};
   closeUpdateModal();
   render();
+  cloudSave();
 }
 
 function markAllReviewed() {
@@ -1026,6 +989,7 @@ function updateRate(key,val,idx,type) {
   if (type==='livret') LIVRETS[idx].rate=rate;
   else FONDS_EUROS[idx].rate=rate;
   render();
+  cloudSave();
 }
 
 // ─── BENCHMARK ────────────────────────────────────────────────────────────────
@@ -1173,13 +1137,15 @@ function renderTable(allRows,totalValue) {
 
 function setFilter(f,el) { currentFilter=f; document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); render(); }
 function sortBy(key) { if(sortKey===key) sortDir*=-1; else{sortKey=key;sortDir=-1;} render(); }
-function updateCash(val) { CASH=parseFloat(val)||0; localStorage.setItem('portfolio_cash',CASH); render(); }
+function updateCash(val) { CASH=parseFloat(val)||0; localStorage.setItem('portfolio_cash',CASH); render(); cloudSave(); }
 
 // Initial render with stored values immediately (no flicker — fetch updates in place)
 render();
 // Then fetch live prices — render() is called once inside fetchAllPrices when done
 fetchAllPrices();
 setInterval(fetchAllPrices, 5*60*1000);
+// Cloud sync: load remote state on startup (will re-render if remote data differs)
+cloudLoad();
 
 // ═══════════════════════════════════════════════════════
 // GOOGLE DRIVE SYNC
@@ -1277,66 +1243,32 @@ function gdriveLoad() {
   });
 }
 
-// ═══════════════════════════════════════════════════════
-// EXPORT / IMPORT
-// ═══════════════════════════════════════════════════════
-let pendingImportData = null;
 
-function openExport() {
-  const d = getAllWidgetData();
-  document.getElementById('export-summary').innerHTML =
-    `<div>Cash: ${d.cash} €</div>` +
-    `<div>Livret A rate: ${d.livret_rate_A}%</div>` +
-    `<div>Livret LDDS rate: ${d.livret_rate_LDDS}%</div>` +
-    `<div>Fonds € rates: PERE ${d.fe_rate_PERE}% · PERO ${d.fe_rate_PERO}% · AV ${d.fe_rate_AV}%</div>` +
-    `<div>IR tax bracket: ${d.tax_bracket}%</div>`;
-  document.getElementById('export-modal').classList.add('open');
+// ═══════════════════════════════════════════════════════
+// CLOUDFLARE WORKERS AUTO-SYNC
+// ═══════════════════════════════════════════════════════
+const CF_URL    = 'https://widgets-sync.estebandido80.workers.dev/data/lukas-flow';
+const CF_SECRET = 'widget-sync-secret-2024';
+
+async function cloudSave() {
+  try {
+    await fetch(CF_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Secret': CF_SECRET },
+      body: JSON.stringify(getAllWidgetData())
+    });
+  } catch(e) { console.warn('[CF] Cloud save failed', e); }
 }
-function closeExport() { document.getElementById('export-modal').classList.remove('open'); }
-function doExport() {
-  const payload = { version: 1, exportedAt: new Date().toISOString(), data: getAllWidgetData() };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'portfolio_dashboard_' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  closeExport();
-}
-function openImport() {
-  pendingImportData = null;
-  document.getElementById('import-preview').style.display = 'none';
-  document.getElementById('merge-btn').style.display = 'none';
-  document.getElementById('overwrite-btn').style.display = 'none';
-  document.getElementById('file-input').value = '';
-  document.getElementById('import-modal').classList.add('open');
-}
-function closeImport() { document.getElementById('import-modal').classList.remove('open'); }
-function handleFileImport(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const payload = JSON.parse(e.target.result);
-      if (!payload.data) throw new Error('Invalid format');
-      pendingImportData = payload;
-      document.getElementById('import-preview').style.display = 'block';
-      document.getElementById('import-preview').innerHTML = '<div>✅ Valid backup file — exported ' + (payload.exportedAt || 'unknown date') + '</div>';
-      document.getElementById('merge-btn').style.display = 'inline-flex';
-      document.getElementById('overwrite-btn').style.display = 'inline-flex';
-    } catch(err) {
-      document.getElementById('import-preview').style.display = 'block';
-      document.getElementById('import-preview').innerHTML = '<div style="color:#e06060">❌ Invalid file</div>';
+
+async function cloudLoad() {
+  try {
+    const res = await fetch(CF_URL, { headers: { 'X-Secret': CF_SECRET } });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && Object.keys(data).length > 0) {
+      restoreAllWidgetData(data); // already calls render() internally
     }
-  };
-  reader.readAsText(file);
-}
-function doImport(overwrite) {
-  if (!pendingImportData) return;
-  restoreAllWidgetData(pendingImportData.data, overwrite);
-  closeImport();
+  } catch(e) { console.warn('[CF] Cloud load failed', e); }
 }
 
 // ═══════════════════════════════════════════════════════
