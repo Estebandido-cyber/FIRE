@@ -805,7 +805,6 @@ function loadDoIt() {
 
   const todayItems  = (data.postits.today?.items  || []).filter(i => !i.done).slice(0, 5);
   const weekItems   = (data.postits.week?.items   || []).filter(i => !i.done).slice(0, 5);
-  const laterItems  = (data.postits.later?.items  || []).filter(i => !i.done).slice(0, 5);
 
   const renderItems = items => items.length > 0
     ? items.map(i => `<div class="doit-item">◦ ${i.text}</div>`).join('')
@@ -819,10 +818,6 @@ function loadDoIt() {
     <div class="doit-col">
       <div class="doit-col-title">This week</div>
       ${renderItems(weekItems)}
-    </div>
-    <div class="doit-col">
-      <div class="doit-col-title">Later</div>
-      ${renderItems(laterItems)}
     </div>`;
 
   if (data.savedAt) foot.textContent = fmtAgo(data.savedAt);
